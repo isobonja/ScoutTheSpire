@@ -1,0 +1,30 @@
+
+# Custom
+notes.md
+
+# --- TAGGER ---
+
+# Logs
+tagger/logs
+tagger/*.log
+tagger/npm-debug.log*
+tagger/yarn-debug.log*
+tagger/yarn-error.log*
+tagger/pnpm-debug.log*
+tagger/lerna-debug.log*
+
+tagger/node_modules
+tagger/dist
+tagger/dist-ssr
+tagger/*.local
+
+# Editor directories and files
+tagger/.vscode/*
+tagger/!.vscode/extensions.json
+tagger/.idea
+tagger/.DS_Store
+tagger/*.suo
+tagger/*.ntvs*
+tagger/*.njsproj
+tagger/*.sln
+tagger/*.sw?
