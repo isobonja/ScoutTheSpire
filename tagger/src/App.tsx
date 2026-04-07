@@ -1,35 +1,34 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/electron-vite.animate.svg'
-import './App.css'
+import { useEffect, useMemo, useState } from 'react';
+import './App.css';
+import CardDisplay from './components/CardDisplay';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [cardData, setCardData] = useState<any[] | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await window.api.readPrototypeJSONFromFile();
+      setCardData(data);
+      console.log('Card Data:', data);
+    };
+    fetchData();
+  }, []);
+
+  const card = cardData?.[0];
 
   return (
-    <>
-      <div>
-        <a href="https://electron-vite.github.io" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className="min-h-screen min-w-screen bg-slate-900 flex gap-6 p-6 items-start">
+      <CardDisplay
+        name={card?.name}
+        imageUrl={card?.image_url ? 'https://spire-codex.com' + card.image_url : undefined}
+        cost={card?.cost}
+        cardClass={card?.color}
+        cardType={card?.type}
+        description={card?.description}
+        keywords={card?.keywords}
+      />
+    </div>
+  );
 }
 
-export default App
+export default App;

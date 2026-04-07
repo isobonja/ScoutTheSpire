@@ -1,4 +1,6 @@
 import { ipcRenderer, contextBridge } from 'electron'
+import path from 'path'
+import fs from "fs"
 
 // --------- Expose some API to the Renderer process ---------
 contextBridge.exposeInMainWorld('ipcRenderer', {
@@ -22,3 +24,13 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
   // You can expose other APTs you need here.
   // ...
 })
+
+contextBridge.exposeInMainWorld("api", {
+  readPrototypeJSONFromFile: () => {
+    const filePath = path.join(process.cwd(), "..", "data", "cards.json");
+    const content = fs.readFileSync(filePath, "utf-8");
+    const json = JSON.parse(content);
+    //console.log("Read file json:", json); // Debug log to check the file content
+    return json;
+  },
+});

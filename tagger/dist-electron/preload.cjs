@@ -1,5 +1,7 @@
 "use strict";
 const electron = require("electron");
+const path = require("path");
+const fs = require("fs");
 electron.contextBridge.exposeInMainWorld("ipcRenderer", {
   on(...args) {
     const [channel, listener] = args;
@@ -19,4 +21,12 @@ electron.contextBridge.exposeInMainWorld("ipcRenderer", {
   }
   // You can expose other APTs you need here.
   // ...
+});
+electron.contextBridge.exposeInMainWorld("api", {
+  readPrototypeJSONFromFile: () => {
+    const filePath = path.join(process.cwd(), "..", "data", "cards.json");
+    const content = fs.readFileSync(filePath, "utf-8");
+    const json = JSON.parse(content);
+    return json;
+  }
 });
