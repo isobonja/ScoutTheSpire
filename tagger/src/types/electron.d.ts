@@ -1,9 +1,20 @@
 export {};
 
+import type { Card, TagsData, ApiResponse } from "../../shared/types";
+
 declare global {
   interface Window {
     api: {
-      readPrototypeJSONFromFile: () => any; // you can type this better later
+      // READ
+      readTags: () => Promise<TagsData>;
+      readCards: () => Promise<Card[]>;
+
+      // WRITE
+      addTagCategory: (category: string) => Promise<ApiResponse>;
+      addTagsToCategory: (
+        category: string,
+        tags: string[]
+      ) => Promise<ApiResponse>;
     };
   }
 }

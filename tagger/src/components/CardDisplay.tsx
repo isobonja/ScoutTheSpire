@@ -1,18 +1,29 @@
 import { Badge } from "@/components/ui/badge";
 import { useEffect, useState } from "react";
 import ImageWithSpinner from "./ImageWithSpinner";
+import { CardClass, CLASS_COLORS, Rarity, RARITY_COLORS } from "@/util/constants";
 
 type CardDisplayProps = {
   name?: string;
-  imageUrl?: string;
-  cost?: number;
-  cardClass?: string;
-  cardType?: string;
   description?: string;
+  cost?: number;
+  cardType?: string;
+  rarity?: string;
+  cardClass?: string;
+  imageUrl?: string;
   keywords?: string[];
 }
 
-function CardDisplay({ name, imageUrl, cost, cardClass, cardType, description, keywords }: CardDisplayProps) {
+function CardDisplay({ 
+  name, 
+  description, 
+  cost, 
+  cardType,
+  rarity,
+  cardClass, 
+  imageUrl,
+  keywords 
+}: CardDisplayProps) {
 
   function renderText(text: string) {
     const parts = text.split(/(\[gold\].*?\[\/gold\])/g);
@@ -93,22 +104,33 @@ function CardDisplay({ name, imageUrl, cost, cardClass, cardType, description, k
     return root;
   }*/
 
-  const CLASS_COLORS: Record<string, string> = {
-    ironclad: "bg-red-800",
-    defect: "bg-blue-800",
-    silent: "bg-green-800",
-    regent: "bg-orange-800",
-    necrobinder: "bg-purple-800",
-    colorless: "bg-gray-800",
-  };
+  const classKey = (cardClass?.toLowerCase() ?? "colorless") as CardClass;
+  const rarityKey = (rarity?.toLowerCase() ?? "common") as Rarity;
+
+  const classColor = CLASS_COLORS[classKey];
+  const rarityBorder = RARITY_COLORS[rarityKey];
+  
 
 
   return (
-    <div className="border border-gray-300 rounded-lg p-4 h-full min-h-0 ">
+    <div className="border border-gray-300 rounded-lg p-4 h-full min-h-0 min-w-2xs">
       {/* card */}
-      <div className={`w-100 flex flex-col items-center border border-pink-500 gap-2 relative aspect-[9/16] ${CLASS_COLORS[cardClass?.toLowerCase() || 'colorless']}`}>
+      <div 
+        className={`
+          flex 
+          flex-col 
+          items-center 
+          border 
+          border-4 
+          gap-2 
+          relative 
+          aspect-[9/12] 
+          ${classColor}
+          ${rarityBorder}
+        `}
+      >
         {/* card name */}
-        <span className="text-white font-bold" style={{ fontSize: "2.25rem" }}>{name || "Placeholder Name"}</span>
+        <span className="text-white font-bold text-4xl">{name || "Placeholder Name"}</span>
 
         {/* card image */}
         <div className='w-full flex flex-col items-center'>

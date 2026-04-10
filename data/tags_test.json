@@ -1,0 +1,29 @@
+{
+  "class": {
+    "weight": 1,
+    "tags": [
+      "ironclad",
+      "silent",
+      "regent",
+      "necrobinder",
+      "defect",
+      "colorless"
+    ]
+  },
+  "type": {
+    "weight": 1,
+    "tags": [
+      "attack",
+      "skill",
+      "power",
+      "curse",
+      "status"
+    ]
+  },
+  "test": {
+    "weight": 1,
+    "tags": [
+      "aea"
+    ]
+  }
+}
