@@ -31,9 +31,15 @@ function NewTagCategoryForm({ categories, addCategory, addTag }: NewTagCategoryF
         <FieldLegend className='underline'>New Tag/Category Form</FieldLegend> {/* prob remove */}
         <FieldGroup>
           <div className='flex flex-row gap-2 pt-2'>
-            <Field className='flex-5 bg-slate-900'>
+            <Field className='flex-5 bg-field-background'>
               {/*<FieldLabel htmlFor="tag-name">Tag Name</FieldLabel>*/}
-              <Input id="tag-name" placeholder="Enter tag name" value={tagName} onChange={(e) => setTagName(e.target.value)} />
+              <Input
+                id="tag-name" 
+                placeholder="Enter tag name" 
+                value={tagName} 
+                onChange={(e) => setTagName(e.target.value)} 
+                className='border border-field-border focus-visible:border-field-border-focus focus-visible:ring-field-border-focus-ring/20'
+              />
             </Field>
             <Field className='flex-5'>
               {/*<FieldLabel htmlFor="category">Category</FieldLabel>*/}

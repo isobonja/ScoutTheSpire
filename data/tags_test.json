@@ -25,5 +25,11 @@
     "tags": [
       "aea"
     ]
+  },
+  "test2": {
+    "weight": 1,
+    "tags": [
+      "aaea"
+    ]
   }
 }

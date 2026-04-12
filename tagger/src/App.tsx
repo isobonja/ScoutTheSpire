@@ -27,6 +27,7 @@ function App() {
   }, []);
 
   const handleAddCategory = async (category: string) => {
+    if (category.trim() === '') return; // Prevent adding empty category
     const result = await window.api.addTagCategory(category);
     if (result.success) {
       setTagsData(result.data);
@@ -39,10 +40,10 @@ function App() {
     setTagsData(updatedTags);
   }
 
-  const card = cardData?.[0];
+  const card = cardData?.[230];
 
   return (
-    <div className="h-screen min-h-screen min-w-screen bg-slate-900 flex gap-6 p-6 items-start">
+    <div className="h-screen min-h-screen min-w-screen bg-app flex gap-4 p-6 items-start">
       <CardDisplay
         name={card?.name}
         description={card?.description}
@@ -55,8 +56,8 @@ function App() {
       />
 
       <TaggingPanel 
-        className='flex-1 h-full min-h-0 min-w-0' 
-        categories={tagsData ? Object.keys(tagsData) : []} // Extract categories for passing to form
+        className='flex-9 h-full min-h-0 min-w-0' 
+        tagData={tagsData ?? {}} // Pass empty object if tagsData is null to avoid errors in child components
         addCategory={handleAddCategory}
         addTag={handleAddTag}
       />

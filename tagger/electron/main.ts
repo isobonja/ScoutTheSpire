@@ -97,6 +97,8 @@ ipcMain.handle(
 // Window setup
 function createWindow() {
   win = new BrowserWindow({
+    minWidth: 800,
+    minHeight: 600,
     icon: path.join(process.env.VITE_PUBLIC!, 'electron-vite.svg'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.cjs'),

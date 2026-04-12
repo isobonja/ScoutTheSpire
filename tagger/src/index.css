@@ -7,82 +7,47 @@
 */
 @custom-variant dark (&:is(.dark *));
 
-/*
-:root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+[data-radix-scroll-area-viewport] > div {
+  display: flex !important;
+  height: 100%;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+@theme {
+  --app-background: linear-gradient(to bottom, var(--color-slate-600), var(--color-slate-900));
+  
 }
 
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-}
+/* 
+ THEME VARIABLES THAT REFER TO OTHER VARIABLES SHOULD BE PLACED WITHIN
+ THIS INLINE THEME BLOCK.
 */
-
-/*
----break---
-*/
-
 @theme inline {
+
+    --color-panel-background: var(--color-slate-900);
+    --color-panel-border: var(--color-gray-500);
+
+    --color-form-background: var(--color-indigo-950);
+    --color-form-border: var(--color-slate-700);
+
+    --color-field-background: var(--color-slate-900);
+    --color-field-border: var(--color-slate-400);
+    --color-field-border-focus: var(--color-blue-500);
+    --color-field-border-focus-ring: var(--color-blue-400);
+
+    --color-card-background: var(--color-slate-950);
+    --color-card-border: var(--color-sky-400);
+
+
+    --color-common-rarity: var(--color-gray-400);
+    --color-uncommon-rarity: var(--color-green-500);
+    --color-rare-rarity: var(--color-yellow-500);
+
+    --color-ironclad: var(--color-red-800);
+    --color-defect: var(--color-blue-800);
+    --color-silent: var(--color-green-800);
+    --color-regent: var(--color-orange-800);
+    --color-necrobinder: var(--color-purple-800);
+    --color-colorless: var(--color-gray-800);
 
     --font-heading: var(--font-sans);
 
@@ -319,4 +284,10 @@ button:focus-visible {
   html {
     @apply font-sans;
     }
+}
+
+@layer utilities {
+  .bg-app {
+    background: var(--app-background);
+  }
 }

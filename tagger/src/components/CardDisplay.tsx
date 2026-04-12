@@ -113,7 +113,7 @@ function CardDisplay({
 
 
   return (
-    <div className="border border-gray-300 rounded-lg p-4 h-full min-h-0 min-w-2xs">
+    <div className="bg-panel-background border border-panel-border rounded-lg p-4 h-auto min-h-0 min-w-2xs flex-3">
       {/* card */}
       <div 
         className={`
@@ -125,6 +125,7 @@ function CardDisplay({
           gap-2 
           relative 
           aspect-[9/12] 
+          pt-2 
           ${classColor}
           ${rarityBorder}
         `}
@@ -140,7 +141,27 @@ function CardDisplay({
         </div>
 
         {/* card cost badge */}
-        <Badge className="absolute top-2 right-2 text-white bg-gray-800 rounded-full p-1 w-6 h-6 flex items-center justify-center text-xs">
+        <Badge 
+          className={`
+            bg-gray-950 
+            text-lg 
+            text-white 
+            border 
+            ${rarityBorder}
+            border-2 
+            absolute 
+            -top-4
+            -right-4
+            rounded-full 
+            p-1 
+            w-8 
+            h-8 
+            flex 
+            items-center 
+            justify-center
+            z-10
+          `}
+        >
           {cost ?? -1}
         </Badge>
 
@@ -161,20 +182,12 @@ function CardDisplay({
 
         {/* card keywords */}
         <div className='flex gap-2 mt-2'>
-          {keywords && keywords.length > 0 ? (
+          {keywords && keywords.length > 0 && (
             keywords.map((keyword, index) => (
               <Badge key={index} className="text-white bg-gray-800 p-1 w-16 h-6 flex items-center justify-center text-xs">
                 {keyword}
               </Badge>
-            ))) : (
-            <>
-              <Badge className="text-white bg-gray-800 p-1 w-16 h-6 flex items-center justify-center text-xs">
-                KEYWORD 1
-              </Badge>
-              <Badge className="text-white bg-gray-800 p-1 w-16 h-6 flex items-center justify-center text-xs">
-                KEYWORD 2
-              </Badge>
-            </>
+            ))
           )}
         </div>
       </div>
