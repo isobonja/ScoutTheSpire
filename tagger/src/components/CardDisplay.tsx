@@ -2,6 +2,8 @@ import { Badge } from "@/components/ui/badge";
 import { useEffect, useState } from "react";
 import ImageWithSpinner from "./ImageWithSpinner";
 import { CardClass, CLASS_COLORS, Rarity, RARITY_COLORS } from "@/util/constants";
+import { capitalize } from "@/util/utils";
+import { Separator } from "@/components/ui/separator";
 
 type CardDisplayProps = {
   name?: string;
@@ -113,25 +115,24 @@ function CardDisplay({
 
 
   return (
-    <div className="bg-panel-background border border-panel-border rounded-lg p-4 h-auto min-h-0 min-w-2xs flex-3">
+    <div className=" bg-panel-background border border-panel-border rounded-lg p-4 h-auto min-h-0 ">
       {/* card */}
       <div 
         className={`
           flex 
           flex-col 
           items-center 
-          border 
           border-4 
           gap-2 
           relative 
-          aspect-[9/12] 
+          h-full 
           pt-2 
           ${classColor}
           ${rarityBorder}
         `}
       >
         {/* card name */}
-        <span className="text-white font-bold text-4xl">{name || "Placeholder Name"}</span>
+        <span className="text-white font-bold 2xl:text-4xl xl:text-3xl text-2xl">{name || "Placeholder Name"}</span>
 
         {/* card image */}
         <div className='w-full flex flex-col items-center'>
@@ -162,33 +163,63 @@ function CardDisplay({
             z-10
           `}
         >
-          {cost ?? -1}
+          {cost ?? "x"}
         </Badge>
 
         {/* card class/type container */}
-        <div className='flex gap-2'>
-          <Badge className="text-white bg-gray-800 p-1 w-16 h-6 flex items-center justify-center text-xs">
-            {cardClass || "CLASS"}
+        <div className='h-full flex flex-col items-center justify-between gap-2'>
+          <Badge 
+            className={`
+              text-white 
+              bg-gray-800/50
+              border-2
+              ${rarityBorder} 
+              font-bold 
+              p-1 
+              w-14 
+              h-6 
+              flex 
+              items-center 
+              justify-center 
+              text-xs
+              rounded-sm
+            `}
+          >
+            {cardType ? capitalize(cardType) : "TYPE"}
           </Badge>
-          <Badge className="text-white bg-gray-800 p-1 w-16 h-6 flex items-center justify-center text-xs">
-            {cardType || "TYPE"}
-          </Badge>
-        </div>
+        
 
-        {/* card description */}
-        <p className="text-white text-sm text-center">
-          {description && renderText(description) || "This is a placeholder description for the card. It provides details about the card's abilities and effects."}
-        </p>
-
-        {/* card keywords */}
-        <div className='flex gap-2 mt-2'>
-          {keywords && keywords.length > 0 && (
-            keywords.map((keyword, index) => (
-              <Badge key={index} className="text-white bg-gray-800 p-1 w-16 h-6 flex items-center justify-center text-xs">
-                {keyword}
-              </Badge>
-            ))
-          )}
+          {/* card description */}
+          <p className="text-white text-sm text-center">
+            {description && renderText(description) || "This is a placeholder description for the card. It provides details about the card's abilities and effects."}
+          </p>
+          {/* card keywords */}
+          <div className='flex gap-2 mt-1'>
+            {keywords && keywords.length > 0 && (
+              keywords.map((keyword, index) => (
+                <Badge 
+                  key={index} 
+                  className="
+                    text-white 
+                    font-mono
+                    text-sm
+                    bg-transparent 
+                    border-0 border-y border-white
+                    rounded-sm 
+                    p-1 
+                    mb-4 
+                    w-20 
+                    h-6 
+                    flex 
+                    items-center 
+                    justify-center 
+                  "
+                >
+                  {keyword}
+                </Badge>
+              ))
+            )}
+          </div>
         </div>
       </div>
     </div>

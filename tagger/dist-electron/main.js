@@ -13,6 +13,7 @@ process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path.join(process.env.APP_ROOT, 
 let win;
 const getTagsFilePath = () => path.join(process.env.APP_ROOT, "..", "data", "tags_test.json");
 const getCardDataFilePath = () => path.join(process.env.APP_ROOT, "..", "data", "cards.json");
+const getCardTagDataFilePath = () => path.join(process.env.APP_ROOT, "..", "data", "card_tags.json");
 function readTags() {
   const content = fs.readFileSync(getTagsFilePath(), "utf-8");
   return JSON.parse(content);
@@ -24,18 +25,25 @@ function readCards() {
   const content = fs.readFileSync(getCardDataFilePath(), "utf-8");
   return JSON.parse(content);
 }
+function readCardTags() {
+  const content = fs.readFileSync(getCardTagDataFilePath(), "utf-8");
+  return JSON.parse(content);
+}
+function writeCardTags(data) {
+  fs.writeFileSync(getCardTagDataFilePath(), JSON.stringify(data, null, 2));
+}
 ipcMain.handle("read-tags", () => {
   return readTags();
 });
 ipcMain.handle("read-cards", () => {
   return readCards();
 });
-ipcMain.handle("add-tag-category", (_event, category) => {
+ipcMain.handle("add-tag-category", (_event, category, limit = -1, required = false) => {
   const json = readTags();
   if (json[category]) {
     return { success: false, error: "Category already exists" };
   }
-  json[category] = { weight: 1, tags: [] };
+  json[category] = { limit, required, weight: 1, tags: [] };
   writeTags(json);
   return { success: true, data: json };
 });
@@ -53,10 +61,19 @@ ipcMain.handle(
     return { success: true, data: json };
   }
 );
+ipcMain.handle(
+  "add-tags-to-card",
+  (_event, cardId, tags) => {
+    const cardTags = readCardTags();
+    cardTags[cardId] = Array.from(/* @__PURE__ */ new Set([...cardTags[cardId] || [], ...tags]));
+    writeCardTags(cardTags);
+    return { success: true, data: cardTags };
+  }
+);
 function createWindow() {
   win = new BrowserWindow({
-    minWidth: 800,
-    minHeight: 600,
+    minWidth: 960,
+    minHeight: 720,
     icon: path.join(process.env.VITE_PUBLIC, "electron-vite.svg"),
     webPreferences: {
       preload: path.join(__dirname$1, "preload.cjs"),

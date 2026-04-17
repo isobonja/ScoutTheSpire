@@ -1,3 +1,5 @@
 {
-    
+    "TEST_A": ["Test Tag A", "Test Tag B"],
+    "TEST_B": ["Test Tag C", "Test Tag D"],
+    "TEST_C": ["Test Tag A", "Test Tag D"]
 }

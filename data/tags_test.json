@@ -1,5 +1,7 @@
 {
   "class": {
+    "limit": 1,
+    "required": true,
     "weight": 1,
     "tags": [
       "ironclad",
@@ -11,6 +13,8 @@
     ]
   },
   "type": {
+    "limit": 1,
+    "required": true,
     "weight": 1,
     "tags": [
       "attack",
@@ -23,7 +27,8 @@
   "test": {
     "weight": 1,
     "tags": [
-      "aea"
+      "aea",
+      "ohoho"
     ]
   },
   "test2": {

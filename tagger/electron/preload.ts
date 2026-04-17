@@ -6,9 +6,14 @@ contextBridge.exposeInMainWorld('api', {
 
   readCards: () => ipcRenderer.invoke('read-cards'),
 
-  addTagCategory: (category: string) =>
-    ipcRenderer.invoke('add-tag-category', category),
+  readCardTags: () => ipcRenderer.invoke('read-card-tags'),
+
+  addTagCategory: (category: string, limit: number = -1, required: boolean = false) =>
+    ipcRenderer.invoke('add-tag-category', category, limit, required),
 
   addTagsToCategory: (category: string, tags: string[]) =>
     ipcRenderer.invoke('add-tags-to-category', category, tags),
+
+  addTagsToCard: (cardId: string, tags: string[]) =>
+    ipcRenderer.invoke('add-tags-to-card', cardId, tags),
 })

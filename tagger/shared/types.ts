@@ -1,4 +1,6 @@
 export type TagCategory = {
+  limit: number;
+  required: boolean;
   weight: number;
   tags: string[];
 };
@@ -7,7 +9,15 @@ export type TagsData = {
   [key: string]: TagCategory;
 };
 
+export type SelectedTags = {
+  [key: string]: string[];
+};
+
 export type CardsData = Card[];
+
+export type CardTagData = {
+  [cardId: string]: string[]; // Array of tags for each card ID
+};
 
 // Optional: API response shape
 export type ApiResponse<T> =

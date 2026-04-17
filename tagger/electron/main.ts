@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import fs from 'fs'
 
-import type { TagsData, ApiResponse, CardsData } from '../shared/types';
+import type { TagsData, ApiResponse, CardsData, Card, CardTagData } from '../shared/types';
 
 const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -37,6 +37,9 @@ const getTagsFilePath = () =>
 const getCardDataFilePath = () =>
   path.join(process.env.APP_ROOT!, '..', 'data', 'cards.json')
 
+const getCardTagDataFilePath = () =>
+  path.join(process.env.APP_ROOT!, '..', 'data', 'card_tags.json')
+
 // ✅ Helpers
 function readTags(): TagsData {
   const content = fs.readFileSync(getTagsFilePath(), 'utf-8')
@@ -52,6 +55,15 @@ function readCards(): CardsData {
   return JSON.parse(content)
 }
 
+function readCardTags(): CardTagData {
+  const content = fs.readFileSync(getCardTagDataFilePath(), 'utf-8')
+  return JSON.parse(content)
+}
+
+function writeCardTags(data: CardTagData) {
+  fs.writeFileSync(getCardTagDataFilePath(), JSON.stringify(data, null, 2))
+}
+
 // ✅ IPC HANDLERS
 
 ipcMain.handle('read-tags', () => {
@@ -62,14 +74,14 @@ ipcMain.handle('read-cards', () => {
   return readCards()
 })
 
-ipcMain.handle('add-tag-category', (_event, category: string) => {
+ipcMain.handle('add-tag-category', (_event, category: string, limit: number = -1, required: boolean = false) => {
   const json = readTags()
 
   if (json[category]) {
     return { success: false, error: 'Category already exists' }
   }
 
-  json[category] = { weight: 1, tags: [] }
+  json[category] = { limit, required, weight: 1, tags: [] }
   writeTags(json)
 
   return { success: true, data: json };
@@ -94,11 +106,21 @@ ipcMain.handle(
   }
 )
 
+ipcMain.handle(
+  'add-tags-to-card',
+  (_event, cardId: string, tags: string[]) => {
+    const cardTags = readCardTags()
+    cardTags[cardId] = Array.from(new Set([...(cardTags[cardId] || []), ...tags]) )
+    writeCardTags(cardTags)
+    return { success: true, data: cardTags };
+  }
+)
+
 // Window setup
 function createWindow() {
   win = new BrowserWindow({
-    minWidth: 800,
-    minHeight: 600,
+    minWidth: 960,
+    minHeight: 720,
     icon: path.join(process.env.VITE_PUBLIC!, 'electron-vite.svg'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.cjs'),

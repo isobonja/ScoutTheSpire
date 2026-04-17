@@ -1,13 +1,15 @@
 import { useEffect, useRef } from "react";
 import TagColumn from "./TagColumn";
 import { ScrollArea, ScrollBar } from "./ui/scroll-area";
-import { TagsData } from "../../shared/types";
+import { SelectedTags, TagsData } from "../../shared/types";
 
 type TagColumnContainerProps = {
   tagData: TagsData;
+  selectedTags: SelectedTags;
+  onSelectTag: (category: string, tag: string) => void;
 }
 
-function TagColumnContainer({ tagData }: TagColumnContainerProps) {
+function TagColumnContainer({ tagData, selectedTags, onSelectTag }: TagColumnContainerProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -39,7 +41,7 @@ function TagColumnContainer({ tagData }: TagColumnContainerProps) {
       >
         <div className="flex flex-row gap-2 items-stretch min-h-full w-max">
           {tagData && Object.entries(tagData).map(([category, categoryData]) => (
-            <TagColumn key={category} category={category} categoryData={categoryData} />
+            <TagColumn key={category} category={category} categoryData={categoryData} selectedTags={selectedTags} onSelectTag={onSelectTag} />
           ))}
         </div>
 

@@ -28,7 +28,7 @@ function NewTagCategoryForm({ categories, addCategory, addTag }: NewTagCategoryF
   return (
     <div className='w-full min-w-100'>
       <FieldSet>
-        <FieldLegend className='underline'>New Tag/Category Form</FieldLegend> {/* prob remove */}
+        <FieldLegend className='underline'>Add Tags or Categories</FieldLegend> {/* prob remove */}
         <FieldGroup>
           <div className='flex flex-row gap-2 pt-2'>
             <Field className='flex-5 bg-field-background'>

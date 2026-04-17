@@ -1,13 +1,15 @@
 import { Separator } from "@/components/ui/separator";
 import NewTagCategoryForm from "./NewTagCategoryForm";
 import TagColumnContainer from "./TagColumnContainer";
-import { TagsData } from "../../shared/types";
+import { SelectedTags, TagsData } from "../../shared/types";
 
 
 type TaggingPanelProps = {
   tagData: TagsData;
   addTag?: (category: string, tag: string) => void;
   addCategory?: (category: string) => void;
+  selectedTags: SelectedTags;
+  onSelectTag: (category: string, tag: string) => void;
   className?: string;
 }
 
@@ -15,6 +17,8 @@ function TaggingPanel({
   tagData, 
   addTag, 
   addCategory,
+  selectedTags,
+  onSelectTag,
   className, 
   ...props 
 }: TaggingPanelProps & React.HTMLAttributes<HTMLDivElement>) {
@@ -59,6 +63,8 @@ function TaggingPanel({
             */}
             <TagColumnContainer 
               tagData={tagData}
+              selectedTags={selectedTags}
+              onSelectTag={onSelectTag}
             />
 
           </div>
