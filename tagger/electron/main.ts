@@ -74,7 +74,11 @@ ipcMain.handle('read-cards', () => {
   return readCards()
 })
 
-ipcMain.handle('add-tag-category', (_event, category: string, limit: number = -1, required: boolean = false) => {
+ipcMain.handle('read-card-tags', () => {
+  return readCardTags()
+})
+
+ipcMain.handle('add-tag-category', (_event, category: string, limit: number = 0, required: boolean = false) => {
   const json = readTags()
 
   if (json[category]) {
@@ -110,7 +114,15 @@ ipcMain.handle(
   'add-tags-to-card',
   (_event, cardId: string, tags: string[]) => {
     const cardTags = readCardTags()
-    cardTags[cardId] = Array.from(new Set([...(cardTags[cardId] || []), ...tags]) )
+
+    /*
+      If you attempt to add a set of tags to a card that already has data in card_tags.json, 
+      and the new tag selection is missing a tag that was previously in the data, then 
+      the JSON does not update to reflect the missing tag.
+    */
+    //cardTags[cardId] = Array.from(new Set([...(cardTags[cardId] || []), ...tags]) )
+
+    cardTags[cardId] = tags
     writeCardTags(cardTags)
     return { success: true, data: cardTags };
   }

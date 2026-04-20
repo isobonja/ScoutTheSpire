@@ -24,17 +24,90 @@
       "status"
     ]
   },
-  "test": {
+  "Rarity": {
+    "limit": 1,
+    "required": true,
     "weight": 1,
     "tags": [
-      "aea",
-      "ohoho"
+      "rare",
+      "uncommon",
+      "common"
     ]
   },
-  "test2": {
+  "Buffs": {
+    "limit": 0,
+    "required": false,
     "weight": 1,
     "tags": [
-      "aaea"
+      "dexterity",
+      "thorns"
+    ]
+  },
+  "Keywords": {
+    "limit": 0,
+    "required": false,
+    "weight": 1,
+    "tags": [
+      "sly",
+      "exhaust_on_play"
+    ]
+  },
+  "Debuffs": {
+    "limit": 0,
+    "required": false,
+    "weight": 1,
+    "tags": [
+      "poison"
+    ]
+  },
+  "Strat": {
+    "limit": 0,
+    "required": false,
+    "weight": 1,
+    "tags": [
+      "shivs",
+      "zero_cost",
+      "summon_osty"
+    ]
+  },
+  "Card Actions": {
+    "limit": 0,
+    "required": false,
+    "weight": 1,
+    "tags": [
+      "draw",
+      "discard",
+      "exhaust",
+      "upgrade"
+    ]
+  },
+  "Piles": {
+    "limit": 0,
+    "required": false,
+    "weight": 1,
+    "tags": [
+      "discard_pile",
+      "hand"
+    ]
+  },
+  "Misc": {
+    "limit": 0,
+    "required": false,
+    "weight": 1,
+    "tags": [
+      "energy_gain",
+      "block",
+      "bonus_on_play_card",
+      "potion"
+    ]
+  },
+  "Cost": {
+    "limit": 0,
+    "required": true,
+    "weight": 1,
+    "tags": [
+      "0",
+      "1"
     ]
   }
 }

@@ -1,5 +1,81 @@
 {
-    "TEST_A": ["Test Tag A", "Test Tag B"],
-    "TEST_B": ["Test Tag C", "Test Tag D"],
-    "TEST_C": ["Test Tag A", "Test Tag D"]
+  "ABRASIVE": [
+    "silent",
+    "power",
+    "dexterity",
+    "thorns",
+    "sly",
+    "3"
+  ],
+  "ACCELERANT": [
+    "silent",
+    "power",
+    "rare",
+    "poison",
+    "1"
+  ],
+  "ACCURACY": [
+    "silent",
+    "power",
+    "uncommon",
+    "shivs",
+    "1"
+  ],
+  "ACROBATICS": [
+    "silent",
+    "skill",
+    "common",
+    "draw",
+    "discard",
+    "1"
+  ],
+  "ADAPTIVE_STRIKE": [
+    "defect",
+    "attack",
+    "rare",
+    "zero_cost",
+    "discard_pile",
+    "2"
+  ],
+  "ADRENALINE": [
+    "silent",
+    "skill",
+    "rare",
+    "exhaust_on_play",
+    "draw",
+    "0"
+  ],
+  "AFTERIMAGE": [
+    "silent",
+    "power",
+    "rare",
+    "block",
+    "bonus_on_play_card",
+    "1"
+  ],
+  "AFTERLIFE": [
+    "necrobinder",
+    "skill",
+    "common",
+    "exhaust_on_play",
+    "summon_osty",
+    "1"
+  ],
+  "AGGRESSION": [
+    "ironclad",
+    "power",
+    "rare",
+    "upgrade",
+    "discard_pile",
+    "hand",
+    "1"
+  ],
+  "ALCHEMIZE": [
+    "colorless",
+    "skill",
+    "rare",
+    "exhaust_on_play",
+    "potion",
+    "1"
+  ]
 }

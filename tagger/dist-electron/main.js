@@ -38,7 +38,10 @@ ipcMain.handle("read-tags", () => {
 ipcMain.handle("read-cards", () => {
   return readCards();
 });
-ipcMain.handle("add-tag-category", (_event, category, limit = -1, required = false) => {
+ipcMain.handle("read-card-tags", () => {
+  return readCardTags();
+});
+ipcMain.handle("add-tag-category", (_event, category, limit = 0, required = false) => {
   const json = readTags();
   if (json[category]) {
     return { success: false, error: "Category already exists" };
@@ -65,7 +68,7 @@ ipcMain.handle(
   "add-tags-to-card",
   (_event, cardId, tags) => {
     const cardTags = readCardTags();
-    cardTags[cardId] = Array.from(/* @__PURE__ */ new Set([...cardTags[cardId] || [], ...tags]));
+    cardTags[cardId] = tags;
     writeCardTags(cardTags);
     return { success: true, data: cardTags };
   }

@@ -8,7 +8,7 @@ contextBridge.exposeInMainWorld('api', {
 
   readCardTags: () => ipcRenderer.invoke('read-card-tags'),
 
-  addTagCategory: (category: string, limit: number = -1, required: boolean = false) =>
+  addTagCategory: (category: string, limit: number = 0, required: boolean = false) =>
     ipcRenderer.invoke('add-tag-category', category, limit, required),
 
   addTagsToCategory: (category: string, tags: string[]) =>

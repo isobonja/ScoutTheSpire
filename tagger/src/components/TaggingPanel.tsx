@@ -7,7 +7,7 @@ import { SelectedTags, TagsData } from "../../shared/types";
 type TaggingPanelProps = {
   tagData: TagsData;
   addTag?: (category: string, tag: string) => void;
-  addCategory?: (category: string) => void;
+  addCategory: (category: string, required: boolean, limit: number) => void;
   selectedTags: SelectedTags;
   onSelectTag: (category: string, tag: string) => void;
   className?: string;
@@ -45,7 +45,15 @@ function TaggingPanel({
           {/* New tag/category form */}
           <div className='w-full bg-form-background p-4 rounded-lg border border-form-border'>
             <NewTagCategoryForm 
-              categories={tagData ? Object.keys(tagData) : []} // Extract categories for passing to form
+              categories={
+                tagData
+                  ? Object.entries(tagData).map(([name, data]) => ({
+                      name,
+                      limit: data.limit,
+                      required: data.required,
+                    }))
+                  : []
+              }
               addCategory={addCategory}
               addTag={addTag}
             />

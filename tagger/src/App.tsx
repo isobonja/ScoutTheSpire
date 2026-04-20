@@ -3,31 +3,47 @@ import './App.css';
 import CardDisplay from './components/CardDisplay';
 import TaggingPanel from './components/TaggingPanel';
 
-import { TagsData, Card, SelectedTags } from '../shared/types';
+import { TagsData, Card, SelectedTags, CardTagData } from '../shared/types';
 import { Button } from './components/ui/button';
+import { toast } from 'sonner';
 
 function App() {
   const [cardData, setCardData] = useState<Card[] | null>(null);
+  
   const [tagsData, setTagsData] = useState<TagsData | null>(null);
 
   // List of category to tag lists
   const [selectedTags, setSelectedTags] = useState<SelectedTags>({});
 
+  const [cardTagData, setCardTagData] = useState<CardTagData>({});
+
+  const currentCard = useMemo(() => {
+    if (!cardData) return null;
+    return cardData.find(card => !cardTagData[card.id]) ?? null;
+  }, [cardData, cardTagData]);
+
   useEffect(() => {
     const fetchCardData = async () => {
       const data = await window.api.readCards();
       setCardData(data);
-      console.log('Card Data:', data);
+      //console.log('Card Data:', data);
     };
 
     const fetchTagsData = async () => {
       const data = await window.api.readTags();
       setTagsData(data);
-      console.log('Tags Data:', data);
+      //console.log('Tags Data:', data);
+    };
+
+    const fetchCardTagsData = async () => {
+      const data = await window.api.readCardTags();
+      setCardTagData(data);
+
     };
 
     fetchCardData();
     fetchTagsData();
+    fetchCardTagsData();
   }, []);
 
   useEffect(() => {
@@ -46,13 +62,9 @@ function App() {
     });
   }, [tagsData]);
 
-  useEffect(() => {
-    console.log('selected tags: ', selectedTags);
-  }, [selectedTags]);
-
-  const handleAddCategory = async (category: string) => {
+  const handleAddCategory = async (category: string, required: boolean, limit: number) => {
     if (category.trim() === '') return; // Prevent adding empty category
-    const result = await window.api.addTagCategory(category);
+    const result = await window.api.addTagCategory(category, limit, required);
     if (result.success) {
       setTagsData(result.data);
     }
@@ -84,7 +96,7 @@ function App() {
       }
 
       // If adding, enforce limit
-      if (currentTags.length >= limit) {
+      if (limit !== 0 && currentTags.length >= limit) {
         // Option 1: do nothing (hard limit)
         return prev;
 
@@ -103,22 +115,69 @@ function App() {
     });
   };
 
-  const card = cardData?.[230];
+  const handleAddTagsToCard = async () => {
+    // NEED TO ENFORCE REQUIRED CATEGORIES
+    const requiredCategories = Object.entries(tagsData ?? {})
+      .filter(([_, value]) => value.required)
+      .map(([key]) => key)
+    
+    const selectedCategories = Object.keys(selectedTags);
+
+    if (!requiredCategories.every(c => selectedCategories.includes(c))){
+      toast.error("Not all required categories had tags selected!", { position: 'bottom-center' })
+      return;
+    };
+
+
+    const selectedTagsList = Object.values(selectedTags ?? []).flat();
+    if (selectedTagsList.length === 0 || !currentCard) return;
+    const res = await window.api.addTagsToCard(currentCard.id, selectedTagsList)
+    //console.log('Tags added to card', currentCard, ':', selectedTagsList);
+    toast.success(`Added tags ${selectedTagsList} to card ${currentCard.id}`, { position: "bottom-center", className: 'bg-amber-500' });
+
+    setSelectedTags(prev => {
+      const updated: SelectedTags = { ...prev };
+
+      for (const category in tagsData) {
+        updated[category] = [];
+      }
+
+      return updated;
+    });
+
+    setCardTagData(prev => ({
+      ...prev,
+      [currentCard!.id]: selectedTagsList
+    }));
+  }
+
+  //const card = cardData?.[230];
 
   return (
     <div className="h-screen min-h-screen min-w-screen bg-app flex gap-4 p-6 items-start">
-      <div className='aspect-[9/13] min-w-2xs flex-3'>
+      <div className='aspect-9/13 min-w-2xs flex-3'>
         <CardDisplay
-          name={card?.name}
-          description={card?.description}
-          cost={card?.cost}
-          cardType={card?.type}
-          rarity={card?.rarity}
-          cardClass={card?.color}
-          imageUrl={card?.image_url ? 'https://spire-codex.com' + card.image_url : undefined}
-          keywords={card?.keywords}
+          name={currentCard?.name}
+          description={currentCard?.description}
+          cost={currentCard?.cost}
+          cardType={currentCard?.type}
+          rarity={currentCard?.rarity}
+          cardClass={currentCard?.color}
+          imageUrl={currentCard?.image_url ? 'https://spire-codex.com' + currentCard.image_url : undefined}
+          keywords={currentCard?.keywords}
         />
-        <Button className='mt-4 w-full hover:bg-gray-700 hover:border hover:border-white' onClick={() => console.log('Selected Tags:', selectedTags)}>Log Selected Tags</Button>
+        <Button 
+          className='mt-4 w-full hover:bg-gray-700 hover:border hover:border-white' 
+          onClick={() => console.log('Selected Tags:', selectedTags)}
+        >
+          Log Selected Tags
+        </Button>
+        <Button 
+          className='mt-4 w-full bg-green-800 hover:bg-green-700 hover:border hover:border-white text-white' 
+          onClick={handleAddTagsToCard}
+        >
+          + Attach Selected Tags
+        </Button>
       </div>
 
       <TaggingPanel 

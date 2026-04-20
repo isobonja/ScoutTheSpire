@@ -101,28 +101,42 @@ function SelectLabel({
   )
 }
 
+type SelectItemProps = React.ComponentProps<typeof SelectPrimitive.Item> & {
+  label: React.ReactNode;
+  hideIndicator?: boolean;
+};
+
 function SelectItem({
   className,
   children,
+  label,
+  hideIndicator = false,
   ...props
-}: React.ComponentProps<typeof SelectPrimitive.Item>) {
+}: SelectItemProps) {
   return (
     <SelectPrimitive.Item
       data-slot="select-item"
       className={cn(
-        "relative flex w-full cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2",
+        "relative flex w-full cursor-default items-center gap-1.5 rounded-md py-1 pl-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50",
+        !hideIndicator && "pr-8", // only reserve space if needed
         className
       )}
       {...props}
     >
-      <span className="pointer-events-none absolute right-2 flex size-4 items-center justify-center">
-        <SelectPrimitive.ItemIndicator>
-          <CheckIcon className="pointer-events-none" />
-        </SelectPrimitive.ItemIndicator>
-      </span>
-      <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
+      {!hideIndicator && (
+        <span className="pointer-events-none absolute right-2 flex size-4 items-center justify-center">
+          <SelectPrimitive.ItemIndicator>
+            <CheckIcon className="pointer-events-none" />
+          </SelectPrimitive.ItemIndicator>
+        </span>
+      )}
+
+      <SelectPrimitive.ItemText>
+        {label}
+      </SelectPrimitive.ItemText>
+      {children}
     </SelectPrimitive.Item>
-  )
+  );
 }
 
 function SelectSeparator({

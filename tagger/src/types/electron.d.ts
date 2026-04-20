@@ -11,7 +11,11 @@ declare global {
       readCardTags: () => Promise<CardTagData>;
 
       // WRITE
-      addTagCategory: (category: string) => Promise<ApiResponse>;
+      addTagCategory: (
+        category: string,
+        limit: number,
+        required: boolean
+      ) => Promise<ApiResponse>;
       addTagsToCategory: (
         category: string,
         tags: string[]

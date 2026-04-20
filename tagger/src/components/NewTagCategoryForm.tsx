@@ -14,10 +14,11 @@ import { Input } from "@/components/ui/input";
 import CategorySelect from "./CategorySelect";
 import { Button } from "./ui/button";
 import { useState } from "react";
+import { CategoryInfo } from "../../shared/types";
 
 type NewTagCategoryFormProps = {
-  categories: string[];
-  addCategory?: (category: string) => void;
+  categories: CategoryInfo[];
+  addCategory: (category: string, required: boolean, limit: number) => void;
   addTag?: (category: string, tag: string) => void;
 }
 
@@ -52,7 +53,7 @@ function NewTagCategoryForm({ categories, addCategory, addTag }: NewTagCategoryF
             </Field>
             <Field className='flex-2'>
               <Button 
-                className='border border-gray-100 bg-blue-900 self-end'
+                className='border border-gray-100 bg-blue-900 self-end text-white'
                 onClick={() => {
                   addTag?.(selectedCategory, tagName);
                   setTagName('');

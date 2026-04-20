@@ -1,12 +1,18 @@
-export type TagCategory = {
+export type CategoryData = {
   limit: number;
   required: boolean;
   weight: number;
   tags: string[];
 };
 
+export type CategoryInfo = {
+  name: string;
+  limit: number;
+  required: boolean;
+}
+
 export type TagsData = {
-  [key: string]: TagCategory;
+  [key: string]: CategoryData;
 };
 
 export type SelectedTags = {

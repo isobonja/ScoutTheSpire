@@ -30,6 +30,7 @@
     --color-form-border: var(--color-slate-700);
 
     --color-field-background: var(--color-slate-900);
+    --color-field-background-hover: var(--color-slate-800);
     --color-field-border: var(--color-slate-400);
     --color-field-border-focus: var(--color-blue-500);
     --color-field-border-focus-ring: var(--color-blue-400);
@@ -39,7 +40,7 @@
 
 
     --color-common-rarity: var(--color-gray-400);
-    --color-uncommon-rarity: var(--color-green-500);
+    --color-uncommon-rarity: var(--color-sky-500);
     --color-rare-rarity: var(--color-yellow-500);
 
     --color-ironclad: var(--color-red-800);

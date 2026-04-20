@@ -7,19 +7,21 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { SelectedTags, TagCategory } from "../../shared/types";
+import { SelectedTags, CategoryData } from "../../shared/types";
 import ToggleableTag from "./ToggleableTag";
 import { Separator } from "@/components/ui/separator";
 import { capitalize } from "@/util/utils";
 
 type TagColumnProps = {
   category: string;
-  categoryData: TagCategory;
+  categoryData: CategoryData;
   selectedTags: SelectedTags;
   onSelectTag: (category: string, tag: string) => void;
 }
 
 function TagColumn({ category, categoryData, selectedTags, onSelectTag }: TagColumnProps) {
+
+  {/* NEED TO ENFORCE REQUIRED */}
 
   const handleToggleTag = (tag: string) => {
     onSelectTag(category, tag);
@@ -28,8 +30,8 @@ function TagColumn({ category, categoryData, selectedTags, onSelectTag }: TagCol
   return (
     <Card 
       className="
-        w-72 
-        min-w-72 
+        w-64 
+        min-w-64
         h-full 
         min-h-0 
         bg-transparent
