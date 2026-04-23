@@ -11,7 +11,7 @@ import { SelectedTags, CategoryData } from "../../shared/types";
 import ToggleableTag from "./ToggleableTag";
 import { Separator } from "@/components/ui/separator";
 import { capitalize } from "@/util/utils";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 type TagColumnProps = {
@@ -30,6 +30,22 @@ function TagColumn({ category, categoryData, selectedTags, onSelectTag }: TagCol
     return allTags;
   }, [categoryData.tags, selectedTags, category]);
 
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isOverflowing, setIsOverflowing] = useState(false);
+
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el || isExpanded) return;
+
+    const isOverflowing = el.scrollHeight > el.clientHeight;
+
+    if (isOverflowing) {
+      setIsExpanded(true);
+    }
+  }, [tags, isExpanded]);
+
   const handleToggleTag = (tag: string) => {
     onSelectTag(category, tag);
   }
@@ -41,16 +57,9 @@ function TagColumn({ category, categoryData, selectedTags, onSelectTag }: TagCol
   return (
     <Card 
       className={`
-        w-48 
-        min-w-48
-        h-full 
-        min-h-0 
-        bg-transparent
-        border-r border-t
-        rounded-sm 
-        text-muted
-        relative
-        overflow-clip
+        transition-all duration-300
+        ${isExpanded ? "w-96 min-w-96" : "w-48 min-w-48"}
+        h-full min-h-0 bg-transparent border-r border-t rounded-sm text-muted relative overflow-clip
       `}
     >
       <div
@@ -70,19 +79,24 @@ function TagColumn({ category, categoryData, selectedTags, onSelectTag }: TagCol
         <Separator className='bg-slate-600 data-horizontal:w-[90%]' />
       </div>
       
-      <CardContent className='h-full min-h-0 overflow-y-auto pt-1'>
+      <CardContent className='h-full min-h-0 pt-1'>
         {/* map through tags in category and display as checkboxes or toggles */}
-        <div className="flex flex-col gap-2">
-          {tags.map((tag) => (
-            <ToggleableTag 
-              key={tag} 
-              tag={tag} 
-              selected={selectedTags?.[category]?.some(t => t.value === tag)} 
-              temporary={selectedTags?.[category]?.some(t => t.value === tag && t.isTemporary)}
-              onToggle={handleToggleTag} 
-            />
-          ))}
-
+        <div
+          ref={containerRef}
+          className="h-full"
+        >
+          <div className={`${isExpanded ? "columns-2" : "columns-1"} gap-2`}>
+            {tags.map((tag) => (
+              <div key={tag} className="break-inside-avoid mb-2">
+                <ToggleableTag
+                  tag={tag}
+                  selected={selectedTags?.[category]?.some(t => t.value === tag)}
+                  temporary={selectedTags?.[category]?.some(t => t.value === tag && t.isTemporary)}
+                  onToggle={handleToggleTag}
+                />
+              </div>
+            ))}
+          </div>
         </div>
       </CardContent>
     </Card>

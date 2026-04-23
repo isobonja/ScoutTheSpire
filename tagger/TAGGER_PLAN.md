@@ -79,13 +79,17 @@ For the time being, the card info will be read locally from `data/cards.json`, b
 requests to fetch from spire-codex.com (mainly to handle any card updates/additions made in the game).
 
 
+The resulting JSON with the card to tags maps will be used within the main app.
 
 
+# TO DO
 
-Pre-select tags that can be determined from card info, such as rarity, type, keywords, as well as the description (would need some kind of parsing function).
- - If the app thinks a tag should exist and it doesn't, include a phantom tag in the respective column (that is still automatically selected). If the user does not interact with it, the tag will be created. If they do, then ask them whether the tag should be kept or not. 
-
-
-Add visual indicators for required columns, as well as when users try to attach tags to a card without having selected tags from all required columns. 
+Update tag pre-selection code to include as many cases as possible (mostly relating to the card desciption) 
 
 Preload image for next card (so that there's no loading time)
+
+
+Instead of only retrieving card data directly from the spire-codex site in the final version, save a local copy of the data to read from.
+ - Retrieve card data JSON on app open (maybe less frequently instead?), compare it to existing saved card data (if file exists); if requested data has differences compared to locally saved data (if it exists), then update locally saved data with new data
+ - Determine which cards are updated to present the user with those cards to update their tags if necessary
+    - REMEMBER: some cards can be removed from the game, so will need to check that as well
