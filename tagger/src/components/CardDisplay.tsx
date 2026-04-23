@@ -4,8 +4,9 @@ import ImageWithSpinner from "./ImageWithSpinner";
 import { CardClass, CLASS_COLORS, Rarity, RARITY_COLORS } from "@/util/constants";
 import { capitalize } from "@/util/utils";
 import { Separator } from "@/components/ui/separator";
+import { Card } from "../../shared/types";
 
-type CardDisplayProps = {
+/*type CardDisplayProps = {
   name?: string;
   description?: string;
   cost?: number;
@@ -14,17 +15,14 @@ type CardDisplayProps = {
   cardClass?: string;
   imageUrl?: string;
   keywords?: string[];
+}*/
+
+type CardDisplayProps = {
+  card: Card | null;
 }
 
 function CardDisplay({ 
-  name, 
-  description, 
-  cost, 
-  cardType,
-  rarity,
-  cardClass, 
-  imageUrl,
-  keywords 
+  card
 }: CardDisplayProps) {
 
   function renderText(text: string) {
@@ -106,12 +104,26 @@ function CardDisplay({
     return root;
   }*/
 
-  const classKey = (cardClass?.toLowerCase() ?? "colorless") as CardClass;
-  const rarityKey = (rarity?.toLowerCase() ?? "common") as Rarity;
+  const classKey = (card?.color?.toLowerCase() ?? "colorless") as CardClass;
+
+  const RARITY_ALIASES: Record<string, string> = {
+    basic: "common",
+  };
+
+  const normalizeRarity = (rarity?: string) => {
+    const key = rarity?.toLowerCase() ?? "common";
+    return RARITY_ALIASES[key] ?? key;
+  };
+  
+  const rarityKey = normalizeRarity(card?.rarity);
+
+  const safeRarityKey: Rarity =
+    rarityKey in RARITY_COLORS ? (rarityKey as Rarity) : "common";
 
   const classColor = CLASS_COLORS[classKey];
-  const rarityBorder = RARITY_COLORS[rarityKey];
+  const rarityBorder = RARITY_COLORS[safeRarityKey];
   
+  const BASE_IMAGE_URL = "https://spire-codex.com";
 
 
   return (
@@ -132,11 +144,11 @@ function CardDisplay({
         `}
       >
         {/* card name */}
-        <span className="text-white font-bold 2xl:text-4xl xl:text-3xl text-2xl">{name || "Placeholder Name"}</span>
+        <span className="text-white font-bold 2xl:text-4xl xl:text-3xl text-2xl">{card?.name || "Placeholder Name"}</span>
 
         {/* card image */}
         <div className='w-full flex flex-col items-center'>
-          <ImageWithSpinner imageUrl={imageUrl} />
+          <ImageWithSpinner imageUrl={BASE_IMAGE_URL + card?.image_url} />
           {/*<img src={imageUrl || "https://via.placeholder.com/150"} alt="Card Image" className="aspect-2/1 object-cover rounded-md" />*/}
           {/*<span className='text-white'>{imageUrl}</span>*/}
         </div>
@@ -152,7 +164,7 @@ function CardDisplay({
             border-2 
             absolute 
             -top-4
-            -right-4
+            -right-4.5
             rounded-full 
             p-1 
             w-8 
@@ -163,7 +175,36 @@ function CardDisplay({
             z-10
           `}
         >
-          {cost ?? "x"}
+          {card?.is_x_cost ? "X" : card?.cost ?? "-1"}
+        </Badge>
+
+        {/* star cost badge */}
+        <Badge 
+          className={`
+            bg-gradient-to-r
+            from-sky-900
+            to-sky-700
+            text-lg 
+            text-white 
+            border 
+            ${rarityBorder}
+            rounded-none
+            border-2 
+            absolute 
+            top-6
+            -right-4
+            p-1 
+            w-7 
+            h-7 
+            flex 
+            items-center 
+            justify-center
+            rotate-45
+            z-10
+            ${card?.star_cost ? "visible" : "hidden"}
+          `}
+        >
+          <span className='-rotate-45'>{card?.is_x_star_cost ? "X" : card?.star_cost ?? "-1"}</span>
         </Badge>
 
         {/* card class/type container */}
@@ -185,18 +226,18 @@ function CardDisplay({
               rounded-sm
             `}
           >
-            {cardType ? capitalize(cardType) : "TYPE"}
+            {card?.type ? capitalize(card?.type) : "TYPE"}
           </Badge>
         
 
           {/* card description */}
           <p className="text-white text-sm text-center">
-            {description && renderText(description) || "This is a placeholder description for the card. It provides details about the card's abilities and effects."}
+            {card?.description && renderText(card?.description) || "This is a placeholder description for the card. It provides details about the card's abilities and effects."}
           </p>
           {/* card keywords */}
           <div className='flex gap-2 mt-1'>
-            {keywords && keywords.length > 0 && (
-              keywords.map((keyword, index) => (
+            {card?.keywords && card?.keywords.length > 0 && (
+              card?.keywords.map((keyword, index) => (
                 <Badge 
                   key={index} 
                   className="

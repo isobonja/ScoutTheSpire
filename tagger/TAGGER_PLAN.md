@@ -77,3 +77,15 @@ tags get saved with that card in the `data/card_tags.json` file. ["card_tags.jso
 
 For the time being, the card info will be read locally from `data/cards.json`, but this should eventually be replaced with fetch/axios 
 requests to fetch from spire-codex.com (mainly to handle any card updates/additions made in the game).
+
+
+
+
+
+Pre-select tags that can be determined from card info, such as rarity, type, keywords, as well as the description (would need some kind of parsing function).
+ - If the app thinks a tag should exist and it doesn't, include a phantom tag in the respective column (that is still automatically selected). If the user does not interact with it, the tag will be created. If they do, then ask them whether the tag should be kept or not. 
+
+
+Add visual indicators for required columns, as well as when users try to attach tags to a card without having selected tags from all required columns. 
+
+Preload image for next card (so that there's no loading time)

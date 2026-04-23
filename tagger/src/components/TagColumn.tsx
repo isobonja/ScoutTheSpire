@@ -11,6 +11,8 @@ import { SelectedTags, CategoryData } from "../../shared/types";
 import ToggleableTag from "./ToggleableTag";
 import { Separator } from "@/components/ui/separator";
 import { capitalize } from "@/util/utils";
+import { useEffect, useMemo, useState } from "react";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 type TagColumnProps = {
   category: string;
@@ -20,26 +22,46 @@ type TagColumnProps = {
 }
 
 function TagColumn({ category, categoryData, selectedTags, onSelectTag }: TagColumnProps) {
-
-  {/* NEED TO ENFORCE REQUIRED */}
+  const tags = useMemo(() => {
+    const initialTags = categoryData.tags || [];
+    const temporarySelectedTags = selectedTags?.[category]?.filter(t => t.isTemporary).map(t => t.value) || [];
+    const allTags = Array.from(new Set([...initialTags, ...temporarySelectedTags]));
+    console.log('Updating tags for category', category, 'with allTags', allTags);
+    return allTags;
+  }, [categoryData.tags, selectedTags, category]);
 
   const handleToggleTag = (tag: string) => {
     onSelectTag(category, tag);
   }
 
+  useEffect(() => {
+    console.log('categoryData for category', category, categoryData);
+  }, [category, categoryData])
+
   return (
     <Card 
-      className="
-        w-64 
-        min-w-64
+      className={`
+        w-48 
+        min-w-48
         h-full 
         min-h-0 
         bg-transparent
         border-r border-t
-        rounded-sm
+        rounded-sm 
         text-muted
-      "
+        relative
+        overflow-clip
+      `}
     >
+      <div
+        className={`
+          absolute inset-0 pointer-events-none
+          transition-opacity duration-300
+          ${categoryData.required && selectedTags[category]?.length === 0 ? "opacity-100" : "opacity-0"}
+        `}
+      >
+        <div className="w-full h-full border-6 border-green-700/50 rounded-sm animate-pulse" />
+      </div>
       <CardHeader className=''>
         <CardTitle className='text-white font-bold text-lg text-center'>{capitalize(category)}</CardTitle>
         {/*<CardDescription className=''></CardDescription>*/}
@@ -48,11 +70,17 @@ function TagColumn({ category, categoryData, selectedTags, onSelectTag }: TagCol
         <Separator className='bg-slate-600 data-horizontal:w-[90%]' />
       </div>
       
-      <CardContent>
+      <CardContent className='h-full min-h-0 overflow-y-auto pt-1'>
         {/* map through tags in category and display as checkboxes or toggles */}
         <div className="flex flex-col gap-2">
-          {categoryData.tags.map((tag) => (
-            <ToggleableTag key={tag} tag={tag} selected={selectedTags?.[category]?.includes(tag)} onToggle={handleToggleTag} />
+          {tags.map((tag) => (
+            <ToggleableTag 
+              key={tag} 
+              tag={tag} 
+              selected={selectedTags?.[category]?.some(t => t.value === tag)} 
+              temporary={selectedTags?.[category]?.some(t => t.value === tag && t.isTemporary)}
+              onToggle={handleToggleTag} 
+            />
           ))}
 
         </div>

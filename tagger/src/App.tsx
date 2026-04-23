@@ -17,9 +17,20 @@ function App() {
 
   const [cardTagData, setCardTagData] = useState<CardTagData>({});
 
+  // Things the pre-select algorithm determines should be tags, but do not exist yet
+  // Ideally, they would show up visually as "phantom tags", selected by default.
+  // If the user clicks the Add Tags button without unselecting them, they will be created and added to the card as normal.
+  // If the user deselects the tag, there should be a popup asking if it should be created or ignored.
+  //const [temporaryTags, setTemporaryTags] = useState<SelectedTags>({});
+
   const currentCard = useMemo(() => {
     if (!cardData) return null;
     return cardData.find(card => !cardTagData[card.id]) ?? null;
+  }, [cardData, cardTagData]);
+
+  const currentCardIndex = useMemo(() => {
+    if (!cardData) return null;
+    return cardData.findIndex(card => !cardTagData[card.id]);
   }, [cardData, cardTagData]);
 
   useEffect(() => {
@@ -62,6 +73,165 @@ function App() {
     });
   }, [tagsData]);
 
+  const tagIndex = useMemo(() => {
+    const map = new Map<string, string>();
+
+    for (const [category, data] of Object.entries(tagsData ?? {})) {
+      for (const tag of data.tags) {
+        map.set(tag, category);
+      }
+    }
+
+    return map;
+  }, [tagsData]);
+
+  function resolveTag(tag: string) {
+    return tagIndex.get(tag);
+  }
+
+  function preSelectTags() {
+    if (!currentCard || !tagsData) return;
+
+    //console.log("Base selectedTags", structuredClone(selectedTags));
+    
+    const newSelectedTags: SelectedTags = Object.fromEntries(
+      Object.keys(selectedTags).map(category => [category, []])
+    );
+
+    //console.log("Base newSelectedTags", structuredClone(newSelectedTags));
+
+    function addPreSelectedTagFromBasicCategory(category: string, value: string) {
+      const tag = value.toLowerCase();
+      //console.log('tag', tag);
+      if (!currentCard || !tagsData) return;
+      const categoryData = tagsData[category];
+      if (categoryData) {
+        const tagExists = categoryData.tags.includes(tag);
+        //console.log('tagExists', tagExists);
+        if (!newSelectedTags[category]) {
+          newSelectedTags[category] = [];
+        }
+        newSelectedTags[category].push({ value: tag, isTemporary: !tagExists });
+      }
+    }
+
+    function addPreSelectedTagFromUnknownCategory(value: string, override?: string) {
+      const tag = value.toLowerCase().replace(/\s+/g, "_");
+
+      const category = resolveTag(tag);
+      if (!category) return;
+
+      if (!newSelectedTags[category]) {
+        newSelectedTags[category] = [];
+      }
+
+      newSelectedTags[category].push({
+        value: override ?? tag,
+        isTemporary: false,
+      });
+    }
+
+
+    // cost
+    if (currentCard.cost !== undefined) {
+      addPreSelectedTagFromBasicCategory('cost', currentCard.is_x_cost ? 'X_cost' : currentCard.cost.toString());
+    }
+
+    //console.log('newSelectedTags after cost:', structuredClone(newSelectedTags));
+
+    // type
+    if (currentCard.type) {
+      addPreSelectedTagFromBasicCategory('type', currentCard.type);
+    }
+
+    //console.log('newSelectedTags after type:', structuredClone(newSelectedTags));
+
+    // rarity
+    if (currentCard.rarity) {
+      addPreSelectedTagFromBasicCategory('rarity', currentCard.rarity);
+    }
+
+    console.log('newSelectedTags after rarity:', structuredClone(newSelectedTags));
+
+    // color/class
+    if (currentCard.color) {
+      addPreSelectedTagFromBasicCategory('class', currentCard.color);
+    }
+
+    // keywords
+    if (currentCard.keywords) {
+      currentCard.keywords.forEach(keyword => {
+        addPreSelectedTagFromBasicCategory('keywords', keyword);
+      });
+    }
+
+    // description: could be complicated
+    // an idea would be to parse the description for any words that match existing tags in any 
+    //   category that is not used above
+    // this would be alright, but it could be more effective.
+
+    // some tags, such as "summon_osty", would need to be mapped to 'Osty' and/or 'Summon', so 
+    //   to get the most effectiveness from this, I'd need to store some kind of map of tag names 
+    //   to keywords to look for in the desc. 
+
+    // atm that would have to be hardcoded, but ideally the user should be able to add to this 
+    //   mapping. 
+
+    // IMPLEMENT LATER
+
+
+
+    // For now, check for text between [gold][/gold] tags
+    if (currentCard.description) {
+      /*
+        TO ADD: 
+        - Gain [energy:2] -> energy_gain
+        - Draw X card(s) -> draw
+
+
+
+      */
+      const patterns = [
+        {
+          regex: /\[gold\](.*?)\[\/gold\]/g,
+          transform: (m: RegExpMatchArray) => m[1],
+          override: undefined,
+        },
+        {
+          regex: /Lose\s+\d+\s+HP/g,
+          transform: () => "hp_loss",
+          override: "hp_loss",
+        },
+      ];
+      patterns.forEach(({ regex, transform, override }) => {
+        let match;
+
+        while ((match = regex.exec(currentCard.description)) !== null) {
+          const value = transform(match);
+          addPreSelectedTagFromUnknownCategory(value, override);
+        }
+      });
+    }
+
+    setSelectedTags(newSelectedTags);
+
+  }
+
+
+  // PRE-SELECTION ALGORITHM BASED ON CARD PROPERTIES (cost, type, rarity, color, keywords, description parsing for potential tags)
+  // WIP; might be better placed in a separate file.
+
+  useEffect(() => {
+    // Select tags ahead of time based on current card info
+    if (!currentCard || !tagsData) return;
+    preSelectTags();
+
+  }, [currentCard]);
+
+  useEffect(() => {
+    console.log('Selected Tags:', selectedTags);
+  }, [selectedTags]);
+
   const handleAddCategory = async (category: string, required: boolean, limit: number) => {
     if (category.trim() === '') return; // Prevent adding empty category
     const result = await window.api.addTagCategory(category, limit, required);
@@ -76,7 +246,7 @@ function App() {
     setTagsData(updatedTags);
   }
 
-  const handleSelectTag = (category: string, tag: string) => {
+  const handleSelectTag = async (category: string, tag: string) => {
     setSelectedTags(prev => {
       const currentTags = prev[category] || [];
       const categoryConfig = tagsData?.[category];
@@ -85,13 +255,13 @@ function App() {
 
       const limit = categoryConfig.limit;
 
-      const isSelected = currentTags.includes(tag);
+      const isSelected = currentTags.some(t => t.value === tag);
 
       // If removing, always allowed
       if (isSelected) {
         return {
           ...prev,
-          [category]: currentTags.filter(t => t !== tag)
+          [category]: currentTags.filter(t => t.value !== tag)
         };
       }
 
@@ -110,53 +280,108 @@ function App() {
       // Otherwise add normally
       return {
         ...prev,
-        [category]: [...currentTags, tag]
+        [category]: [...currentTags, { value: tag }]
       };
     });
   };
 
   const handleAddTagsToCard = async () => {
-    // NEED TO ENFORCE REQUIRED CATEGORIES
-    const requiredCategories = Object.entries(tagsData ?? {})
+    if (!currentCard || !tagsData) return;
+
+    const requiredCategories = Object.entries(tagsData)
       .filter(([_, value]) => value.required)
-      .map(([key]) => key)
-    
-    const selectedCategories = Object.keys(selectedTags);
+      .map(([key]) => key);
 
-    if (!requiredCategories.every(c => selectedCategories.includes(c))){
-      toast.error("Not all required categories had tags selected!", { position: 'bottom-center' })
+    const selectedCategories = Object.entries(selectedTags)
+      .filter(([_, tags]) => tags.length > 0)
+      .map(([key]) => key);
+
+    const missingRequired = requiredCategories.filter(
+      c => !selectedCategories.includes(c)
+    );
+
+    if (missingRequired.length > 0) {
+      toast.error("Not all required categories had tags selected!", {
+        position: "bottom-center",
+      });
       return;
-    };
+    }
 
+    const selectedTagsList = Object.values(selectedTags)
+      .flat()
+      .map(tag => tag.value);
 
-    const selectedTagsList = Object.values(selectedTags ?? []).flat();
-    if (selectedTagsList.length === 0 || !currentCard) return;
-    const res = await window.api.addTagsToCard(currentCard.id, selectedTagsList)
-    //console.log('Tags added to card', currentCard, ':', selectedTagsList);
-    toast.success(`Added tags ${selectedTagsList} to card ${currentCard.id}`, { position: "bottom-center", className: 'bg-amber-500' });
+    if (selectedTagsList.length === 0) return;
 
-    setSelectedTags(prev => {
-      const updated: SelectedTags = { ...prev };
+    await window.api.addTagsToCard(currentCard.id, selectedTagsList);
 
-      for (const category in tagsData) {
-        updated[category] = [];
+    toast.success(`Added tags ${selectedTagsList.join(", ")} to card ${currentCard.id}`, { position: "bottom-center", className: "bg-amber-500"});
+
+    const groupedTemporaryTags = Object.entries(selectedTags).reduce(
+      (acc, [category, tags]) => {
+        const values = tags
+          .filter(t => t.isTemporary)
+          .map(t => t.value);
+
+        if (values.length > 0) {
+          acc[category] = Array.from(new Set(values)); // dedupe per category
+        }
+
+        return acc;
+      },
+      {} as Record<string, string[]>
+    );
+
+    const tempPromises = Object.entries(groupedTemporaryTags).map(
+      ([category, values]) =>
+        window.api.addTagsToCategory(category, values)
+    );
+
+    await Promise.all(tempPromises);
+
+    setTagsData(prev => {
+      if (!prev) return prev;
+
+      const updated = { ...prev };
+
+      for (const [category, tags] of Object.entries(groupedTemporaryTags)) {
+        const categoryData = updated[category];
+        if (!categoryData) continue;
+
+        const existing = new Set(categoryData.tags);
+
+        for (const value of tags) {
+          const normalized = value.toLowerCase();
+
+          // Only add if not already present
+          if (!existing.has(normalized)) {
+            categoryData.tags.push(normalized);
+          }
+        }
       }
 
       return updated;
     });
 
+    setSelectedTags(
+      Object.fromEntries(
+        Object.keys(tagsData).map(category => [category, []])
+      )
+    );
+
     setCardTagData(prev => ({
       ...prev,
-      [currentCard!.id]: selectedTagsList
+      [currentCard.id]: selectedTagsList,
     }));
-  }
+  };
 
   //const card = cardData?.[230];
 
   return (
     <div className="h-screen min-h-screen min-w-screen bg-app flex gap-4 p-6 items-start">
       <div className='aspect-9/13 min-w-2xs flex-3'>
-        <CardDisplay
+        <CardDisplay card={currentCard} />
+        {/*<CardDisplay
           name={currentCard?.name}
           description={currentCard?.description}
           cost={currentCard?.cost}
@@ -164,8 +389,11 @@ function App() {
           rarity={currentCard?.rarity}
           cardClass={currentCard?.color}
           imageUrl={currentCard?.image_url ? 'https://spire-codex.com' + currentCard.image_url : undefined}
-          keywords={currentCard?.keywords}
-        />
+          keywords={currentCard?.keywords || []}
+        />*/}
+        <div className='w-full flex flex-col items-center mt-2 gap-2'>
+          <span className='text-gray-400 text-md italic'>Card {currentCardIndex !== null ? `(${currentCardIndex + 1}/${cardData?.length})` : ""}</span>
+        </div>
         <Button 
           className='mt-4 w-full hover:bg-gray-700 hover:border hover:border-white' 
           onClick={() => console.log('Selected Tags:', selectedTags)}

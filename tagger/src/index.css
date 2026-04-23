@@ -12,6 +12,12 @@
   height: 100%;
 }
 
+@utility diamond {
+  & {
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  }
+}
+
 @theme {
   --app-background: linear-gradient(to bottom, var(--color-slate-600), var(--color-slate-900));
   
@@ -42,11 +48,13 @@
     --color-common-rarity: var(--color-gray-400);
     --color-uncommon-rarity: var(--color-sky-500);
     --color-rare-rarity: var(--color-yellow-500);
+    --color-ancient-rarity: var(--color-purple-500);
+    --color-event-rarity: var(--color-green-500);
 
     --color-ironclad: var(--color-red-800);
     --color-defect: var(--color-blue-800);
     --color-silent: var(--color-green-800);
-    --color-regent: var(--color-orange-800);
+    --color-regent: var(--color-orange-700);
     --color-necrobinder: var(--color-purple-800);
     --color-colorless: var(--color-gray-800);
 

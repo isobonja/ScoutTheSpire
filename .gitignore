@@ -28,3 +28,7 @@ tagger/*.ntvs*
 tagger/*.njsproj
 tagger/*.sln
 tagger/*.sw?
+
+.VSCodeCounter
+
+tmp.py

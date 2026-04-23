@@ -9,7 +9,11 @@
       "regent",
       "necrobinder",
       "defect",
-      "colorless"
+      "colorless",
+      "status",
+      "event",
+      "quest",
+      "curse"
     ]
   },
   "type": {
@@ -21,76 +25,115 @@
       "skill",
       "power",
       "curse",
-      "status"
+      "status",
+      "quest"
     ]
   },
-  "Rarity": {
+  "rarity": {
     "limit": 1,
     "required": true,
     "weight": 1,
     "tags": [
       "rare",
       "uncommon",
-      "common"
+      "common",
+      "ancient",
+      "status",
+      "basic",
+      "event",
+      "quest",
+      "curse"
     ]
   },
-  "Buffs": {
+  "buffs": {
     "limit": 0,
     "required": false,
     "weight": 1,
     "tags": [
       "dexterity",
-      "thorns"
+      "thorns",
+      "intangible",
+      "strength"
     ]
   },
-  "Keywords": {
+  "keywords": {
     "limit": 0,
     "required": false,
     "weight": 1,
     "tags": [
       "sly",
-      "exhaust_on_play"
+      "exhaust",
+      "innate",
+      "ethereal",
+      "eternal",
+      "unplayable"
     ]
   },
-  "Debuffs": {
+  "debuffs": {
     "limit": 0,
     "required": false,
     "weight": 1,
     "tags": [
-      "poison"
+      "poison",
+      "vulnerable",
+      "doom",
+      "weak"
     ]
   },
-  "Strat": {
+  "strat": {
     "limit": 0,
     "required": false,
     "weight": 1,
     "tags": [
       "shivs",
       "zero_cost",
-      "summon_osty"
+      "summon_osty",
+      "colorless_strat",
+      "minions",
+      "ethereal_strat",
+      "block_strat",
+      "forge",
+      "hp_loss",
+      "status_strat",
+      "vulnerable_strat",
+      "orb_strat",
+      "multi_attack_strat",
+      "draw_strat",
+      "exhaust_strat"
     ]
   },
-  "Card Actions": {
+  "card_actions": {
     "limit": 0,
     "required": false,
     "weight": 1,
     "tags": [
       "draw",
       "discard",
-      "exhaust",
-      "upgrade"
+      "exhaust_other",
+      "upgrade",
+      "put_into_hand",
+      "copy",
+      "transform",
+      "extra_play",
+      "play_other",
+      "create_status",
+      "retain_hand",
+      "cost_reduction",
+      "put_on_draw_pile"
     ]
   },
-  "Piles": {
+  "piles": {
     "limit": 0,
     "required": false,
     "weight": 1,
     "tags": [
       "discard_pile",
-      "hand"
+      "hand",
+      "draw_pile",
+      "exhaust_pile"
     ]
   },
-  "Misc": {
+  "misc": {
     "limit": 0,
     "required": false,
     "weight": 1,
@@ -98,16 +141,40 @@
       "energy_gain",
       "block",
       "bonus_on_play_card",
-      "potion"
+      "potion",
+      "stars",
+      "multiplayer",
+      "star_gain",
+      "multi_hit"
     ]
   },
-  "Cost": {
+  "cost": {
     "limit": 0,
     "required": true,
     "weight": 1,
     "tags": [
       "0",
-      "1"
+      "1",
+      "2",
+      "6",
+      "3",
+      "-1",
+      "4",
+      "x_cost"
+    ]
+  },
+  "orbs": {
+    "limit": 0,
+    "required": false,
+    "weight": 1,
+    "tags": [
+      "lightning",
+      "channel",
+      "focus",
+      "orb_slot",
+      "frost",
+      "dark",
+      "evoke"
     ]
   }
 }
