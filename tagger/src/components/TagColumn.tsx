@@ -26,38 +26,42 @@ function TagColumn({ category, categoryData, selectedTags, onSelectTag }: TagCol
     const initialTags = categoryData.tags || [];
     const temporarySelectedTags = selectedTags?.[category]?.filter(t => t.isTemporary).map(t => t.value) || [];
     const allTags = Array.from(new Set([...initialTags, ...temporarySelectedTags]));
-    console.log('Updating tags for category', category, 'with allTags', allTags);
+    //console.log('Updating tags for category', category, 'with allTags', allTags);
     return allTags;
   }, [categoryData.tags, selectedTags, category]);
 
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [isOverflowing, setIsOverflowing] = useState(false);
+  const ITEM_HEIGHT = 28 + 8; // Height of ToggleableTag + bottom margin in px
 
+  const containerRef = useRef<HTMLDivElement>(null);
   const [isExpanded, setIsExpanded] = useState(false);
 
   useEffect(() => {
     const el = containerRef.current;
-    if (!el || isExpanded) return;
+    if (!el) return;
 
-    const isOverflowing = el.scrollHeight > el.clientHeight;
+    const compute = () => {
+      const containerHeight = el.clientHeight;
 
-    if (isOverflowing) {
-      setIsExpanded(true);
-    }
-  }, [tags, isExpanded]);
+      // how many items fit in ONE column
+      const itemsPerColumn = Math.floor(containerHeight / ITEM_HEIGHT);
+
+      // if we exceed that → need 2 columns
+      setIsExpanded(tags.length > itemsPerColumn);
+    };
+
+    compute();
+
+    window.addEventListener("resize", compute);
+    return () => window.removeEventListener("resize", compute);
+  }, [tags]);
 
   const handleToggleTag = (tag: string) => {
     onSelectTag(category, tag);
   }
 
-  useEffect(() => {
-    console.log('categoryData for category', category, categoryData);
-  }, [category, categoryData])
-
   return (
     <Card 
       className={`
-        transition-all duration-300
         ${isExpanded ? "w-96 min-w-96" : "w-48 min-w-48"}
         h-full min-h-0 bg-transparent border-r border-t rounded-sm text-muted relative overflow-clip
       `}

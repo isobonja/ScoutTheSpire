@@ -183,12 +183,19 @@ function App() {
 
     // For now, check for text between [gold][/gold] tags
     if (currentCard.description) {
+      if (currentCard.is_x_star_cost || currentCard.star_cost) {
+        addPreSelectedTagFromUnknownCategory('stars');
+      }
+
+      if (currentCard.is_x_cost) {
+        addPreSelectedTagFromBasicCategory('cost', 'x_cost');
+      }
       /*
         TO ADD: 
-        - Gain [energy:2] -> energy_gain
-        - Draw X card(s) -> draw
-
-
+        - discard
+        - [Pp]ut\s.+\sinto\s.+\shand -> put_into_hand
+        - [Ll]ose\s\d+\s[Ss]trength -> strength_loss
+        - /[Ee]nem(?:(?:y)|(?:ies))\s[Ll]oses?\s\d+\s[Ss]trength/ -> enemy_strength_loss
 
       */
       const patterns = [
@@ -198,10 +205,40 @@ function App() {
           override: undefined,
         },
         {
-          regex: /Lose\s+\d+\s+HP/g,
+          regex: /[Ll]ose\s+\d+\s+HP/g,
           transform: () => "hp_loss",
           override: "hp_loss",
         },
+        {
+          regex: /[Gg]ain\s\[energy:+\d+\]/g,
+          transform: () => "energy_gain",
+          override: "energy_gain",
+        },
+        {
+          regex: /[Dd]raw\s\d*\s?cards?/g,
+          transform: () => "draw",
+          override: "draw",
+        },
+        {
+          regex: /[Oo]sty|Summon/g,
+          transform: () => "summon_osty",
+          override: "summon_osty",
+        },
+        {
+          regex: /[Pp]ut\s.+\sinto\s.+\s[Hh]and/g, // Is not functioning for some reason
+          transform: () => "put_into_hand",
+          override: "put_into_hand",
+        },
+        {
+          regex: /[Ll]ose\s\d+\s[Ss]trength/g,
+          transform: () => "strength_loss",
+          override: "strength_loss",
+        },
+        {
+          regex: /[Ee]nem(?:(?:y)|(?:ies))\s[Ll]oses?\s\d+\s[Ss]trength/g,
+          transform: () => "enemy_strength_loss",
+          override: "enemy_strength_loss",
+        }
       ];
       patterns.forEach(({ regex, transform, override }) => {
         let match;
@@ -302,7 +339,7 @@ function App() {
 
     if (missingRequired.length > 0) {
       toast.error("Not all required categories had tags selected!", {
-        position: "bottom-center",
+        position: "bottom-left",
       });
       return;
     }
@@ -315,7 +352,7 @@ function App() {
 
     await window.api.addTagsToCard(currentCard.id, selectedTagsList);
 
-    toast.success(`Added tags ${selectedTagsList.join(", ")} to card ${currentCard.id}`, { position: "bottom-center", className: "bg-amber-500"});
+    toast.success(`Added tags ${selectedTagsList.join(", ")} to card ${currentCard.id}`, { position: "bottom-left", className: "bg-amber-500"});
 
     const groupedTemporaryTags = Object.entries(selectedTags).reduce(
       (acc, [category, tags]) => {

@@ -93,3 +93,11 @@ Instead of only retrieving card data directly from the spire-codex site in the f
  - Retrieve card data JSON on app open (maybe less frequently instead?), compare it to existing saved card data (if file exists); if requested data has differences compared to locally saved data (if it exists), then update locally saved data with new data
  - Determine which cards are updated to present the user with those cards to update their tags if necessary
     - REMEMBER: some cards can be removed from the game, so will need to check that as well
+
+---
+
+So an issue with the current tagging app is it is missing any kind of indication about whether cards are dependent on having certain 
+
+
+
+BIG UPDATE:

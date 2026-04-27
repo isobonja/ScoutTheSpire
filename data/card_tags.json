@@ -901,5 +901,1485 @@
     "uncommon",
     "doom",
     "1"
+  ],
+  "CRASH_LANDING": [
+    "1",
+    "attack",
+    "rare",
+    "regent",
+    "hand",
+    "create_status"
+  ],
+  "CREATIVE_AI": [
+    "defect",
+    "power",
+    "rare",
+    "add_to_hand",
+    "hand",
+    "3"
+  ],
+  "CRESCENT_SPEAR": [
+    "1",
+    "attack",
+    "common",
+    "regent",
+    "stars"
+  ],
+  "CRIMSON_MANTLE": [
+    "ironclad",
+    "power",
+    "rare",
+    "hp_loss",
+    "block",
+    "1"
+  ],
+  "CRUELTY": [
+    "ironclad",
+    "power",
+    "rare",
+    "vulnerable_strat",
+    "1"
+  ],
+  "CRUSH_UNDER": [
+    "regent",
+    "attack",
+    "common",
+    "strength_loss",
+    "1"
+  ],
+  "CURSE_OF_THE_BELL": [
+    "curse",
+    "curse",
+    "curse",
+    "unplayable",
+    "eternal",
+    "-1"
+  ],
+  "DAGGER_SPRAY": [
+    "silent",
+    "attack",
+    "common",
+    "1"
+  ],
+  "DAGGER_THROW": [
+    "1",
+    "attack",
+    "common",
+    "silent",
+    "draw",
+    "discard"
+  ],
+  "DANSE_MACABRE": [
+    "necrobinder",
+    "power",
+    "uncommon",
+    "1",
+    "high_cost_strat",
+    "block"
+  ],
+  "DARK_EMBRACE": [
+    "ironclad",
+    "power",
+    "rare",
+    "2",
+    "exhaust_strat",
+    "draw"
+  ],
+  "DARK_SHACKLES": [
+    "colorless",
+    "skill",
+    "uncommon",
+    "0",
+    "exhaust",
+    "strength_loss"
+  ],
+  "DARKNESS": [
+    "defect",
+    "skill",
+    "uncommon",
+    "1",
+    "channel",
+    "dark",
+    "dark"
+  ],
+  "DASH": [
+    "silent",
+    "attack",
+    "uncommon",
+    "2",
+    "block"
+  ],
+  "DAZED": [
+    "status",
+    "status",
+    "status",
+    "-1",
+    "ethereal",
+    "unplayable"
+  ],
+  "DEADLY_POISON": [
+    "silent",
+    "skill",
+    "common",
+    "1",
+    "poison"
+  ],
+  "DEATH_MARCH": [
+    "necrobinder",
+    "attack",
+    "uncommon",
+    "1",
+    "soul_strat"
+  ],
+  "DEATHS_DOOR": [
+    "necrobinder",
+    "skill",
+    "uncommon",
+    "1",
+    "doom_strat",
+    "block",
+    "block"
+  ],
+  "DEATHBRINGER": [
+    "necrobinder",
+    "skill",
+    "uncommon",
+    "2",
+    "doom",
+    "weak"
+  ],
+  "DEBILITATE": [
+    "necrobinder",
+    "attack",
+    "uncommon",
+    "1",
+    "vulnerable",
+    "weak"
+  ],
+  "DEBRIS": [
+    "status",
+    "status",
+    "status",
+    "1",
+    "exhaust"
+  ],
+  "DEBT": [
+    "curse",
+    "curse",
+    "curse",
+    "-1",
+    "unplayable",
+    "hand"
+  ],
+  "DECAY": [
+    "curse",
+    "curse",
+    "curse",
+    "-1",
+    "unplayable",
+    "hand"
+  ],
+  "DECISIONS_DECISIONS": [
+    "regent",
+    "skill",
+    "rare",
+    "0",
+    "exhaust",
+    "draw",
+    "play_other",
+    "hand",
+    "stars"
+  ],
+  "DEFEND_IRONCLAD": [
+    "ironclad",
+    "skill",
+    "basic",
+    "1",
+    "block"
+  ],
+  "DEFEND_SILENT": [
+    "silent",
+    "skill",
+    "basic",
+    "1",
+    "block"
+  ],
+  "DEFEND_REGENT": [
+    "regent",
+    "skill",
+    "basic",
+    "1",
+    "block"
+  ],
+  "DEFEND_NECROBINDER": [
+    "necrobinder",
+    "skill",
+    "basic",
+    "1",
+    "block"
+  ],
+  "DEFEND_DEFECT": [
+    "defect",
+    "skill",
+    "basic",
+    "1",
+    "block"
+  ],
+  "DEFILE": [
+    "necrobinder",
+    "attack",
+    "common",
+    "1",
+    "ethereal"
+  ],
+  "DEFLECT": [
+    "silent",
+    "skill",
+    "common",
+    "0",
+    "block"
+  ],
+  "DEFRAGMENT": [
+    "defect",
+    "power",
+    "rare",
+    "1",
+    "focus"
+  ],
+  "DEFY": [
+    "necrobinder",
+    "skill",
+    "common",
+    "1",
+    "ethereal",
+    "weak",
+    "block"
+  ],
+  "DELAY": [
+    "necrobinder",
+    "skill",
+    "uncommon",
+    "2",
+    "block",
+    "energy_gain"
+  ],
+  "DEMESNE": [
+    "necrobinder",
+    "power",
+    "rare",
+    "3",
+    "ethereal",
+    "next_turn_draw",
+    "energy_gain"
+  ],
+  "DEMON_FORM": [
+    "ironclad",
+    "power",
+    "rare",
+    "3",
+    "strength"
+  ],
+  "DEMONIC_SHIELD": [
+    "ironclad",
+    "skill",
+    "uncommon",
+    "0",
+    "exhaust",
+    "hp_loss",
+    "block",
+    "block",
+    "multiplayer"
+  ],
+  "DEVASTATE": [
+    "regent",
+    "attack",
+    "uncommon",
+    "1",
+    "stars"
+  ],
+  "DEVOUR_LIFE": [
+    "necrobinder",
+    "power",
+    "rare",
+    "1",
+    "soul_strat",
+    "summon_osty"
+  ],
+  "DIRGE": [
+    "necrobinder",
+    "skill",
+    "uncommon",
+    "x_cost",
+    "x_cost",
+    "soul_strat",
+    "summon_osty",
+    "draw_pile"
+  ],
+  "DISCOVERY": [
+    "colorless",
+    "skill",
+    "uncommon",
+    "1",
+    "exhaust",
+    "add_to_hand",
+    "hand"
+  ],
+  "DISINTEGRATION": [
+    "token",
+    "status",
+    "status",
+    "-1"
+  ],
+  "DISMANTLE": [
+    "ironclad",
+    "attack",
+    "uncommon",
+    "1",
+    "vulnerable_strat"
+  ],
+  "DISTRACTION": [
+    "event",
+    "skill",
+    "event",
+    "1",
+    "exhaust",
+    "add_to_hand",
+    "hand"
+  ],
+  "DODGE_AND_ROLL": [
+    "silent",
+    "skill",
+    "common",
+    "1",
+    "block",
+    "block"
+  ],
+  "DOMINATE": [
+    "ironclad",
+    "skill",
+    "uncommon",
+    "1",
+    "strength",
+    "exhaust",
+    "vulnerable_strat"
+  ],
+  "DOUBLE_ENERGY": [
+    "defect",
+    "skill",
+    "uncommon",
+    "1",
+    "exhaust",
+    "energy_gain"
+  ],
+  "DOUBT": [
+    "curse",
+    "curse",
+    "curse",
+    "-1",
+    "unplayable",
+    "weak",
+    "hand"
+  ],
+  "DRAIN_POWER": [
+    "necrobinder",
+    "attack",
+    "common",
+    "1",
+    "upgrade",
+    "discard_pile"
+  ],
+  "DRAMATIC_ENTRANCE": [
+    "colorless",
+    "attack",
+    "uncommon",
+    "0",
+    "exhaust",
+    "innate"
+  ],
+  "DREDGE": [
+    "necrobinder",
+    "skill",
+    "uncommon",
+    "1",
+    "exhaust",
+    "put_into_hand",
+    "discard_pile",
+    "hand"
+  ],
+  "DRUM_OF_BATTLE": [
+    "ironclad",
+    "power",
+    "uncommon",
+    "0",
+    "exhaust_strat",
+    "draw",
+    "exhaust_other",
+    "draw_pile"
+  ],
+  "DUAL_WIELD": [
+    "event",
+    "skill",
+    "event",
+    "1",
+    "add_to_hand",
+    "hand"
+  ],
+  "DUALCAST": [
+    "defect",
+    "skill",
+    "basic",
+    "1",
+    "evoke"
+  ],
+  "DYING_STAR": [
+    "regent",
+    "attack",
+    "rare",
+    "1",
+    "ethereal",
+    "enemy_strength_loss",
+    "stars"
+  ],
+  "ECHO_FORM": [
+    "defect",
+    "power",
+    "rare",
+    "3",
+    "ethereal",
+    "copy",
+    "play_other"
+  ],
+  "ECHOING_SLASH": [
+    "silent",
+    "attack",
+    "rare",
+    "1"
+  ],
+  "EIDOLON": [
+    "necrobinder",
+    "skill",
+    "rare",
+    "2",
+    "intangible",
+    "exhaust",
+    "hand"
+  ],
+  "END_OF_DAYS": [
+    "necrobinder",
+    "skill",
+    "rare",
+    "3",
+    "doom",
+    "doom"
+  ],
+  "ENERGY_SURGE": [
+    "defect",
+    "skill",
+    "uncommon",
+    "1",
+    "exhaust",
+    "energy_gain",
+    "multiplayer"
+  ],
+  "ENFEEBLING_TOUCH": [
+    "necrobinder",
+    "skill",
+    "uncommon",
+    "1",
+    "ethereal",
+    "enemy_strength_loss"
+  ],
+  "ENLIGHTENMENT": [
+    "event",
+    "skill",
+    "event",
+    "0",
+    "exhaust",
+    "cost_reduction",
+    "hand"
+  ],
+  "ENTHRALLED": [
+    "curse",
+    "curse",
+    "curse",
+    "2",
+    "eternal",
+    "hand"
+  ],
+  "ENTRENCH": [
+    "event",
+    "skill",
+    "event",
+    "2",
+    "block"
+  ],
+  "ENTROPY": [
+    "colorless",
+    "power",
+    "rare",
+    "1",
+    "transform",
+    "hand"
+  ],
+  "ENVENOM": [
+    "silent",
+    "power",
+    "rare",
+    "2",
+    "poison",
+    "shivs"
+  ],
+  "EQUILIBRIUM": [
+    "colorless",
+    "skill",
+    "uncommon",
+    "2",
+    "retain_hand",
+    "hand",
+    "block"
+  ],
+  "ERADICATE": [
+    "necrobinder",
+    "attack",
+    "rare",
+    "x_cost",
+    "x_cost",
+    "retain"
+  ],
+  "ESCAPE_PLAN": [
+    "silent",
+    "skill",
+    "uncommon",
+    "0",
+    "draw",
+    "block"
+  ],
+  "ETERNAL_ARMOR": [
+    "3",
+    "power",
+    "rare",
+    "colorless",
+    "plating"
+  ],
+  "EVIL_EYE": [
+    "1",
+    "skill",
+    "uncommon",
+    "ironclad",
+    "block",
+    "block",
+    "exhaust_strat"
+  ],
+  "EXPECT_A_FIGHT": [
+    "ironclad",
+    "skill",
+    "uncommon",
+    "2",
+    "hand",
+    "energy_gain"
+  ],
+  "EXPERTISE": [
+    "1",
+    "skill",
+    "uncommon",
+    "silent",
+    "hand",
+    "draw"
+  ],
+  "EXPOSE": [
+    "silent",
+    "skill",
+    "uncommon",
+    "0",
+    "exhaust",
+    "vulnerable",
+    "status_removal",
+    "block_removal",
+    "block"
+  ],
+  "EXTERMINATE": [
+    "event",
+    "attack",
+    "event",
+    "1"
+  ],
+  "FTL": [
+    "defect",
+    "attack",
+    "uncommon",
+    "0",
+    "zero_cost",
+    "draw"
+  ],
+  "FALLING_STAR": [
+    "regent",
+    "attack",
+    "basic",
+    "0",
+    "weak",
+    "vulnerable",
+    "stars"
+  ],
+  "FAN_OF_KNIVES": [
+    "silent",
+    "power",
+    "rare",
+    "2",
+    "shivs",
+    "shivs",
+    "hand"
+  ],
+  "FASTEN": [
+    "colorless",
+    "power",
+    "uncommon",
+    "1",
+    "block"
+  ],
+  "FEAR": [
+    "necrobinder",
+    "attack",
+    "common",
+    "1",
+    "ethereal",
+    "vulnerable"
+  ],
+  "FEED": [
+    "ironclad",
+    "attack",
+    "rare",
+    "1",
+    "exhaust",
+    "max_hp_gain"
+  ],
+  "FEEDING_FRENZY": [
+    "event",
+    "skill",
+    "event",
+    "0",
+    "strength"
+  ],
+  "FEEL_NO_PAIN": [
+    "ironclad",
+    "power",
+    "uncommon",
+    "1",
+    "exhaust_strat",
+    "block"
+  ],
+  "FERAL": [
+    "defect",
+    "power",
+    "uncommon",
+    "2",
+    "zero_cost",
+    "hand"
+  ],
+  "FETCH": [
+    "necrobinder",
+    "attack",
+    "uncommon",
+    "0",
+    "summon_osty",
+    "draw"
+  ],
+  "FIEND_FIRE": [
+    "ironclad",
+    "attack",
+    "rare",
+    "2",
+    "exhaust",
+    "exhaust",
+    "exhaust_strat",
+    "hand"
+  ],
+  "FIGHT_ME": [
+    "ironclad",
+    "attack",
+    "uncommon",
+    "2",
+    "strength",
+    "strength"
+  ],
+  "FIGHT_THROUGH": [
+    "defect",
+    "skill",
+    "uncommon",
+    "1",
+    "status_strat",
+    "create_status",
+    "discard_pile",
+    "block"
+  ],
+  "FINESSE": [
+    "colorless",
+    "skill",
+    "uncommon",
+    "0",
+    "draw",
+    "block"
+  ],
+  "FINISHER": [
+    "silent",
+    "attack",
+    "uncommon",
+    "1",
+    "shivs"
+  ],
+  "FISTICUFFS": [
+    "colorless",
+    "attack",
+    "uncommon",
+    "1",
+    "block"
+  ],
+  "FLAK_CANNON": [
+    "defect",
+    "attack",
+    "rare",
+    "status",
+    "2",
+    "exhaust",
+    "status_strat"
+  ],
+  "FLAME_BARRIER": [
+    "ironclad",
+    "skill",
+    "uncommon",
+    "2",
+    "block"
+  ],
+  "FLANKING": [
+    "silent",
+    "skill",
+    "uncommon",
+    "2",
+    "multiplayer"
+  ],
+  "FLASH_OF_STEEL": [
+    "colorless",
+    "attack",
+    "uncommon",
+    "0",
+    "draw"
+  ],
+  "FLATTEN": [
+    "necrobinder",
+    "attack",
+    "common",
+    "2",
+    "summon_osty",
+    "summon_osty"
+  ],
+  "FLECHETTES": [
+    "silent",
+    "attack",
+    "uncommon",
+    "1",
+    "hand"
+  ],
+  "FLICK_FLACK": [
+    "silent",
+    "attack",
+    "common",
+    "1",
+    "sly"
+  ],
+  "FOCUSED_STRIKE": [
+    "defect",
+    "attack",
+    "common",
+    "1",
+    "focus"
+  ],
+  "FOLLOW_THROUGH": [
+    "silent",
+    "attack",
+    "uncommon",
+    "1",
+    "weak"
+  ],
+  "FOLLY": [
+    "curse",
+    "curse",
+    "curse",
+    "-1",
+    "innate",
+    "unplayable",
+    "eternal"
+  ],
+  "FOOTWORK": [
+    "silent",
+    "power",
+    "uncommon",
+    "1",
+    "dexterity"
+  ],
+  "FORBIDDEN_GRIMOIRE": [
+    "necrobinder",
+    "power",
+    "ancient",
+    "2",
+    "eternal",
+    "remove_card"
+  ],
+  "FOREGONE_CONCLUSION": [
+    "regent",
+    "skill",
+    "rare",
+    "1",
+    "put_into_hand",
+    "draw_pile",
+    "hand"
+  ],
+  "FORGOTTEN_RITUAL": [
+    "ironclad",
+    "skill",
+    "uncommon",
+    "1",
+    "exhaust_strat",
+    "energy_gain"
+  ],
+  "FRANTIC_ESCAPE": [
+    "status",
+    "status",
+    "status",
+    "1"
+  ],
+  "FRIENDSHIP": [
+    "necrobinder",
+    "power",
+    "uncommon",
+    "1",
+    "strength_loss",
+    "energy_gain"
+  ],
+  "FUEL": [
+    "token",
+    "skill",
+    "token",
+    "0",
+    "exhaust",
+    "draw",
+    "energy_gain"
+  ],
+  "FURNACE": [
+    "regent",
+    "power",
+    "uncommon",
+    "1",
+    "forge"
+  ],
+  "FUSION": [
+    "defect",
+    "skill",
+    "uncommon",
+    "2",
+    "channel",
+    "plasma"
+  ],
+  "GUARDS": [
+    "regent",
+    "skill",
+    "rare",
+    "2",
+    "exhaust",
+    "minions",
+    "transform",
+    "hand"
+  ],
+  "GAMMA_BLAST": [
+    "regent",
+    "attack",
+    "uncommon",
+    "0",
+    "weak",
+    "vulnerable",
+    "stars"
+  ],
+  "GANG_UP": [
+    "colorless",
+    "attack",
+    "uncommon",
+    "1",
+    "multiplayer"
+  ],
+  "GATHER_LIGHT": [
+    "regent",
+    "skill",
+    "common",
+    "1",
+    "block",
+    "stars"
+  ],
+  "GENESIS": [
+    "regent",
+    "power",
+    "rare",
+    "2",
+    "stars"
+  ],
+  "GENETIC_ALGORITHM": [
+    "defect",
+    "skill",
+    "rare",
+    "1",
+    "exhaust",
+    "block",
+    "block"
+  ],
+  "GIANT_ROCK": [
+    "token",
+    "attack",
+    "token",
+    "1"
+  ],
+  "GLACIER": [
+    "defect",
+    "skill",
+    "uncommon",
+    "2",
+    "block",
+    "channel",
+    "frost"
+  ],
+  "GLASSWORK": [
+    "defect",
+    "skill",
+    "uncommon",
+    "1",
+    "block",
+    "channel",
+    "glass"
+  ],
+  "GLIMMER": [
+    "regent",
+    "skill",
+    "uncommon",
+    "1",
+    "draw",
+    "put_on_draw_pile",
+    "hand",
+    "draw_pile"
+  ],
+  "GLIMPSE_BEYOND": [
+    "necrobinder",
+    "skill",
+    "rare",
+    "1",
+    "exhaust",
+    "soul_strat",
+    "draw_pile",
+    "multiplayer"
+  ],
+  "GLITTERSTREAM": [
+    "regent",
+    "skill",
+    "common",
+    "2",
+    "block",
+    "block"
+  ],
+  "GLOW": [
+    "regent",
+    "skill",
+    "common",
+    "1",
+    "draw",
+    "stars"
+  ],
+  "GO_FOR_THE_EYES": [
+    "defect",
+    "attack",
+    "common",
+    "0",
+    "weak",
+    "zero_cost"
+  ],
+  "GOLD_AXE": [
+    "colorless",
+    "attack",
+    "rare",
+    "1",
+    "draw_strat",
+    "zero_cost"
+  ],
+  "GRAND_FINALE": [
+    "silent",
+    "attack",
+    "rare",
+    "0",
+    "draw_pile"
+  ],
+  "GRAPPLE": [
+    "ironclad",
+    "attack",
+    "uncommon",
+    "1",
+    "block_strat",
+    "block"
+  ],
+  "GRAVE_WARDEN": [
+    "necrobinder",
+    "skill",
+    "common",
+    "1",
+    "soul_strat",
+    "draw_pile",
+    "block"
+  ],
+  "GRAVEBLAST": [
+    "1",
+    "attack",
+    "common",
+    "necrobinder",
+    "exhaust",
+    "discard_pile",
+    "hand",
+    "put_into_hand"
+  ],
+  "GREED": [
+    "curse",
+    "curse",
+    "curse",
+    "-1",
+    "unplayable",
+    "eternal"
+  ],
+  "GUIDING_STAR": [
+    "regent",
+    "attack",
+    "common",
+    "1",
+    "next_turn_draw",
+    "stars"
+  ],
+  "GUILTY": [
+    "curse",
+    "curse",
+    "curse",
+    "-1",
+    "unplayable"
+  ],
+  "GUNK_UP": [
+    "defect",
+    "attack",
+    "common",
+    "1",
+    "status_strat",
+    "create_status",
+    "discard_pile"
+  ],
+  "HAILSTORM": [
+    "defect",
+    "power",
+    "uncommon",
+    "1",
+    "frost"
+  ],
+  "HAMMER_TIME": [
+    "regent",
+    "power",
+    "rare",
+    "2",
+    "forge",
+    "forge",
+    "multiplayer"
+  ],
+  "HAND_TRICK": [
+    "1",
+    "skill",
+    "uncommon",
+    "silent",
+    "block",
+    "sly",
+    "hand"
+  ],
+  "HAND_OF_GREED": [
+    "colorless",
+    "attack",
+    "rare",
+    "2",
+    "gold_gain"
+  ],
+  "HANG": [
+    "necrobinder",
+    "attack",
+    "rare",
+    "1"
+  ],
+  "HAUNT": [
+    "necrobinder",
+    "power",
+    "uncommon",
+    "1",
+    "soul_strat"
+  ],
+  "HAVOC": [
+    "ironclad",
+    "skill",
+    "common",
+    "1",
+    "exhaust",
+    "exhaust_strat",
+    "exhaust_other",
+    "draw_pile"
+  ],
+  "HAZE": [
+    "silent",
+    "skill",
+    "uncommon",
+    "3",
+    "sly",
+    "poison"
+  ],
+  "HEADBUTT": [
+    "ironclad",
+    "attack",
+    "common",
+    "1",
+    "put_on_draw_pile",
+    "discard_pile",
+    "draw_pile"
+  ],
+  "HEAVENLY_DRILL": [
+    "regent",
+    "attack",
+    "rare",
+    "x_cost",
+    "x_cost"
+  ],
+  "HEGEMONY": [
+    "regent",
+    "attack",
+    "uncommon",
+    "2",
+    "energy_gain"
+  ],
+  "HEIRLOOM_HAMMER": [
+    "regent",
+    "attack",
+    "rare",
+    "2",
+    "colorless_strat",
+    "add_to_hand",
+    "copy",
+    "hand",
+    "hand"
+  ],
+  "HELIX_DRILL": [
+    "defect",
+    "attack",
+    "rare",
+    "0",
+    "high_cost_strat"
+  ],
+  "HELLO_WORLD": [
+    "event",
+    "power",
+    "event",
+    "1",
+    "add_to_hand",
+    "hand"
+  ],
+  "HELLRAISER": [
+    "ironclad",
+    "power",
+    "rare",
+    "2",
+    "strike_strat"
+  ],
+  "HEMOKINESIS": [
+    "ironclad",
+    "attack",
+    "uncommon",
+    "1",
+    "hp_loss"
+  ],
+  "HIDDEN_CACHE": [
+    "regent",
+    "skill",
+    "common",
+    "1",
+    "stars"
+  ],
+  "HIDDEN_DAGGERS": [
+    "silent",
+    "skill",
+    "uncommon",
+    "0",
+    "shivs",
+    "discard",
+    "hand"
+  ],
+  "HIDDEN_GEM": [
+    "colorless",
+    "skill",
+    "rare",
+    "1",
+    "add_replay",
+    "draw_pile"
+  ],
+  "HIGH_FIVE": [
+    "necrobinder",
+    "attack",
+    "uncommon",
+    "2",
+    "vulnerable",
+    "summon_osty"
+  ],
+  "HOLOGRAM": [
+    "defect",
+    "skill",
+    "common",
+    "1",
+    "exhaust",
+    "discard_pile",
+    "hand",
+    "block"
+  ],
+  "HOTFIX": [
+    "defect",
+    "skill",
+    "common",
+    "0",
+    "focus"
+  ],
+  "HOWL_FROM_BEYOND": [
+    "ironclad",
+    "attack",
+    "uncommon",
+    "3",
+    "exhaust_strat",
+    "exhaust_pile"
+  ],
+  "HUDDLE_UP": [
+    "colorless",
+    "skill",
+    "uncommon",
+    "1",
+    "draw",
+    "multiplayer"
+  ],
+  "HYPERBEAM": [
+    "defect",
+    "attack",
+    "rare",
+    "2",
+    "focus"
+  ],
+  "I_AM_INVINCIBLE": [
+    "regent",
+    "skill",
+    "rare",
+    "1",
+    "draw_pile",
+    "block"
+  ],
+  "ICE_LANCE": [
+    "defect",
+    "attack",
+    "rare",
+    "3",
+    "channel",
+    "frost"
+  ],
+  "IGNITION": [
+    "defect",
+    "skill",
+    "rare",
+    "1",
+    "exhaust",
+    "multiplayer",
+    "plasma",
+    "channel"
+  ],
+  "IMPATIENCE": [
+    "colorless",
+    "skill",
+    "uncommon",
+    "0",
+    "draw",
+    "hand"
+  ],
+  "IMPERVIOUS": [
+    "ironclad",
+    "skill",
+    "rare",
+    "2",
+    "exhaust",
+    "block"
+  ],
+  "INFECTION": [
+    "status",
+    "status",
+    "status",
+    "-1",
+    "unplayable",
+    "hand"
+  ],
+  "INFERNAL_BLADE": [
+    "ironclad",
+    "skill",
+    "uncommon",
+    "1",
+    "exhaust",
+    "add_to_hand",
+    "hand"
+  ],
+  "INFERNO": [
+    "ironclad",
+    "power",
+    "uncommon",
+    "1",
+    "hp_loss"
+  ],
+  "INFINITE_BLADES": [
+    "silent",
+    "power",
+    "uncommon",
+    "1",
+    "shivs",
+    "hand"
+  ],
+  "INFLAME": [
+    "ironclad",
+    "power",
+    "uncommon",
+    "1",
+    "strength"
+  ],
+  "INJURY": [
+    "curse",
+    "curse",
+    "curse",
+    "-1",
+    "unplayable"
+  ],
+  "INTERCEPT": [
+    "colorless",
+    "skill",
+    "uncommon",
+    "1",
+    "block",
+    "multiplayer"
+  ],
+  "INVOKE": [
+    "necrobinder",
+    "skill",
+    "common",
+    "1",
+    "summon_osty",
+    "energy_gain"
+  ],
+  "IRON_WAVE": [
+    "ironclad",
+    "attack",
+    "common",
+    "1",
+    "block"
+  ],
+  "ITERATION": [
+    "defect",
+    "power",
+    "uncommon",
+    "1",
+    "status_strat",
+    "draw"
+  ],
+  "JACK_OF_ALL_TRADES": [
+    "colorless",
+    "skill",
+    "uncommon",
+    "0",
+    "exhaust",
+    "colorless_strat",
+    "add_to_hand",
+    "hand"
+  ],
+  "JACKPOT": [
+    "colorless",
+    "attack",
+    "rare",
+    "3",
+    "zero_cost",
+    "add_to_hand",
+    "hand"
+  ],
+  "JUGGERNAUT": [
+    "ironclad",
+    "power",
+    "rare",
+    "2",
+    "block_strat",
+    "block"
+  ],
+  "JUGGLING": [
+    "ironclad",
+    "power",
+    "attack",
+    "uncommon",
+    "1",
+    "copy",
+    "hand"
+  ],
+  "KINGLY_KICK": [
+    "regent",
+    "attack",
+    "uncommon",
+    "4"
+  ],
+  "KINGLY_PUNCH": [
+    "regent",
+    "attack",
+    "uncommon",
+    "1"
+  ],
+  "KNIFE_TRAP": [
+    "silent",
+    "skill",
+    "rare",
+    "2",
+    "shivs",
+    "exhaust_pile"
+  ],
+  "KNOCKDOWN": [
+    "colorless",
+    "attack",
+    "rare",
+    "3",
+    "multiplayer"
+  ],
+  "KNOCKOUT_BLOW": [
+    "regent",
+    "attack",
+    "uncommon",
+    "3",
+    "stars"
+  ],
+  "KNOW_THY_PLACE": [
+    "regent",
+    "skill",
+    "common",
+    "0",
+    "exhaust",
+    "weak",
+    "vulnerable"
+  ],
+  "LANTERN_KEY": [
+    "quest",
+    "quest",
+    "quest",
+    "-1",
+    "unplayable"
+  ],
+  "LARGESSE": [
+    "regent",
+    "skill",
+    "uncommon",
+    "0",
+    "colorless_strat",
+    "hand",
+    "multiplayer"
   ]
 }
