@@ -1,10 +1,10 @@
 import { useState } from "react";
 
-function ImageWithSpinner({ imageUrl }: { imageUrl?: string }) {
+function ImageWithSpinner({ imageUrl, size = "lg" }: { imageUrl?: string; size?: "sm" | "lg" }) {
   const [loaded, setLoaded] = useState(false);
 
   return (
-    <div className="relative overflow-hidden border-y-2 border-black">
+    <div className={`relative overflow-hidden border-y-2 border-black ${size === "sm" ? "w-full h-20" : ""}`}>
       {/* Spinner */}
       {!loaded && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/10">

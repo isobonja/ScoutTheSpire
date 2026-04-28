@@ -19,11 +19,24 @@ import { Card } from "../../shared/types";
 
 type CardDisplayProps = {
   card: Card | null;
+  className?: string;
+  size?: "sm" | "lg";
 }
 
 function CardDisplay({ 
-  card
+  card,
+  className,
+  size = "lg"
 }: CardDisplayProps) {
+  const isSmall = size === "sm";
+
+  const sizes = {
+    container: isSmall ? "p-2 max-h-64" : "p-4 max-h-96",
+    title: isSmall ? "text-lg text-[clamp(14px,1.5vw,16px)] whitespace-nowrap" : "text-2xl",
+    badge: isSmall ? "w-6 h-6 text-sm -right-3.5" : "w-8 h-8 text-lg -right-4.5",
+    description: isSmall ? "text-xs" : "text-sm",
+    keyword: isSmall ? "text-xs w-16 h-5" : "text-sm w-20 h-6",
+  };
 
   function renderText(text: string) {
     const parts = text.split(/(\[gold\].*?\[\/gold\])/g);
@@ -42,67 +55,6 @@ function CardDisplay({
       return <span key={i}>{part}</span>;
     });
   }
-
-  /*const TAG_STYLES: Record<string, string> = {
-    gold: "text-yellow-400",
-    red: "text-red-400",
-    green: "text-green-400",
-    blue: "text-blue-400",
-  };
-
-  const TEST_DESCRIPTION = "This is a [gold]formatted[/gold] description with [red]multiple[/red] tags and [green]colors[/green].";
-
-  function parseFormattedText(text: string): React.ReactNode {
-    const stack: { tag: string; children: React.ReactNode[] }[] = [];
-    const root: React.ReactNode[] = [];
-
-    const regex = /\[(\/?)(\w+)\]/g;
-
-    let lastIndex = 0;
-    let match;
-
-    while ((match = regex.exec(text)) !== null) {
-      const [full, closing, tag] = match;
-
-      // Push text before this tag
-      const content = text.slice(lastIndex, match.index);
-      if (content) {
-        (stack[stack.length - 1]?.children ?? root).push(content);
-      }
-
-      if (!closing) {
-        // Opening tag
-        stack.push({ tag, children: [] });
-      } else {
-        // Closing tag
-        const node = stack.pop();
-
-        if (node) {
-          const element = (
-            <span
-              key={match.index}
-              className={TAG_STYLES[node.tag] || ""}
-            >
-              {node.children}
-            </span>
-          );
-
-          (stack[stack.length - 1]?.children ?? root).push(element);
-        }
-      }
-
-      lastIndex = match.index + full.length;
-    }
-
-    // Remaining text
-    if (lastIndex < text.length) {
-      (stack[stack.length - 1]?.children ?? root).push(
-        text.slice(lastIndex)
-      );
-    }
-
-    return root;
-  }*/
 
   const classKey = (card?.color?.toLowerCase() ?? "colorless") as CardClass;
 
@@ -127,7 +79,17 @@ function CardDisplay({
 
 
   return (
-    <div className=" bg-panel-background border border-panel-border rounded-lg p-4 h-auto min-h-0 ">
+    <div 
+      className={`
+        ${className || ""} 
+        ${sizes.container} 
+        bg-panel-background 
+        border 
+        border-panel-border 
+        rounded-lg 
+        h-auto 
+      `}
+    >
       {/* card */}
       <div 
         className={`
@@ -139,36 +101,33 @@ function CardDisplay({
           relative 
           h-full 
           pt-2 
+          max-w-72
+          mx-auto
           ${classColor}
           ${rarityBorder}
         `}
       >
         {/* card name */}
-        <span className="text-white font-bold 2xl:text-4xl xl:text-3xl text-2xl">{card?.name || "Placeholder Name"}</span>
+        <span className={`${sizes.title} text-white font-bold`}>{card?.name || "Placeholder Name"}</span>
 
         {/* card image */}
         <div className='w-full flex flex-col items-center'>
-          <ImageWithSpinner imageUrl={BASE_IMAGE_URL + card?.image_url} />
-          {/*<img src={imageUrl || "https://via.placeholder.com/150"} alt="Card Image" className="aspect-2/1 object-cover rounded-md" />*/}
-          {/*<span className='text-white'>{imageUrl}</span>*/}
+          <ImageWithSpinner imageUrl={BASE_IMAGE_URL + card?.image_url} size={size} />
         </div>
 
         {/* card cost badge */}
         <Badge 
           className={`
+            ${sizes.badge}
             bg-gray-950 
-            text-lg 
             text-white 
             border 
             ${rarityBorder}
             border-2 
             absolute 
             -top-4
-            -right-4.5
             rounded-full 
             p-1 
-            w-8 
-            h-8 
             flex 
             items-center 
             justify-center
@@ -181,10 +140,10 @@ function CardDisplay({
         {/* star cost badge */}
         <Badge 
           className={`
+            ${sizes.badge}
             bg-gradient-to-r
             from-sky-900
             to-sky-700
-            text-lg 
             text-white 
             border 
             ${rarityBorder}
@@ -192,10 +151,7 @@ function CardDisplay({
             border-2 
             absolute 
             top-6
-            -right-4
             p-1 
-            w-7 
-            h-7 
             flex 
             items-center 
             justify-center
@@ -231,16 +187,17 @@ function CardDisplay({
         
 
           {/* card description */}
-          <p className="text-white text-sm text-center">
+          <p className={`${sizes.description} text-white text-sm text-center`}>
             {card?.description && renderText(card?.description) || "This is a placeholder description for the card. It provides details about the card's abilities and effects."}
           </p>
           {/* card keywords */}
-          <div className='flex gap-2 mt-1'>
+          <div className={`flex gap-2 mt-1`}>
             {card?.keywords && card?.keywords.length > 0 && (
               card?.keywords.map((keyword, index) => (
                 <Badge 
                   key={index} 
-                  className="
+                  className={`
+                    ${sizes.keyword}
                     text-white 
                     font-mono
                     text-sm
@@ -254,7 +211,7 @@ function CardDisplay({
                     flex 
                     items-center 
                     justify-center 
-                  "
+                  `}
                 >
                   {keyword}
                 </Badge>

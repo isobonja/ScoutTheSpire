@@ -6,6 +6,9 @@ import TaggingPanel from './components/TaggingPanel';
 import { TagsData, Card, SelectedTags, CardTagData } from '../shared/types';
 import { Button } from './components/ui/button';
 import { toast } from 'sonner';
+import { Separator } from '@/components/ui/separator';
+import { ScrollArea, ScrollBar } from './components/ui/scroll-area';
+import { generateSimilarityScore } from './util/card_similarity';
 
 function App() {
   const [cardData, setCardData] = useState<Card[] | null>(null);
@@ -416,27 +419,46 @@ function App() {
 
   return (
     <div className="h-screen min-h-screen min-w-screen bg-app flex gap-4 p-6 items-start">
-      <div className='aspect-9/13 min-w-2xs flex-3'>
-        <CardDisplay card={currentCard} />
-        {/*<CardDisplay
-          name={currentCard?.name}
-          description={currentCard?.description}
-          cost={currentCard?.cost}
-          cardType={currentCard?.type}
-          rarity={currentCard?.rarity}
-          cardClass={currentCard?.color}
-          imageUrl={currentCard?.image_url ? 'https://spire-codex.com' + currentCard.image_url : undefined}
-          keywords={currentCard?.keywords || []}
-        />*/}
-        <div className='w-full flex flex-col items-center mt-2 gap-2'>
-          <span className='text-gray-400 text-md italic'>Card {currentCardIndex !== null ? `(${currentCardIndex + 1}/${cardData?.length})` : ""}</span>
+      
+
+      <TaggingPanel 
+        className='flex-8 h-full min-h-0 min-w-0' 
+        tagData={tagsData ?? {}} // Pass empty object if tagsData is null to avoid errors in child components
+        addCategory={handleAddCategory}
+        addTag={handleAddTag}
+        selectedTags={selectedTags}
+        onSelectTag={handleSelectTag}
+      />
+
+      <div className='min-w-2xs flex-4 flex flex-col min-h-0 h-full'>
+        {/* Current card display */}
+        <div>
+          <CardDisplay card={currentCard} />
+          <div className='w-full flex flex-col items-center my-1 gap-2'>
+            <span className='text-gray-400 text-md italic'>Card {currentCardIndex !== null ? `(${currentCardIndex + 1}/${cardData?.length})` : ""}</span>
+          </div>
+          <Separator className='bg-slate-300' />
         </div>
-        <Button 
-          className='mt-4 w-full hover:bg-gray-700 hover:border hover:border-white' 
-          onClick={() => console.log('Selected Tags:', selectedTags)}
-        >
-          Log Selected Tags
-        </Button>
+
+        
+
+        {/* Similar card(s) display */}
+        <div className='w-full text-center mt-1'>
+          <span className='text-gray-100 text-lg bold'>Similar Cards:</span>
+        </div>
+        
+        <ScrollArea className='flex-1 min-h-0 border-r border-l border-white pt-2 rounded-lg'>
+          <div className='w-full grid grid-cols-2 pt-1 px-4 overflow-visible'>
+            {cardData
+              ?.filter(card => card.id !== currentCard?.id && generateSimilarityScore(card, currentCard) > 0.5)
+              .slice(0, 4) // Show up to 4 similar cards
+              .map(card => (
+                <CardDisplay key={card.id} card={card} size="sm" />
+              ))}
+          </div>
+          <ScrollBar className='w-8' />
+        </ScrollArea>
+
         <Button 
           className='mt-4 w-full bg-green-800 hover:bg-green-700 hover:border hover:border-white text-white' 
           onClick={handleAddTagsToCard}
@@ -444,15 +466,6 @@ function App() {
           + Attach Selected Tags
         </Button>
       </div>
-
-      <TaggingPanel 
-        className='flex-9 h-full min-h-0 min-w-0' 
-        tagData={tagsData ?? {}} // Pass empty object if tagsData is null to avoid errors in child components
-        addCategory={handleAddCategory}
-        addTag={handleAddTag}
-        selectedTags={selectedTags}
-        onSelectTag={handleSelectTag}
-      />
     </div>
   );
 }

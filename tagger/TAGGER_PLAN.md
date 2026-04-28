@@ -244,3 +244,22 @@ Swap the sides of the Card Display and Tagging Panel, so that the Tagging Panel 
 
 ## Extra
 Include version numbers for each schema attempt.
+
+
+
+
+## UI CHANGES TO MAKE SUMMARY
+- Swap tagging panel and card displays (DONE)
+- Set up "similar cards" display (DONE - logic for similarity calculation needs to be updated)
+- Move "Add Tags or Categories" form into Modal
+  - Maybe also allow batch creation if necessary
+- Update tag creation - will need to be able to define possible role tags for each tag
+- Implement pagination for tagging process
+  - My idea is to have a Next/Prev button pair at the bottom of the tagging panel that would allow the user to swap between pages
+  - Each "page" would just be a different subpanel (probably use some kind of transition animation for visual spice) that focuses on one type of set of tags
+  - First page would be for the basic card info (class, type. rarity, cost)
+  - Second page would be for the mechanics (categories that would go here are like debuffs, buffs, orbs, etc.) - this page would contain the tags that have those role tags
+  - Third page would be for defining dependencies, marking anti-synergies, and including notes
+  - All three pages should be gone through to be able to attach tags to a card
+  - Once the next card is shown, it should go back to the first page
+- Include some fancy UI element for tracking the pages. 
