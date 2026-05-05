@@ -32,3 +32,9 @@ tagger/*.sw?
 .VSCodeCounter
 
 tmp.py
+
+prototyping/.venv
+prototyping/__pycache__
+prototyping/*.pyc
+prototyping/*.pyo
+prototyping/*.pyd

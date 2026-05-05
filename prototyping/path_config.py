@@ -22,3 +22,19 @@ class PathOptions(Enum):
         weights={"elite": 1, "rest_site": 1},
         no_consecutive_elites=True
     )
+
+# Could be worthwhile maybe setting up a system that allows 
+# thing such as "prefer short strings of nodes between rest sites", 
+# or maybe "prefer paths where the number of nodes between rest 
+# sites is as close to the same as any other set of nodes between 
+# rest sites"
+
+
+# Set up a system where options can be combined or set up with 
+# priorities, such as "most elites, but also prefer rest sites"
+
+# instead of having extra options for base critera with modifications, 
+# separate modifications into a different system
+# i.e. instead of having MOST_ELITES_NO_CONSECUTIVE, only have the 
+# MOST_ELITES base option, but then attach a modifier of "no conseuctive
+# elites"

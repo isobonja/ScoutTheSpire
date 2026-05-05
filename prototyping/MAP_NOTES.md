@@ -95,3 +95,10 @@ i.e. the "most rest sites" condition would have a simple scoring dict such as:
 }
 
 For cases such as "most elites, but avoid having 2+ elites w/o rest site between them, you can just add a massive negative score to the score map for that node if it violates this constraint. 
+
+
+
+
+## NEXT STEPS
+
+If I deviate off of the recommended path, the app should recalculate the path, using my current node as the starting node, and determine a new path. 
