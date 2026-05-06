@@ -17,12 +17,17 @@ class LogHandler(FileSystemEventHandler):
     def on_modified(self, event):
         global last_event_time
         current_time = time.time()
-        if current_time - last_event_time < 0.05:  # 50ms debounce
+        if current_time - last_event_time < 0.1:  # 100ms debounce
             return
         last_event_time = current_time
         if event.src_path.endswith(CURRENT_SAVE_LOG_PATH_END):
             try:
                 data = load_current_run_json_safe()
+                print("-Main-: loaded log file")
+                if not navigator:
+                    print("-Main-: creating navigator")
+                    create_navigator(data)
+                print("-Main-: updating navigator run data")
                 update_navigator_run_data(data)
             except Exception as e:
                 print(f"Error processing log file: {e}")
@@ -36,6 +41,8 @@ def load_current_run_json_safe(path=CURRENT_SAVE_LOG_PATH, max_retries=5, delay=
         except json.JSONDecodeError as e:
             print(f"Error loading JSON: {e}")
             time.sleep(delay)
+        except FileNotFoundError:
+            return None
     raise Exception(f"Failed to load JSON after {max_retries} retries")
 
 def update_navigator_run_data(data):
@@ -51,21 +58,21 @@ def select_path_option():
     return list(PathOptions)[int(selection) - 1]
 
 def print_direction():
-    print(navigator.step_to_most_recently_visited_node())
+    print(navigator.get_direction_str())
+
+def create_navigator(current_run_data):
+    global navigator
+    path_option = select_path_option()
+    navigator = MapNavigator(current_run_data, path_option)
+    print("Navigator initialized successfully.")
 
 def main():
     global navigator
     current_run_data = load_current_run_json_safe()
     if current_run_data is not None:
-        navigator = MapNavigator(current_run_data)
+        create_navigator(current_run_data)
         if navigator:
-            print("Navigator initialized successfully.")
-            node_map = navigator.construct_node_map()
-            #print(node_map)
-
-            path_option = select_path_option()
-
-            score_results = navigator.score_paths(path_option)
+            #score_results = navigator.score_paths(path_option)
             #print(score_results)
             #print(f'Best path: {score_results["path"]}')
             print_direction()

@@ -25,15 +25,22 @@ class MapNavigator:
     '''
     def __init__(
         self, 
-        current_run_data = None
+        current_run_data = None,
+        path_option = None
     ):
         self.current_run_data = current_run_data
         
-        self.path_option = PathOptions.MOST_REST_SITES
+        self.path_option = path_option
         self.node_map = {}
         self.scores_result = None
         self.current_node = None
-    
+
+        self.current_act = None
+        self.map_height = None
+
+        self.construct_node_map()
+        print(f'-MapNavigator-: Node map constructed: {len(self.node_map)} nodes')
+        self.step_to_most_recently_visited_node()
     
 
     #####################
@@ -91,26 +98,80 @@ class MapNavigator:
         return True
     
     def construct_node_map(self):
-        current_act = self.current_run_data["current_act_index"]
-        map_data = self.current_run_data["acts"][current_act]["saved_map"]
+        self.current_act = self.current_run_data["current_act_index"]
+        map_data = self.current_run_data["acts"][self.current_act]["saved_map"]
+        self.map_height = self.current_run_data["acts"][self.current_act]["saved_map"]["height"] + 1
         return self._construct_nodes(map_data)
 
 
     ###########################################
     #   DYNAMIC PROGRAMMING - SCORING PATHS   #
     ###########################################
-    def score_paths(self, config: PathOptions):
-        config = config.value
+    #def score_paths(self, config: PathOptions, start_node: Node = None):
+    def score_paths(self, start_node: Node = None):
+        config = self.path_option.value
+
+        results = {}
+
+        # should only occur if app is started while in the middle of a run
+        # will need to reconstruct the path the user took previously, and 
+        # combine it with the newly calculated path from their current position 
+        # to the boss to get the full path.
+        if start_node.type is not "ancient" or start_node.type is not "boss":
+            # get results from path user has taken already
+            old_results = self._score_paths(config, None, start_node)
+            # get results of new path
+            new_results = self._score_paths(config, start_node, None)
+
+            # Combine the old and new paths
+            full_path = old_results["path"] + new_results["path"][1:]
+
+            print(f'-MapNavigator-: Combined path: {full_path}')
+
+            # the rest of the results values take on new_results
+            results = {
+                "score": new_results["score"] + old_results["score"],
+                "path": full_path,
+                "dp_table": new_results["dp_table"]
+            }
+
+        else:
+            # get results of the current path
+            results = self._score_paths(config, start_node, None)
+
+        self.scores_result = results
+
+        return results
+
+
+
+    def _score_paths(self, config: PathOptions, start_node: Node = None, end_node: Node = None):
 
         best = {} # best scores
         parent = {} # previous nodes
+        start = None
 
-        start = next(n for n in self.node_map.values() if n.type == "ancient")
+        if start_node is None:
+            print(f'-MapNavigator-: start from beginning')
+            start = next(n for n in self.node_map.values() if n.type == "ancient")
+        else:
+            print(f'-MapNavigator-: Using start node: {start_node}')
+            start = start_node
 
         # state = (coord, can_take_elite: bool)
         best[(start.coords, True)] = 0
 
         nodes_by_row = sorted(self.node_map.values(), key=lambda n: n.coords[1])
+
+        
+        if start_node is None:
+            # Filter nodes to only include those on a row below the end node
+            nodes_by_row = [n for n in nodes_by_row if n.coords[1] < end_node.coords[1]]
+        else:
+            # Filter nodes to only include those on a row at or above the start node
+            nodes_by_row = [n for n in nodes_by_row if n.coords[1] >= start.coords[1]]
+
+        print(f'-MapNavigator-: filtered nodes by row {nodes_by_row}')
 
         for node in nodes_by_row:
             # would likely need to figure out more efficient way of doing this 
@@ -147,44 +208,56 @@ class MapNavigator:
                         best[child_key] = new_score
                         parent[child_key] = key
         
-        end = next(n for n in self.node_map.values() if n.type == "boss")
+        if end_node is None:
+            print(f'-MapNavigator-: end at boss')
+            end = next(n for n in self.node_map.values() if n.type == "boss")
+        else:
+            print(f'-MapNavigator-: Using end node: {end_node}')
+            end = end_node
 
         end_key = max(
             [(end.coords, True), (end.coords, False)], 
             key=lambda k: best.get(k, float('-inf'))
         )
 
-        path = []
+
+        num_nodes_in_path = self.map_height
+        #if self.scores_result:
+        #    old_path = self.scores_result["path"]
+        #else:
+        #    old_path = []
+        new_path = []
         cur = end_key
+
+
+        print(f'-MapNavigator-: Parent length: {len(parent)}')
 
         while cur in parent:
             coord, _ = cur
-            path.append(self.node_map[coord])
+            new_path.append(self.node_map[coord])
             cur = parent[cur]
 
         # add start
-        path.append(self.node_map[cur[0]])
-        path.reverse()
+        new_path.append(self.node_map[cur[0]])
+        
+        #if old_path:
+        #    old_path = old_path[:(num_nodes_in_path - len(new_path))]
+        #    old_path.reverse()
+
+        #new_path.extend(old_path)
+        new_path.reverse()
+
+        print(f'-MapNavigator-: New path: {[n.coords for n in new_path]}')
 
         self.scores_result = {
             "score": best[end_key],
-            "path": path,
+            "path": new_path,
             "dp_table": best
         }
 
         return self.scores_result
 
     def step_to_most_recently_visited_node(self):
-
-        # The log updates when a node is selected, and when the event/combat ends.
-        # This leads to multiple instances of the print statements being printed for the 
-        #   same node.
-        # I will need to implement a stricter system for when this runs, instead of running 
-        # every time the log file changes.
-        #
-        # ANALYSE THE LOG FILE BETWEEN THE BEGINNING OF A NODE EVENT/COMBAT AND THE END!!!
-
-
         most_recently_visited_coords = (
             self.current_run_data["visited_map_coords"].pop() 
             if self.current_run_data["visited_map_coords"] 
@@ -197,6 +270,13 @@ class MapNavigator:
             most_recently_visited_node = self.node_map[
                 (most_recently_visited_coords["col"], most_recently_visited_coords["row"])
             ]
+
+            # If most_recently_visited_node is not in the current determined best path, 
+            # recalculate the path using most_recently_visited_node as the new start.
+
+            if not self.scores_result or most_recently_visited_node not in self.scores_result["path"]:
+                self.score_paths(most_recently_visited_node)
+
             #if most_recently_visited_node is not self.current_node:
             return self._step_until(most_recently_visited_node)
 
@@ -234,7 +314,19 @@ class MapNavigator:
             direction_str = 'Go straight!'
         return f'At node {node.coords} of type {node.type}\n{direction_str}'
     
+    def get_direction_str(self):
+        return self._get_next_direction_str()
 
     def update_run_data(self, data):
-        if self.current_run_data and self.current_run_data is not data:
+        # Update data if visited coords differ
+        if self.current_run_data and (
+            self.current_run_data["visited_map_coords"]
+            is not data["visited_map_coords"]
+        ):
             self.current_run_data = data
+            self.score_paths(None)
+
+        if data["current_act_index"] != self.current_act:
+            self.current_act = data["current_act_index"]
+            self.map_height = data["acts"][self.current_act]["saved_map"]["height"] + 1
+            print(f'Moving on to act {self.current_act}, map height: {self.map_height}')
