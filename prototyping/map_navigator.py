@@ -1,11 +1,13 @@
-from constants import *
 from map_types import *
+from path_config import PathOptions, PathConfig
 
-from path_config import PathOptions
+import logging
 
+logging.basicConfig(level=logging.INFO)
+logging.info("Logging initialized")
 
 class Node:
-    def __init__(self, type, coords):
+    def __init__(self, type: str, coords: tuple):
         self.type = type
         self.coords = coords
         self.children = []
@@ -15,42 +17,44 @@ class Node:
     
     def get_children(self):
         return self.children
-
-
-class MapNavigator:
-    '''
-    A class for navigating the map.
-    It determines the best path through the map 
-      based on the available data and the user's preferences.
-    '''
-    def __init__(
-        self, 
-        current_run_data = None,
-        path_option = None
-    ):
-        self.current_run_data = current_run_data
-        
-        self.path_option = path_option
-        self.node_map = {}
-        self.scores_result = None
-        self.current_node = None
-
-        self.current_act = None
-        self.map_height = None
-
-        self.construct_node_map()
-        print(f'-MapNavigator-: Node map constructed: {len(self.node_map)} nodes')
-        self.step_to_most_recently_visited_node()
     
+class MapNavigator:
+    def __init__(self, map_data: MapData):
+        self.map_data = map_data
 
-    #####################
-    #   CONSTRUCT MAP   #
-    #####################
-    def _construct_nodes(self, data: MapData):
-        '''Construct all nodes.'''
-        start = data["start"]
-        end = data["boss"]
-        points = data["points"]
+        #self.current_act = None - purpose of this class is to navigate the map
+        # it doesn't care what the current act is
+        self.map_height = self.map_data["height"] + 1
+        self.node_map = {}
+        self.current_node = None
+        self.best_path = None
+
+        self.construct_nodes()
+
+    def update_map_data(self, map_data: MapData):
+        self.map_data = map_data
+        self.map_height = self.map_data["height"] + 1
+        self.node_map = {}
+        self.current_node = None
+        self.best_path = None
+
+        self.construct_nodes()
+
+    #######################
+    #   Construct Nodes   #
+    #######################
+    def construct_nodes(self, map_data: MapData = None):
+        if map_data:
+            self.map_data = map_data
+        if self.map_data:
+            return self._construct_nodes()
+        else:
+            raise ValueError("Invalid map data")
+
+    def _construct_nodes(self):
+        start = self.map_data["start"]
+        end = self.map_data["boss"]
+        points = self.map_data["points"]
 
         # Create start node and add to node map
         start_coord = (start["coord"]["col"], start["coord"]["row"])
@@ -96,73 +100,49 @@ class MapNavigator:
         
         # temp bool return val
         return True
-    
-    def construct_node_map(self):
-        self.current_act = self.current_run_data["current_act_index"]
-        map_data = self.current_run_data["acts"][self.current_act]["saved_map"]
-        self.map_height = self.current_run_data["acts"][self.current_act]["saved_map"]["height"] + 1
-        return self._construct_nodes(map_data)
+        
 
-
-    ###########################################
-    #   DYNAMIC PROGRAMMING - SCORING PATHS   #
-    ###########################################
-    #def score_paths(self, config: PathOptions, start_node: Node = None):
-    def score_paths(self, start_node: Node = None):
-        config = self.path_option.value
+    # Function for getting score based on selected path option
+    def get_best_path(self, config: PathOptions, start_node: Node = None):
+        path_config = config.value
 
         results = {}
 
-        # should only occur if app is started while in the middle of a run
-        # will need to reconstruct the path the user took previously, and 
-        # combine it with the newly calculated path from their current position 
-        # to the boss to get the full path.
-        if start_node.type is not "ancient" or start_node.type is not "boss":
-            # get results from path user has taken already
-            old_results = self._score_paths(config, None, start_node)
-            # get results of new path
-            new_results = self._score_paths(config, start_node, None)
+        if start_node.type != "ancient" or start_node.type != "boss":
+            past_result = self._calculate_scores(path_config, None, start_node)
+            future_result = self._calculate_scores(path_config, start_node, None)
 
-            # Combine the old and new paths
-            full_path = old_results["path"] + new_results["path"][1:]
+            full_path = past_result["path"] + future_result["path"]
+            full_score = past_result["score"] = future_result["score"]
 
-            print(f'-MapNavigator-: Combined path: {full_path}')
-
-            # the rest of the results values take on new_results
             results = {
-                "score": new_results["score"] + old_results["score"],
+                "start_node": past_result["start_node"],
+                "score": full_score,
                 "path": full_path,
-                "dp_table": new_results["dp_table"]
+                "dp_table": future_result["dp_table"]
             }
-
         else:
-            # get results of the current path
-            results = self._score_paths(config, start_node, None)
-
-        self.scores_result = results
+            results = self._calculate_scores(path_config, None, None)
+        
+        self.best_path = results["path"]
 
         return results
 
+    def _calculate_scores(self, config: PathConfig, start_node: Node = None, end_node: Node = None):
 
-
-    def _score_paths(self, config: PathOptions, start_node: Node = None, end_node: Node = None):
-
+        
         best = {} # best scores
         parent = {} # previous nodes
-        start = None
 
+        start = None
         if start_node is None:
-            print(f'-MapNavigator-: start from beginning')
             start = next(n for n in self.node_map.values() if n.type == "ancient")
         else:
-            print(f'-MapNavigator-: Using start node: {start_node}')
             start = start_node
-
-        # state = (coord, can_take_elite: bool)
-        best[(start.coords, True)] = 0
+        
+        best[start.coords] = 0
 
         nodes_by_row = sorted(self.node_map.values(), key=lambda n: n.coords[1])
-
         
         if start_node is None:
             # Filter nodes to only include those on a row below the end node
@@ -170,163 +150,114 @@ class MapNavigator:
         else:
             # Filter nodes to only include those on a row at or above the start node
             nodes_by_row = [n for n in nodes_by_row if n.coords[1] >= start.coords[1]]
+    
+        for n in nodes_by_row:
+            key = n.coords
 
-        print(f'-MapNavigator-: filtered nodes by row {nodes_by_row}')
+            if key not in best:
+                continue
 
-        for node in nodes_by_row:
-            # would likely need to figure out more efficient way of doing this 
-            # if/when more states are added
-            for can_take_elite in [True, False]:
-                key = (node.coords, can_take_elite)
+            current_score = best[key]
 
-                if key not in best:
-                    continue
+            for child in n.children:
+                child_type = child.type
+                # any condition handling would go here
 
-                current_score = best[key]
+                # scoring
+                new_score = current_score + config.weights.get(child_type, 0)
 
-                for child in node.children:
-                    child_type = child.type
+                child_key = child.coords
 
-
-                    # --- Condition Handling ---
-                    new_can_take_elite = can_take_elite
-                    # skip if does not match with config
-                    if config.no_consecutive_elites:
-                        if child_type == "elite":
-                            if not can_take_elite:
-                                continue
-                            new_can_take_elite = False
-                        elif child_type == "rest_site":
-                            new_can_take_elite = True
-                    
-                    # --- Scoring ---
-                    new_score = current_score + config.weights.get(child_type, 0)
-
-                    child_key = (child.coords, new_can_take_elite)
-
-                    if child_key not in best or best[child_key] < new_score:
-                        best[child_key] = new_score
-                        parent[child_key] = key
+                if child_key not in best or new_score > best[child_key]:
+                    best[child_key] = new_score
+                    parent[child_key] = key
         
+        end = None
         if end_node is None:
-            print(f'-MapNavigator-: end at boss')
             end = next(n for n in self.node_map.values() if n.type == "boss")
         else:
-            print(f'-MapNavigator-: Using end node: {end_node}')
             end = end_node
 
         end_key = max(
-            [(end.coords, True), (end.coords, False)], 
+            [end.coords],
             key=lambda k: best.get(k, float('-inf'))
         )
 
-
-        num_nodes_in_path = self.map_height
-        #if self.scores_result:
-        #    old_path = self.scores_result["path"]
-        #else:
-        #    old_path = []
-        new_path = []
+        path = []
         cur = end_key
 
-
-        print(f'-MapNavigator-: Parent length: {len(parent)}')
-
         while cur in parent:
-            coord, _ = cur
-            new_path.append(self.node_map[coord])
+            coord = cur
+            path.append(self.node_map[coord])
             cur = parent[cur]
 
         # add start
-        new_path.append(self.node_map[cur[0]])
-        
-        #if old_path:
-        #    old_path = old_path[:(num_nodes_in_path - len(new_path))]
-        #    old_path.reverse()
+        path.append(self.node_map[cur])
+        path.reverse()
 
-        #new_path.extend(old_path)
-        new_path.reverse()
+        print(f'-MapNavigator-: New path: {[n.coords for n in path]}')
 
-        print(f'-MapNavigator-: New path: {[n.coords for n in new_path]}')
-
-        self.scores_result = {
+        result = {
+            "start_node": start,
             "score": best[end_key],
-            "path": new_path,
+            "path": path,
             "dp_table": best
         }
 
-        return self.scores_result
-
-    def step_to_most_recently_visited_node(self):
-        most_recently_visited_coords = (
-            self.current_run_data["visited_map_coords"].pop() 
-            if self.current_run_data["visited_map_coords"] 
-            else None
-        )
-
-        print(f"-MapNavigator-: most_recently_visited_coords: {most_recently_visited_coords}")
-
-        if most_recently_visited_coords is not None:
-            most_recently_visited_node = self.node_map[
-                (most_recently_visited_coords["col"], most_recently_visited_coords["row"])
-            ]
-
-            # If most_recently_visited_node is not in the current determined best path, 
-            # recalculate the path using most_recently_visited_node as the new start.
-
-            if not self.scores_result or most_recently_visited_node not in self.scores_result["path"]:
-                self.score_paths(most_recently_visited_node)
-
-            #if most_recently_visited_node is not self.current_node:
-            return self._step_until(most_recently_visited_node)
-
-        
-        return "NODE STEPPING FAILURE!!"
-
-    def _step_until(self, node: Node):
-        path = self.scores_result["path"]
-        for n in path:
-            if n == node:
-                self.current_node = n
-                break
-        
-        return self._get_next_direction_str()
-
-    def _get_next_direction_str(self):
-        node = self.current_node
-        path = self.scores_result["path"]
-        i = path.index(node)
-        direction_str = ""
-        node_children = node.children
-
-        if len(node_children) > 1:
-            next_step_direction = ""
-            node_children_cols = [c.coords[0] for c in node_children]
-            if path[i+1].coords[0] == max(node_children_cols):
-                next_step_direction = "right"
-            elif path[i+1].coords[0] == min(node_children_cols):
-                next_step_direction = "left"
-            else:
-                next_step_direction = "middle"
-            
-            direction_str = f'Go {next_step_direction}'
-        else:
-            direction_str = 'Go straight!'
-        return f'At node {node.coords} of type {node.type}\n{direction_str}'
+        return result
     
-    def get_direction_str(self):
-        return self._get_next_direction_str()
+    def step_to_coords_in_path(self, coords: tuple):
+        logging.info(f"-MapNavigator- [step_to_coords_in_path()]: Coords: {coords}")
+        path = self.best_path
+        logging.info(f"-MapNavigator- [step_to_coords_in_path()]: best path: {path}")
+        node = self.node_map.get(coords)
+        logging.info(f"-MapNavigator- [step_to_coords_in_path()]: Node: {node}")
+        if node in path:
+            self.current_node = node
 
-    def update_run_data(self, data):
-        # Update data if visited coords differ
-        if self.current_run_data and (
-            self.current_run_data["visited_map_coords"]
-            is not data["visited_map_coords"]
-        ):
-            self.current_run_data = data
-            self.score_paths(None)
+            return self.get_direction_to_next_node()
+        else:
+            print(f'-MapNavigator-: Node {node.coords} is not in the best path')
+    
+    def step_to_node_in_path(self, node: Node):
+        path = self.best_path
+        if node in path:
+            self.current_node = node
 
-        if data["current_act_index"] != self.current_act:
-            self.current_act = data["current_act_index"]
-            self.map_height = data["acts"][self.current_act]["saved_map"]["height"] + 1
-            print(f'Moving on to act {self.current_act}, map height: {self.map_height}')
+            return self.get_direction_to_next_node()
+        else:
+            print(f'-MapNavigator-: Node {node.coords} is not in the best path')
+
+    def get_direction_to_next_node(self):
+        logging.info(f"-MapNavigator- [get_direction_to_next_node()]")
+        if not self.best_path or not self.current_node:
+            return "No best path or current node available"
+
+        
+        current_index = self.best_path.index(self.current_node)
+        if current_index < len(self.best_path) - 1:
+            next_node = self.best_path[current_index + 1]
+            return self._get_direction_str_between_nodes(self.current_node, next_node)
+        else:
+            return "At the end of the path"
+        
+    def _get_direction_str_between_nodes(self, node1: Node, node2: Node):
+        if not node1 or not node2:
+            return "Invalid nodes"
+
+        node_children = node1.children
+        node2_index = node_children.index(node2)
+        if len(node_children) == 1:
+            return "Go straight"
+        else:
+            if node2_index == 0:
+                return "Go left"
+            elif node2_index == len(node_children) - 1:
+                return "Go right"
+            elif len(node_children) == 4:
+                if node2_index == 1:
+                    return "Go slightly left"
+                elif node2_index == 2:
+                    return "Go slightly right"
+            else:
+                return "Go straight"

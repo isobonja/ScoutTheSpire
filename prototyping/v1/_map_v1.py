@@ -6,7 +6,7 @@ import os
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
-from path_config import PathOptions
+from prototyping.v1.path_config import PathOptions
 
 CURRENT_SAVE_LOG_PATH = "C:\\Users\\User\\AppData\\Roaming\\SlayTheSpire2\\steam\\76561198052895501\\profile1\\saves\\current_run.save"
 CURRENT_SAVE_LOG_PATH_END = "current_run.save"
