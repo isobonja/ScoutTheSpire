@@ -1,4 +1,4 @@
-export type PanelType = 'profile' | 'map' | 'graph';
+export type PanelType = 'profile' | 'discoveries' | 'run_history' | 'map' | 'graph';
 
 export type CharacterName = (
   'ironclad' |
