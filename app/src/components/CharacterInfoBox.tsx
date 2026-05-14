@@ -1,8 +1,11 @@
 import { CHARACTER_RESTS } from "@/constants/characters";
-import { CharacterID, CharacterName } from "@/types/general";
+import type { CharacterID, CharacterName } from "@/types/general";
 import { capitalize, formatSecondsToHMS } from "@/utils/general";
 import FlameIcon from "@/assets/flame.svg?react";
-import { CharacterStats } from "shared/types/profileData";
+import type { CharacterStats } from "shared/types/profileData";
+import AccolateBadge from "./AccolateBadge";
+import { ScrollArea, ScrollBar } from "./ui/scroll-area";
+import type { CharacterBadgeInfoFull } from "shared/types/badges";
 
 
 type CharacterInfoBoxProps = {
@@ -11,9 +14,10 @@ type CharacterInfoBoxProps = {
     name: CharacterName;
   };
   info: CharacterStats | null;
+  badges: CharacterBadgeInfoFull[];
 };
 
-function CharacterInfoBox({ character, info }: CharacterInfoBoxProps) {
+function CharacterInfoBox({ character, info, badges }: CharacterInfoBoxProps) {
 
   const totalRuns = () => {
     if (!info) return 0;
@@ -33,7 +37,7 @@ function CharacterInfoBox({ character, info }: CharacterInfoBoxProps) {
         </div>
 
         {/* Character Info */}
-        <div className='space-y-2 w-full flex flex-col'>
+        <div className='space-y-2 w-full flex flex-col min-h-0 h-80'>
           <h2 className='text-2xl text-blue-300 font-bold font-heading underline underline-offset-4'>Statistics</h2>
           {/* Character Stats */}
           <div className='grid grid-cols-2 w-full text-xl space-y-2 gap-x-2'>
@@ -50,7 +54,7 @@ function CharacterInfoBox({ character, info }: CharacterInfoBoxProps) {
               <div className='relative inline'>
                 <span className='relative z-10'>{info?.max_ascension}</span>
                 {info?.max_ascension == 10 &&
-                  <FlameIcon className='absolute inline -left-4 -top-6 text-amber-500 fill-amber-700 z-0' />
+                  <FlameIcon className='absolute inline -left-4.25 -top-6 text-amber-500 fill-amber-700 z-0' />
                 }
               </div>
             </div>
@@ -61,16 +65,15 @@ function CharacterInfoBox({ character, info }: CharacterInfoBoxProps) {
           </div>
 
           {/* Badges */}
-          <div className='bg-slate-900 rounded-lg p-2 flex-1'>
+          <ScrollArea className='bg-slate-900 rounded-lg p-2 flex-1 min-h-0 overflow-hidden'>
             <h2 className='text-lg font-bold text-blue-300 ps-2 pb-2 underline'>Badges</h2>
-            <div className='flex flex-wrap gap-2 h-full'>
-              {info?.badges?.map((badge, index) => (
-                <span key={index} className='bg-blue-500 text-white px-2 py-1 rounded-md text-sm'>
-                  {badge.id}
-                </span>
+            <div className='flex flex-wrap gap-2 overflow-y-visible h-full'>
+              {badges && badges.map((badge) => (
+                <AccolateBadge key={`${character.id}_${badge.id}_${badge.rarity}`} badge={badge} />
               ))}
             </div>
-          </div>
+            <ScrollBar />
+          </ScrollArea>
         </div>
       </div>
       

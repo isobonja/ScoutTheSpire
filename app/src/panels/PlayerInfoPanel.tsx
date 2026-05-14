@@ -2,9 +2,10 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { capitalize, formatSecondsToHMS } from "@/utils/general";
 import { CHARACTER_COLORS, CHARACTER_ICONS, CHARACTER_RESTS, CHARACTERS } from "@/constants/characters";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ProfileSaveData } from "shared/types/profileData";
 import CharacterInfoBox from "@/components/CharacterInfoBox";
+import { BadgeData, CharacterBadgeInfoFull } from "shared/types/badges";
 
 type PlayerInfoPanelProps = {
   active: boolean;
@@ -14,6 +15,7 @@ type PlayerInfoPanelProps = {
 function PlayerInfoPanel(
   { active, profileData }: PlayerInfoPanelProps
 ) {
+  const [badgeData, setBadgeData] = useState<BadgeData[]>([]);
   const totalWinLoss = useMemo(() => {
     const res = { wins: 0, losses: 0 };
     if (!profileData) return res;
@@ -31,7 +33,81 @@ function PlayerInfoPanel(
       const img = new Image()
       img.src = src
     })
+
+    async function fetchBadgeData() {
+      try {
+        const data = await window.api.fetchBadgeData();
+        setBadgeData(data);
+      } catch (error) {
+        console.error('Error fetching badge data:', error);
+      }
+    }
+
+    fetchBadgeData();
   }, [])
+
+  const characterBadges: Record<string, CharacterBadgeInfoFull[]> = useMemo(() => {
+    if (!profileData) return {};
+
+    /*
+     Each character_stats has list of badges of type CharacterBadgeData
+        { count, id, rarity }
+    For each character, we want to filter badgeData to only include badges 
+    that have been achieved by each character, including the rarities.
+
+    I created a new type CharacterBadgeInfoFull that combines CharacterBadgeData 
+    and BadgeData. 
+
+    We will construct a map of character ID to list of CharacterBadgeInfoFull, 
+    which will be used to display badge info in the CharacterInfoBox for each 
+    character.
+    */
+
+    const charBadgeMap: Record<string, CharacterBadgeInfoFull[]> = {};
+    CHARACTERS.forEach((char) => {
+      const charStats = profileData.character_stats.find((c) => c.id === char.id);
+      if (!charStats) {
+        charBadgeMap[char.id] = [];
+        return;
+      }
+
+      const charBadges = charStats.badges.flatMap((cb) => {
+        const currBadgeData = badgeData.find((bd) => bd.id === cb.id)
+        if (!currBadgeData) {
+          return [] 
+        }
+        const tier = currBadgeData.tiers.find((t) => t.rarity === cb.rarity)
+        if (!tier) {
+          console.warn("No badge tier")
+          return []
+        }
+
+        return {
+          ...currBadgeData,
+          ...cb,
+          tier_info: tier
+        }
+      })
+      charBadgeMap[char.id] = charBadges.sort((a, b) => {
+        // Sort by ID, then rarity
+        if (a.id !== b.id) {
+          return a.id.localeCompare(b.id);
+        }
+        // Bronze < Silver < Gold
+
+        const rarityOrder: Record<string, number> = {
+          'bronze': 0,
+          'silver': 1,
+          'gold': 2
+        };
+        return (rarityOrder[a.rarity] || 0) - (rarityOrder[b.rarity] || 0);
+      });
+
+    });
+
+    return charBadgeMap;
+  
+  }, [profileData, badgeData]);
 
   return (
     <div className='h-full' hidden={!active}>
@@ -98,7 +174,11 @@ function PlayerInfoPanel(
                 relative
               `}
             >
-              <CharacterInfoBox character={char} info={profileData?.character_stats.find((c) => c.id === char.id) || null} />
+              <CharacterInfoBox 
+                character={char} 
+                info={profileData?.character_stats.find((c) => c.id === char.id) || null} 
+                badges={characterBadges[char.id]}
+              />
             </TabsContent>
           ))}
         </Tabs>

@@ -5,6 +5,7 @@ import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/componen
 import { ProfileSaveData } from '../shared/types/profileData'
 import { PanelType } from './types/general'
 import PlayerInfoPanel from './panels/PlayerInfoPanel'
+import SpireCodexChangelog from './components/SpireCodexChangelog'
 
 function App() {
   const DATA_REFRESH_INTERVAL = 30000; // ms
@@ -32,6 +33,8 @@ function App() {
   return (
     <div className='h-screen flex flex-col'>
       <TopBar />
+      {/* Put Changelog in designated area later */}
+      {/*<SpireCodexChangelog className='max-h-80 max-w-64 overflow-y-scroll' />*/}
       <ResizablePanelGroup orientation='horizontal' className='flex-1 flex min-h-0 w-full'>
         <ResizablePanel className='' defaultSize={'10%'} minSize={'128px'} maxSize={'20%'}>
           <SideNav selected={selectedPanel} onPanelChange={setSelectedPanel} />

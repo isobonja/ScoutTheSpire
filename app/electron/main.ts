@@ -1,10 +1,14 @@
-import { app, BrowserWindow, ipcMain } from 'electron'
+import { app, BrowserWindow, ipcMain, protocol } from 'electron'
 import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import fs from 'fs';
 
 import type { ProfileSaveData } from '../shared/types/profileData'
+
+import { fetchBadgeData } from './requests';
+import { cacheAllBadgeImages } from './cache';
+import { BadgeData } from 'shared/types/badges';
 
 const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -78,9 +82,16 @@ function readProfileSave(): ProfileSaveData | null {
 
 // IPC Handlers
 
+let cachedBadgeData: BadgeData[] = [];
+
 ipcMain.handle('read-profile-save', () => {
   //console.log('Reading profile save data');
   return readProfileSave();
+});
+
+ipcMain.handle('fetch-badge-data', async () => {
+  //return await fetchBadgeData();
+  return cachedBadgeData;
 });
 
 
@@ -128,8 +139,61 @@ app.on('activate', () => {
 })
 
 //app.whenReady().then(createWindow)
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
   profileSavePath = getProfileSavePath();
+
+  protocol.handle("badge", async (request) => {
+    try {
+      const url = new URL(request.url);
+
+      const safeName = path.basename(
+        url.hostname + url.pathname
+      );
+
+      console.log("SAFE NAME:", safeName);
+
+      const filePath = path.join(
+        app.getPath("userData"),
+        "cache",
+        "badges",
+        safeName
+      );
+
+      if (!fs.existsSync(filePath)) {
+        return new Response("Not found", {
+          status: 404,
+        });
+      }
+
+      const data = await fs.promises.readFile(filePath);
+
+      return new Response(data, {
+        headers: {
+          "Content-Type": "image/png",
+        },
+      });
+    } catch (err) {
+      console.error("Badge protocol error", err);
+
+      return new Response("Internal error", {
+        status: 500,
+      });
+    }
+  });
+
+  try {
+    const badgeData = await fetchBadgeData();
+
+    //console.log(`Fetched ${badgeData.length} badges from API`);
+
+    cachedBadgeData = await cacheAllBadgeImages(
+      badgeData
+    );
+
+    console.log("Badge cache ready");
+  } catch (err) {
+    console.error("Failed to initialize badge cache", err);
+  }
 
   createWindow();
 })

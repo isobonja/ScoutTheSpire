@@ -25,4 +25,5 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
 
 contextBridge.exposeInMainWorld('api', {
   readProfileSave: () => ipcRenderer.invoke('read-profile-save'),
+  fetchBadgeData: () => ipcRenderer.invoke('fetch-badge-data')
 })

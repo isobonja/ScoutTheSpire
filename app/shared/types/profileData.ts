@@ -1,3 +1,6 @@
+import { createRequire } from 'module'
+import { CharacterBadgeData } from './badges'
+
 export type ProfileSaveData = {
   ancient_stats: AncientStats[]
   architect_damage: number
@@ -36,11 +39,7 @@ type CardStats = {
 }
 
 export type CharacterStats = {
-  badges: {
-    count: number
-    id: string
-    rarity: string
-  }[]
+  badges: CharacterBadgeData[]
   best_win_streak: number
   current_streak: number
   fastest_win_time: number
