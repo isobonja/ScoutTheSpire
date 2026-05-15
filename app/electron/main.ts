@@ -9,6 +9,18 @@ import type { ProfileSaveData } from '../shared/types/profileData'
 import { fetchBadgeData } from './requests';
 import { cacheAllBadgeImages } from './cache';
 import { BadgeData } from 'shared/types/badges';
+import { APP_NAME } from '../../shared/constants';
+
+app.setName("ScoutTheSpire");
+
+app.setPath(
+  "userData",
+  path.join(
+    app.getPath("appData"),
+    APP_NAME,
+    "app"
+  )
+);
 
 const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -150,7 +162,6 @@ app.whenReady().then(async () => {
         url.hostname + url.pathname
       );
 
-      console.log("SAFE NAME:", safeName);
 
       const filePath = path.join(
         app.getPath("userData"),
@@ -158,6 +169,8 @@ app.whenReady().then(async () => {
         "badges",
         safeName
       );
+
+      console.log("filePath:", filePath);
 
       if (!fs.existsSync(filePath)) {
         return new Response("Not found", {
@@ -184,7 +197,7 @@ app.whenReady().then(async () => {
   try {
     const badgeData = await fetchBadgeData();
 
-    //console.log(`Fetched ${badgeData.length} badges from API`);
+    console.log(`Fetched ${badgeData.length} badges from API`);
 
     cachedBadgeData = await cacheAllBadgeImages(
       badgeData

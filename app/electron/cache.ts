@@ -5,53 +5,22 @@ import { app } from "electron";
 import type { BadgeData } from "shared/types/badges";
 import { SPIRE_CODEX_BASE_URL } from "../shared/constants";
 
-const badgeCacheDir = path.join(
-  app.getPath("userData"),
-  "cache",
-  "badges"
-);
-
-export async function ensureBadgeCache() {
-  if (!fs.existsSync(badgeCacheDir)) {
-    fs.mkdirSync(badgeCacheDir, { recursive: true });
+export async function ensureBadgeCache(dir: string) {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
   }
 }
-
-/*export async function cacheBadgeImage(
-  badgeId: string,
-  imageUrl: string
-) {
-  await ensureBadgeCache();
-
-  const ext = path.extname(imageUrl) || ".png";
-
-  const localPath = path.join(
-    badgeCacheDir,
-    `${badgeId}${ext}`
-  );
-
-  // Skip if already cached
-  if (fs.existsSync(localPath)) {
-    return localPath;
-  }
-
-  const response = await axios.get(imageUrl, {
-    responseType: "arraybuffer",
-  });
-
-  fs.writeFileSync(localPath, response.data);
-
-  return localPath;
-}*/
 
 export async function cacheAllBadgeImages(
   badges: BadgeData[]
 ) {
-  if (!fs.existsSync(badgeCacheDir)) {
-    fs.mkdirSync(badgeCacheDir, {
-      recursive: true,
-    });
-  }
+  const badgeCacheDir = path.join(
+    app.getPath("userData"),
+    "cache",
+    "badges"
+  );
+
+  await ensureBadgeCache(badgeCacheDir);
 
   return Promise.all(
     badges.map(async (badge) => {

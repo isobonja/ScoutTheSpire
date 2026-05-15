@@ -12111,14 +12111,7 @@ var _eval = EvalError;
 var range = RangeError;
 var ref = ReferenceError;
 var syntax = SyntaxError;
-var type;
-var hasRequiredType;
-function requireType() {
-  if (hasRequiredType) return type;
-  hasRequiredType = 1;
-  type = TypeError;
-  return type;
-}
+var type = TypeError;
 var uri = URIError;
 var abs$1 = Math.abs;
 var floor$1 = Math.floor;
@@ -12364,7 +12357,7 @@ function requireCallBindApplyHelpers() {
   if (hasRequiredCallBindApplyHelpers) return callBindApplyHelpers;
   hasRequiredCallBindApplyHelpers = 1;
   var bind3 = functionBind;
-  var $TypeError2 = requireType();
+  var $TypeError2 = type;
   var $call2 = requireFunctionCall();
   var $actualApply = requireActualApply();
   callBindApplyHelpers = function callBindBasic(args) {
@@ -12437,7 +12430,7 @@ var $EvalError = _eval;
 var $RangeError = range;
 var $ReferenceError = ref;
 var $SyntaxError = syntax;
-var $TypeError$1 = requireType();
+var $TypeError$1 = type;
 var $URIError = uri;
 var abs = abs$1;
 var floor = floor$1;
@@ -12768,7 +12761,7 @@ var GetIntrinsic2 = getIntrinsic;
 var $defineProperty = GetIntrinsic2("%Object.defineProperty%", true);
 var hasToStringTag = requireShams()();
 var hasOwn$1 = hasown;
-var $TypeError = requireType();
+var $TypeError = type;
 var toStringTag = hasToStringTag ? Symbol.toStringTag : null;
 var esSetTostringtag = function setToStringTag(object, value) {
   var overrideIfSet = arguments.length > 2 && !!arguments[2] && arguments[2].force;
@@ -18586,17 +18579,18 @@ async function fetchBadgeData() {
     throw error;
   }
 }
-const badgeCacheDir = path$1.join(
-  app.getPath("userData"),
-  "cache",
-  "badges"
-);
-async function cacheAllBadgeImages(badges) {
-  if (!fs$1.existsSync(badgeCacheDir)) {
-    fs$1.mkdirSync(badgeCacheDir, {
-      recursive: true
-    });
+async function ensureBadgeCache(dir) {
+  if (!fs$1.existsSync(dir)) {
+    fs$1.mkdirSync(dir, { recursive: true });
   }
+}
+async function cacheAllBadgeImages(badges) {
+  const badgeCacheDir = path$1.join(
+    app.getPath("userData"),
+    "cache",
+    "badges"
+  );
+  await ensureBadgeCache(badgeCacheDir);
   return Promise.all(
     badges.map(async (badge) => {
       try {
@@ -18632,6 +18626,16 @@ async function cacheAllBadgeImages(badges) {
     })
   );
 }
+const APP_NAME = "ScoutTheSpire";
+app.setName("ScoutTheSpire");
+app.setPath(
+  "userData",
+  path$2.join(
+    app.getPath("appData"),
+    APP_NAME,
+    "app"
+  )
+);
 createRequire(import.meta.url);
 const __dirname$1 = path$2.dirname(fileURLToPath(import.meta.url));
 process.env.APP_ROOT = path$2.join(__dirname$1, "..");
@@ -18716,13 +18720,13 @@ app.whenReady().then(async () => {
       const safeName = path$2.basename(
         url2.hostname + url2.pathname
       );
-      console.log("SAFE NAME:", safeName);
       const filePath = path$2.join(
         app.getPath("userData"),
         "cache",
         "badges",
         safeName
       );
+      console.log("filePath:", filePath);
       if (!fs$1.existsSync(filePath)) {
         return new Response("Not found", {
           status: 404
@@ -18743,6 +18747,7 @@ app.whenReady().then(async () => {
   });
   try {
     const badgeData = await fetchBadgeData();
+    console.log(`Fetched ${badgeData.length} badges from API`);
     cachedBadgeData = await cacheAllBadgeImages(
       badgeData
     );
