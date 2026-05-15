@@ -85,7 +85,8 @@ function PlayerInfoPanel(
         return {
           ...currBadgeData,
           ...cb,
-          tier_info: tier
+          tier_info: tier,
+          description: tier.description, // Override description to be tier-specific
         }
       })
       charBadgeMap[char.id] = charBadges.sort((a, b) => {
