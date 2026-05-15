@@ -22,5 +22,6 @@ electron.contextBridge.exposeInMainWorld("ipcRenderer", {
 });
 electron.contextBridge.exposeInMainWorld("api", {
   readProfileSave: () => electron.ipcRenderer.invoke("read-profile-save"),
-  fetchBadgeData: () => electron.ipcRenderer.invoke("fetch-badge-data")
+  fetchBadgeData: () => electron.ipcRenderer.invoke("fetch-badge-data"),
+  getSteamAvatarURL: () => electron.ipcRenderer.invoke("get-steam-avatar-url")
 });

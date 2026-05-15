@@ -10,6 +10,7 @@ import { fetchBadgeData } from './requests';
 import { cacheAllBadgeImages } from './cache';
 import { BadgeData } from 'shared/types/badges';
 import { APP_NAME } from '../../shared/constants';
+import { getSteamPath } from './utils';
 
 app.setName("ScoutTheSpire");
 
@@ -44,6 +45,7 @@ export const RENDERER_DIST = path.join(process.env.APP_ROOT, 'dist')
 process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path.join(process.env.APP_ROOT, 'public') : RENDERER_DIST
 
 let profileSavePath: string | null = null
+let steamAvatarID: string | null = null
 
 const getProfileSavePath = () => {
   const steamDir = path.join(
@@ -62,6 +64,8 @@ const getProfileSavePath = () => {
     return null;
   }
 
+  steamAvatarID = idFolder.name;
+
   const jsonPath = path.join(
     steamDir,
     idFolder.name,
@@ -73,6 +77,30 @@ const getProfileSavePath = () => {
   //console.log(jsonPath);
 
   return jsonPath;
+}
+
+async function getSteamAvatarURL(): Promise<string | null> {
+  if (!steamAvatarID) {
+    return null;
+  }
+
+  const steamPath = await getSteamPath();
+  if (!steamPath) {
+    return null;
+  }
+
+  const avatarPath = path.join(
+    steamPath,
+    "config",
+    "avatarcache",
+    `${steamAvatarID}.png`
+  );
+
+  if (!fs.existsSync(avatarPath)) {
+    return null;
+  }
+
+  return `steam-avatar:///${steamAvatarID}.png`;
 }
 
 function readProfileSave(): ProfileSaveData | null {
@@ -104,6 +132,10 @@ ipcMain.handle('read-profile-save', () => {
 ipcMain.handle('fetch-badge-data', async () => {
   //return await fetchBadgeData();
   return cachedBadgeData;
+});
+
+ipcMain.handle('get-steam-avatar-url', async () => {
+  return await getSteamAvatarURL();
 });
 
 
@@ -193,6 +225,58 @@ app.whenReady().then(async () => {
       });
     }
   });
+
+  protocol.handle(
+    "steam-avatar",
+    async (request) => {
+      try {
+        const steamPath = await getSteamPath();
+
+        if (!steamPath) {
+          return new Response("Steam not found", {
+            status: 404,
+          });
+        }
+
+        const url = new URL(request.url);
+
+        const safeName = path.basename(
+          url.pathname
+        );
+
+        const filePath = path.join(
+          steamPath,
+          "config",
+          "avatarcache",
+          safeName
+        );
+
+        if (!fs.existsSync(filePath)) {
+          return new Response("Not found", {
+            status: 404,
+          });
+        }
+
+        const data =
+          await fs.promises.readFile(filePath);
+
+        return new Response(data, {
+          headers: {
+            "Content-Type": "image/png",
+          },
+        });
+      } catch (err) {
+        console.error(
+          "Steam avatar protocol error",
+          err
+        );
+
+        return new Response("Internal error", {
+          status: 500,
+        });
+      }
+    }
+  );
 
   try {
     const badgeData = await fetchBadgeData();

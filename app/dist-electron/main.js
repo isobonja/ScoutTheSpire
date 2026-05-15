@@ -1,11 +1,11 @@
 import { app, ipcMain, BrowserWindow, protocol } from "electron";
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
-import path$2 from "node:path";
+import path$3 from "node:path";
 import fs$1 from "fs";
 import require$$1 from "util";
 import stream, { Readable } from "stream";
-import path$1, { resolve } from "path";
+import path$2, { resolve } from "path";
 import require$$3 from "http";
 import require$$4 from "https";
 import require$$5 from "url";
@@ -18,6 +18,7 @@ import require$$0$1 from "os";
 import require$$0$2, { EventEmitter } from "events";
 import http2 from "http2";
 import zlib from "zlib";
+import require$$2 from "child_process";
 function bind$2(fn, thisArg) {
   return function wrap2() {
     return fn.apply(thisArg, arguments);
@@ -127,11 +128,11 @@ function forEach(obj, fn, { allOwnKeys = false } = {}) {
     if (isBuffer$1(obj)) {
       return;
     }
-    const keys = allOwnKeys ? Object.getOwnPropertyNames(obj) : Object.keys(obj);
-    const len = keys.length;
+    const keys2 = allOwnKeys ? Object.getOwnPropertyNames(obj) : Object.keys(obj);
+    const len = keys2.length;
     let key;
     for (i = 0; i < len; i++) {
-      key = keys[i];
+      key = keys2[i];
       fn.call(null, obj[key], key, obj);
     }
   }
@@ -141,11 +142,11 @@ function findKey(obj, key) {
     return null;
   }
   key = key.toLowerCase();
-  const keys = Object.keys(obj);
-  let i = keys.length;
+  const keys2 = Object.keys(obj);
+  let i = keys2.length;
   let _key;
   while (i-- > 0) {
-    _key = keys[i];
+    _key = keys2[i];
     if (key === _key.toLowerCase()) {
       return _key;
     }
@@ -679,11 +680,11 @@ let AxiosHeaders$1 = class AxiosHeaders {
     return deleted;
   }
   clear(matcher) {
-    const keys = Object.keys(this);
-    let i = keys.length;
+    const keys2 = Object.keys(this);
+    let i = keys2.length;
     let deleted = false;
     while (i--) {
-      const key = keys[i];
+      const key = keys2[i];
       if (!matcher || matchHeaderValue(this, this[key], key, matcher, true)) {
         delete this[key];
         deleted = true;
@@ -912,7 +913,7 @@ function getDefaultExportFromCjs(x) {
   return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, "default") ? x["default"] : x;
 }
 var Stream$2 = stream.Stream;
-var util$2 = require$$1;
+var util$3 = require$$1;
 var delayed_stream = DelayedStream$1;
 function DelayedStream$1() {
   this.source = null;
@@ -923,7 +924,7 @@ function DelayedStream$1() {
   this._released = false;
   this._bufferedEvents = [];
 }
-util$2.inherits(DelayedStream$1, Stream$2);
+util$3.inherits(DelayedStream$1, Stream$2);
 DelayedStream$1.create = function(source, options) {
   var delayedStream = new this();
   options = options || {};
@@ -996,7 +997,7 @@ DelayedStream$1.prototype._checkIfMaxDataSizeExceeded = function() {
   var message = "DelayedStream#maxDataSize of " + this.maxDataSize + " bytes exceeded.";
   this.emit("error", new Error(message));
 };
-var util$1 = require$$1;
+var util$2 = require$$1;
 var Stream$1 = stream.Stream;
 var DelayedStream = delayed_stream;
 var combined_stream = CombinedStream$1;
@@ -1012,7 +1013,7 @@ function CombinedStream$1() {
   this._insideLoop = false;
   this._pendingNext = false;
 }
-util$1.inherits(CombinedStream$1, Stream$1);
+util$2.inherits(CombinedStream$1, Stream$1);
 CombinedStream$1.create = function(options) {
   var combinedStream = new this();
   options = options || {};
@@ -11877,7 +11878,7 @@ var mimeDb = require$$0;
  */
 (function(exports$1) {
   var db = mimeDb;
-  var extname = path$1.extname;
+  var extname = path$2.extname;
   var EXTRACT_TYPE_REGEXP = /^\s*([^;\s]*)(?:;|\s|$)/;
   var TEXT_TYPE_REGEXP = /^text\//i;
   exports$1.charset = charset;
@@ -12789,8 +12790,8 @@ var populate$1 = function(dst, src2) {
   return dst;
 };
 var CombinedStream = combined_stream;
-var util = require$$1;
-var path = path$1;
+var util$1 = require$$1;
+var path$1 = path$2;
 var http$2 = require$$3;
 var https$1 = require$$4;
 var parseUrl$2 = require$$5.parse;
@@ -12802,9 +12803,9 @@ var asynckit = asynckit$1;
 var setToStringTag2 = esSetTostringtag;
 var hasOwn = hasown;
 var populate = populate$1;
-function FormData$1(options) {
-  if (!(this instanceof FormData$1)) {
-    return new FormData$1(options);
+function FormData$2(options) {
+  if (!(this instanceof FormData$2)) {
+    return new FormData$2(options);
   }
   this._overheadLength = 0;
   this._valueLength = 0;
@@ -12815,10 +12816,10 @@ function FormData$1(options) {
     this[option] = options[option];
   }
 }
-util.inherits(FormData$1, CombinedStream);
-FormData$1.LINE_BREAK = "\r\n";
-FormData$1.DEFAULT_CONTENT_TYPE = "application/octet-stream";
-FormData$1.prototype.append = function(field, value, options) {
+util$1.inherits(FormData$2, CombinedStream);
+FormData$2.LINE_BREAK = "\r\n";
+FormData$2.DEFAULT_CONTENT_TYPE = "application/octet-stream";
+FormData$2.prototype.append = function(field, value, options) {
   options = options || {};
   if (typeof options === "string") {
     options = { filename: options };
@@ -12838,7 +12839,7 @@ FormData$1.prototype.append = function(field, value, options) {
   append2(footer);
   this._trackLength(header, value, options);
 };
-FormData$1.prototype._trackLength = function(header, value, options) {
+FormData$2.prototype._trackLength = function(header, value, options) {
   var valueLength = 0;
   if (options.knownLength != null) {
     valueLength += Number(options.knownLength);
@@ -12848,7 +12849,7 @@ FormData$1.prototype._trackLength = function(header, value, options) {
     valueLength = Buffer.byteLength(value);
   }
   this._valueLength += valueLength;
-  this._overheadLength += Buffer.byteLength(header) + FormData$1.LINE_BREAK.length;
+  this._overheadLength += Buffer.byteLength(header) + FormData$2.LINE_BREAK.length;
   if (!value || !value.path && !(value.readable && hasOwn(value, "httpVersion")) && !(value instanceof Stream)) {
     return;
   }
@@ -12856,7 +12857,7 @@ FormData$1.prototype._trackLength = function(header, value, options) {
     this._valuesToMeasure.push(value);
   }
 };
-FormData$1.prototype._lengthRetriever = function(value, callback) {
+FormData$2.prototype._lengthRetriever = function(value, callback) {
   if (hasOwn(value, "fd")) {
     if (value.end != void 0 && value.end != Infinity && value.start != void 0) {
       callback(null, value.end + 1 - (value.start ? value.start : 0));
@@ -12882,7 +12883,7 @@ FormData$1.prototype._lengthRetriever = function(value, callback) {
     callback("Unknown stream");
   }
 };
-FormData$1.prototype._multiPartHeader = function(field, value, options) {
+FormData$2.prototype._multiPartHeader = function(field, value, options) {
   if (typeof options.header === "string") {
     return options.header;
   }
@@ -12909,26 +12910,26 @@ FormData$1.prototype._multiPartHeader = function(field, value, options) {
         header = [header];
       }
       if (header.length) {
-        contents += prop + ": " + header.join("; ") + FormData$1.LINE_BREAK;
+        contents += prop + ": " + header.join("; ") + FormData$2.LINE_BREAK;
       }
     }
   }
-  return "--" + this.getBoundary() + FormData$1.LINE_BREAK + contents + FormData$1.LINE_BREAK;
+  return "--" + this.getBoundary() + FormData$2.LINE_BREAK + contents + FormData$2.LINE_BREAK;
 };
-FormData$1.prototype._getContentDisposition = function(value, options) {
+FormData$2.prototype._getContentDisposition = function(value, options) {
   var filename;
   if (typeof options.filepath === "string") {
-    filename = path.normalize(options.filepath).replace(/\\/g, "/");
+    filename = path$1.normalize(options.filepath).replace(/\\/g, "/");
   } else if (options.filename || value && (value.name || value.path)) {
-    filename = path.basename(options.filename || value && (value.name || value.path));
+    filename = path$1.basename(options.filename || value && (value.name || value.path));
   } else if (value && value.readable && hasOwn(value, "httpVersion")) {
-    filename = path.basename(value.client._httpMessage.path || "");
+    filename = path$1.basename(value.client._httpMessage.path || "");
   }
   if (filename) {
     return 'filename="' + filename + '"';
   }
 };
-FormData$1.prototype._getContentType = function(value, options) {
+FormData$2.prototype._getContentType = function(value, options) {
   var contentType = options.contentType;
   if (!contentType && value && value.name) {
     contentType = mime.lookup(value.name);
@@ -12943,13 +12944,13 @@ FormData$1.prototype._getContentType = function(value, options) {
     contentType = mime.lookup(options.filepath || options.filename);
   }
   if (!contentType && value && typeof value === "object") {
-    contentType = FormData$1.DEFAULT_CONTENT_TYPE;
+    contentType = FormData$2.DEFAULT_CONTENT_TYPE;
   }
   return contentType;
 };
-FormData$1.prototype._multiPartFooter = function() {
+FormData$2.prototype._multiPartFooter = function() {
   return (function(next) {
-    var footer = FormData$1.LINE_BREAK;
+    var footer = FormData$2.LINE_BREAK;
     var lastPart = this._streams.length === 0;
     if (lastPart) {
       footer += this._lastBoundary();
@@ -12957,10 +12958,10 @@ FormData$1.prototype._multiPartFooter = function() {
     next(footer);
   }).bind(this);
 };
-FormData$1.prototype._lastBoundary = function() {
-  return "--" + this.getBoundary() + "--" + FormData$1.LINE_BREAK;
+FormData$2.prototype._lastBoundary = function() {
+  return "--" + this.getBoundary() + "--" + FormData$2.LINE_BREAK;
 };
-FormData$1.prototype.getHeaders = function(userHeaders) {
+FormData$2.prototype.getHeaders = function(userHeaders) {
   var header;
   var formHeaders = {
     "content-type": "multipart/form-data; boundary=" + this.getBoundary()
@@ -12972,19 +12973,19 @@ FormData$1.prototype.getHeaders = function(userHeaders) {
   }
   return formHeaders;
 };
-FormData$1.prototype.setBoundary = function(boundary) {
+FormData$2.prototype.setBoundary = function(boundary) {
   if (typeof boundary !== "string") {
     throw new TypeError("FormData boundary must be a string");
   }
   this._boundary = boundary;
 };
-FormData$1.prototype.getBoundary = function() {
+FormData$2.prototype.getBoundary = function() {
   if (!this._boundary) {
     this._generateBoundary();
   }
   return this._boundary;
 };
-FormData$1.prototype.getBuffer = function() {
+FormData$2.prototype.getBuffer = function() {
   var dataBuffer = new Buffer.alloc(0);
   var boundary = this.getBoundary();
   for (var i = 0, len = this._streams.length; i < len; i++) {
@@ -12995,16 +12996,16 @@ FormData$1.prototype.getBuffer = function() {
         dataBuffer = Buffer.concat([dataBuffer, Buffer.from(this._streams[i])]);
       }
       if (typeof this._streams[i] !== "string" || this._streams[i].substring(2, boundary.length + 2) !== boundary) {
-        dataBuffer = Buffer.concat([dataBuffer, Buffer.from(FormData$1.LINE_BREAK)]);
+        dataBuffer = Buffer.concat([dataBuffer, Buffer.from(FormData$2.LINE_BREAK)]);
       }
     }
   }
   return Buffer.concat([dataBuffer, Buffer.from(this._lastBoundary())]);
 };
-FormData$1.prototype._generateBoundary = function() {
+FormData$2.prototype._generateBoundary = function() {
   this._boundary = "--------------------------" + crypto.randomBytes(12).toString("hex");
 };
-FormData$1.prototype.getLengthSync = function() {
+FormData$2.prototype.getLengthSync = function() {
   var knownLength = this._overheadLength + this._valueLength;
   if (this._streams.length) {
     knownLength += this._lastBoundary().length;
@@ -13014,14 +13015,14 @@ FormData$1.prototype.getLengthSync = function() {
   }
   return knownLength;
 };
-FormData$1.prototype.hasKnownLength = function() {
+FormData$2.prototype.hasKnownLength = function() {
   var hasKnownLength = true;
   if (this._valuesToMeasure.length) {
     hasKnownLength = false;
   }
   return hasKnownLength;
 };
-FormData$1.prototype.getLength = function(cb) {
+FormData$2.prototype.getLength = function(cb) {
   var knownLength = this._overheadLength + this._valueLength;
   if (this._streams.length) {
     knownLength += this._lastBoundary().length;
@@ -13030,18 +13031,18 @@ FormData$1.prototype.getLength = function(cb) {
     process.nextTick(cb.bind(this, null, knownLength));
     return;
   }
-  asynckit.parallel(this._valuesToMeasure, this._lengthRetriever, function(err, values) {
+  asynckit.parallel(this._valuesToMeasure, this._lengthRetriever, function(err, values2) {
     if (err) {
       cb(err);
       return;
     }
-    values.forEach(function(length) {
+    values2.forEach(function(length) {
       knownLength += length;
     });
     cb(null, knownLength);
   });
 };
-FormData$1.prototype.submit = function(params, cb) {
+FormData$2.prototype.submit = function(params, cb) {
   var request;
   var options;
   var defaults2 = { method: "post" };
@@ -13088,19 +13089,19 @@ FormData$1.prototype.submit = function(params, cb) {
   }).bind(this));
   return request;
 };
-FormData$1.prototype._error = function(err) {
+FormData$2.prototype._error = function(err) {
   if (!this.error) {
     this.error = err;
     this.pause();
     this.emit("error", err);
   }
 };
-FormData$1.prototype.toString = function() {
+FormData$2.prototype.toString = function() {
   return "[object FormData]";
 };
-setToStringTag2(FormData$1.prototype, "FormData");
-var form_data = FormData$1;
-const FormData$2 = /* @__PURE__ */ getDefaultExportFromCjs(form_data);
+setToStringTag2(FormData$2.prototype, "FormData");
+var form_data = FormData$2;
+const FormData$1 = /* @__PURE__ */ getDefaultExportFromCjs(form_data);
 function isVisitable(thing) {
   return utils$1.isPlainObject(thing) || utils$1.isArray(thing);
 }
@@ -13124,7 +13125,7 @@ function toFormData$1(obj, formData, options) {
   if (!utils$1.isObject(obj)) {
     throw new TypeError("target must be an object");
   }
-  formData = formData || new (FormData$2 || FormData)();
+  formData = formData || new (FormData$1 || FormData)();
   options = utils$1.toFlatObject(
     options,
     {
@@ -13369,7 +13370,7 @@ const platform$1 = {
   isNode: true,
   classes: {
     URLSearchParams,
-    FormData: FormData$2,
+    FormData: FormData$1,
     Blob: typeof Blob !== "undefined" && Blob || null
   },
   ALPHABET,
@@ -13415,12 +13416,12 @@ function parsePropPath(name) {
 }
 function arrayToObject(arr) {
   const obj = {};
-  const keys = Object.keys(arr);
+  const keys2 = Object.keys(arr);
   let i;
-  const len = keys.length;
+  const len = keys2.length;
   let key;
   for (i = 0; i < len; i++) {
-    key = keys[i];
+    key = keys2[i];
     obj[key] = arr[key];
   }
   return obj;
@@ -13830,7 +13831,7 @@ function requireCommon() {
     createDebug.enable = enable;
     createDebug.enabled = enabled;
     createDebug.humanize = requireMs();
-    createDebug.destroy = destroy2;
+    createDebug.destroy = destroy3;
     Object.keys(env).forEach((key) => {
       createDebug[key] = env[key];
     });
@@ -13986,7 +13987,7 @@ function requireCommon() {
       }
       return val;
     }
-    function destroy2() {
+    function destroy3() {
       console.warn("Instance method `debug.destroy()` is deprecated and no longer does anything. It will be removed in the next major version of `debug`.");
     }
     createDebug.enable(createDebug.load());
@@ -14441,9 +14442,9 @@ function requireNode() {
     }
     function init(debug2) {
       debug2.inspectOpts = {};
-      const keys = Object.keys(exports$1.inspectOpts);
-      for (let i = 0; i < keys.length; i++) {
-        debug2.inspectOpts[keys[i]] = exports$1.inspectOpts[keys[i]];
+      const keys2 = Object.keys(exports$1.inspectOpts);
+      for (let i = 0; i < keys2.length; i++) {
+        debug2.inspectOpts[keys2[i]] = exports$1.inspectOpts[keys2[i]];
       }
     }
     module.exports = requireCommon()(exports$1);
@@ -14860,11 +14861,11 @@ function isDefaultPort(port, secure) {
 function isHTTPS(protocol2) {
   return typeof protocol2 === "string" ? /^https:?$/i.test(protocol2) : false;
 }
-function omit(obj, ...keys) {
+function omit(obj, ...keys2) {
   const ret = {};
   let key;
   for (key in obj) {
-    if (!keys.includes(key)) {
+    if (!keys2.includes(key)) {
       ret[key] = obj[key];
     }
   }
@@ -15287,14 +15288,14 @@ function wrap(protocols) {
       debug("options", options);
       return new RedirectableRequest(options, callback);
     }
-    function get2(input, options, callback) {
+    function get3(input, options, callback) {
       var wrappedRequest = wrappedProtocol.request(input, options, callback);
       wrappedRequest.end();
       return wrappedRequest;
     }
     Object.defineProperties(wrappedProtocol, {
       request: { value: request, configurable: true, enumerable: true, writable: true },
-      get: { value: get2, configurable: true, enumerable: true, writable: true }
+      get: { value: get3, configurable: true, enumerable: true, writable: true }
     });
   });
   return exports$1;
@@ -17808,10 +17809,10 @@ function assertOptions(options, schema, allowUnknown) {
   if (typeof options !== "object") {
     throw new AxiosError$1("options must be an object", AxiosError$1.ERR_BAD_OPTION_VALUE);
   }
-  const keys = Object.keys(options);
-  let i = keys.length;
+  const keys2 = Object.keys(options);
+  let i = keys2.length;
   while (i-- > 0) {
-    const opt = keys[i];
+    const opt = keys2[i];
     const validator2 = Object.prototype.hasOwnProperty.call(schema, opt) ? schema[opt] : void 0;
     if (validator2) {
       const value = options[opt];
@@ -18214,7 +18215,7 @@ function createInstance(defaultConfig) {
   const instance = bind$2(Axios$1.prototype.request, context);
   utils$1.extend(instance, Axios$1.prototype, context, { allOwnKeys: true });
   utils$1.extend(instance, context, null, { allOwnKeys: true });
-  instance.create = function create2(instanceConfig) {
+  instance.create = function create3(instanceConfig) {
     return createInstance(mergeConfig$1(defaultConfig, instanceConfig));
   };
   return instance;
@@ -18585,7 +18586,7 @@ async function ensureBadgeCache(dir) {
   }
 }
 async function cacheAllBadgeImages(badges) {
-  const badgeCacheDir = path$1.join(
+  const badgeCacheDir = path$2.join(
     app.getPath("userData"),
     "cache",
     "badges"
@@ -18595,8 +18596,8 @@ async function cacheAllBadgeImages(badges) {
     badges.map(async (badge) => {
       try {
         const imgUrl = `${SPIRE_CODEX_BASE_URL}${badge.image_url}`;
-        const ext = path$1.extname(imgUrl) || ".png";
-        const localPath = path$1.join(
+        const ext = path$2.extname(imgUrl) || ".png";
+        const localPath = path$2.join(
           badgeCacheDir,
           `${badge.id}${ext}`
         );
@@ -18627,25 +18628,511 @@ async function cacheAllBadgeImages(badges) {
   );
 }
 const APP_NAME = "ScoutTheSpire";
+var util = require$$1, path = path$2, spawn = require$$2.spawn, HKLM = "HKLM", HKCU = "HKCU", HKCR = "HKCR", HKU = "HKU", HKCC = "HKCC", HIVES = [HKLM, HKCU, HKCR, HKU, HKCC], REG_SZ = "REG_SZ", REG_MULTI_SZ = "REG_MULTI_SZ", REG_EXPAND_SZ = "REG_EXPAND_SZ", REG_DWORD = "REG_DWORD", REG_QWORD = "REG_QWORD", REG_BINARY = "REG_BINARY", REG_NONE = "REG_NONE", REG_TYPES = [REG_SZ, REG_MULTI_SZ, REG_EXPAND_SZ, REG_DWORD, REG_QWORD, REG_BINARY, REG_NONE], DEFAULT_VALUE = "", KEY_PATTERN = /(\\[a-zA-Z0-9_\s]+)*/, PATH_PATTERN = /^(HKEY_LOCAL_MACHINE|HKEY_CURRENT_USER|HKEY_CLASSES_ROOT|HKEY_USERS|HKEY_CURRENT_CONFIG)(.*)$/, ITEM_PATTERN = /^(.*)\s(REG_SZ|REG_MULTI_SZ|REG_EXPAND_SZ|REG_DWORD|REG_QWORD|REG_BINARY|REG_NONE)\s+([^\s].*)$/;
+function ProcessUncleanExitError(message, code) {
+  if (!(this instanceof ProcessUncleanExitError))
+    return new ProcessUncleanExitError(message, code);
+  Error.captureStackTrace(this, ProcessUncleanExitError);
+  this.__defineGetter__("name", function() {
+    return ProcessUncleanExitError.name;
+  });
+  this.__defineGetter__("message", function() {
+    return message;
+  });
+  this.__defineGetter__("code", function() {
+    return code;
+  });
+}
+util.inherits(ProcessUncleanExitError, Error);
+function captureOutput(child) {
+  var output = { "stdout": "", "stderr": "" };
+  child.stdout.on("data", function(data) {
+    output["stdout"] += data.toString();
+  });
+  child.stderr.on("data", function(data) {
+    output["stderr"] += data.toString();
+  });
+  return output;
+}
+function mkErrorMsg(registryCommand, code, output) {
+  var stdout = output["stdout"].trim();
+  var stderr = output["stderr"].trim();
+  var msg = util.format("%s command exited with code %d:\n%s\n%s", registryCommand, code, stdout, stderr);
+  return new ProcessUncleanExitError(msg, code);
+}
+function convertArchString(archString) {
+  if (archString == "x64") {
+    return "64";
+  } else if (archString == "x86") {
+    return "32";
+  } else {
+    throw new Error("illegal architecture: " + archString + " (use x86 or x64)");
+  }
+}
+function pushArch(args, arch) {
+  if (arch) {
+    args.push("/reg:" + convertArchString(arch));
+  }
+}
+function getRegExePath() {
+  if (process.platform === "win32") {
+    return path.join(process.env.windir, "system32", "reg.exe");
+  } else {
+    return "REG";
+  }
+}
+function RegistryItem(host, hive, key, name, type2, value, arch) {
+  if (!(this instanceof RegistryItem))
+    return new RegistryItem(host, hive, key, name, type2, value, arch);
+  var _host = host, _hive = hive, _key = key, _name = name, _type = type2, _value = value, _arch = arch;
+  this.__defineGetter__("host", function() {
+    return _host;
+  });
+  this.__defineGetter__("hive", function() {
+    return _hive;
+  });
+  this.__defineGetter__("key", function() {
+    return _key;
+  });
+  this.__defineGetter__("name", function() {
+    return _name;
+  });
+  this.__defineGetter__("type", function() {
+    return _type;
+  });
+  this.__defineGetter__("value", function() {
+    return _value;
+  });
+  this.__defineGetter__("arch", function() {
+    return _arch;
+  });
+}
+util.inherits(RegistryItem, Object);
+function Registry$1(options) {
+  if (!(this instanceof Registry$1))
+    return new Registry$1(options);
+  var _options = options || {}, _host = "" + (_options.host || ""), _hive = "" + (_options.hive || HKLM), _key = "" + (_options.key || ""), _arch = _options.arch || null;
+  this.__defineGetter__("host", function() {
+    return _host;
+  });
+  this.__defineGetter__("hive", function() {
+    return _hive;
+  });
+  this.__defineGetter__("key", function() {
+    return _key;
+  });
+  this.__defineGetter__("path", function() {
+    return '"' + (_host.length == 0 ? "" : "\\\\" + _host + "\\") + _hive + _key + '"';
+  });
+  this.__defineGetter__("arch", function() {
+    return _arch;
+  });
+  this.__defineGetter__("parent", function() {
+    var i = _key.lastIndexOf("\\");
+    return new Registry$1({
+      host: this.host,
+      hive: this.hive,
+      key: i == -1 ? "" : _key.substring(0, i),
+      arch: this.arch
+    });
+  });
+  if (HIVES.indexOf(_hive) == -1)
+    throw new Error("illegal hive specified.");
+  if (!KEY_PATTERN.test(_key))
+    throw new Error("illegal key specified.");
+  if (_arch && _arch != "x64" && _arch != "x86")
+    throw new Error("illegal architecture specified (use x86 or x64)");
+}
+Registry$1.HKLM = HKLM;
+Registry$1.HKCU = HKCU;
+Registry$1.HKCR = HKCR;
+Registry$1.HKU = HKU;
+Registry$1.HKCC = HKCC;
+Registry$1.HIVES = HIVES;
+Registry$1.REG_SZ = REG_SZ;
+Registry$1.REG_MULTI_SZ = REG_MULTI_SZ;
+Registry$1.REG_EXPAND_SZ = REG_EXPAND_SZ;
+Registry$1.REG_DWORD = REG_DWORD;
+Registry$1.REG_QWORD = REG_QWORD;
+Registry$1.REG_BINARY = REG_BINARY;
+Registry$1.REG_NONE = REG_NONE;
+Registry$1.REG_TYPES = REG_TYPES;
+Registry$1.DEFAULT_VALUE = DEFAULT_VALUE;
+Registry$1.prototype.values = function values(cb) {
+  if (typeof cb !== "function")
+    throw new TypeError("must specify a callback");
+  var args = ["QUERY", this.path];
+  pushArch(args, this.arch);
+  var proc = spawn(getRegExePath(), args, {
+    cwd: void 0,
+    env: process.env,
+    shell: true,
+    windowsHide: true,
+    stdio: ["ignore", "pipe", "pipe"]
+  }), buffer = "", self2 = this, error = null;
+  var output = captureOutput(proc);
+  proc.on("close", function(code) {
+    if (error) {
+      return;
+    } else if (code !== 0) {
+      cb(mkErrorMsg("QUERY", code, output), null);
+    } else {
+      var items = [], result = [], lines = buffer.split("\n"), lineNumber = 0;
+      for (var i = 0, l = lines.length; i < l; i++) {
+        var line = lines[i].trim();
+        if (line.length > 0) {
+          if (lineNumber != 0) {
+            items.push(line);
+          }
+          ++lineNumber;
+        }
+      }
+      for (var i = 0, l = items.length; i < l; i++) {
+        var match = ITEM_PATTERN.exec(items[i]), name, type2, value;
+        if (match) {
+          name = match[1].trim();
+          type2 = match[2].trim();
+          value = match[3];
+          result.push(new RegistryItem(self2.host, self2.hive, self2.key, name, type2, value, self2.arch));
+        }
+      }
+      cb(null, result);
+    }
+  });
+  proc.stdout.on("data", function(data) {
+    buffer += data.toString();
+  });
+  proc.on("error", function(err) {
+    error = err;
+    cb(err);
+  });
+  return this;
+};
+Registry$1.prototype.keys = function keys(cb) {
+  if (typeof cb !== "function")
+    throw new TypeError("must specify a callback");
+  var args = ["QUERY", this.path];
+  pushArch(args, this.arch);
+  var proc = spawn(getRegExePath(), args, {
+    cwd: void 0,
+    env: process.env,
+    shell: true,
+    windowsHide: true,
+    stdio: ["ignore", "pipe", "pipe"]
+  }), buffer = "", self2 = this, error = null;
+  var output = captureOutput(proc);
+  proc.on("close", function(code) {
+    if (error) {
+      return;
+    } else if (code !== 0) {
+      cb(mkErrorMsg("QUERY", code, output), null);
+    }
+  });
+  proc.stdout.on("data", function(data) {
+    buffer += data.toString();
+  });
+  proc.stdout.on("end", function() {
+    var items = [], result = [], lines = buffer.split("\n");
+    for (var i = 0, l = lines.length; i < l; i++) {
+      var line = lines[i].trim();
+      if (line.length > 0) {
+        items.push(line);
+      }
+    }
+    for (var i = 0, l = items.length; i < l; i++) {
+      var match = PATH_PATTERN.exec(items[i]), key;
+      if (match) {
+        match[1];
+        key = match[2];
+        if (key && key !== self2.key) {
+          result.push(new Registry$1({
+            host: self2.host,
+            hive: self2.hive,
+            key,
+            arch: self2.arch
+          }));
+        }
+      }
+    }
+    cb(null, result);
+  });
+  proc.on("error", function(err) {
+    error = err;
+    cb(err);
+  });
+  return this;
+};
+Registry$1.prototype.get = function get2(name, cb) {
+  if (typeof cb !== "function")
+    throw new TypeError("must specify a callback");
+  var args = ["QUERY", this.path];
+  if (name == "")
+    args.push("/ve");
+  else
+    args = args.concat(["/v", name]);
+  pushArch(args, this.arch);
+  var proc = spawn(getRegExePath(), args, {
+    cwd: void 0,
+    env: process.env,
+    shell: true,
+    windowsHide: true,
+    stdio: ["ignore", "pipe", "pipe"]
+  }), buffer = "", self2 = this, error = null;
+  var output = captureOutput(proc);
+  proc.on("close", function(code) {
+    if (error) {
+      return;
+    } else if (code !== 0) {
+      cb(mkErrorMsg("QUERY", code, output), null);
+    } else {
+      var items = [], result = null, lines = buffer.split("\n"), lineNumber = 0;
+      for (var i = 0, l = lines.length; i < l; i++) {
+        var line = lines[i].trim();
+        if (line.length > 0) {
+          if (lineNumber != 0) {
+            items.push(line);
+          }
+          ++lineNumber;
+        }
+      }
+      var item = items[items.length - 1] || "", match = ITEM_PATTERN.exec(item), name2, type2, value;
+      if (match) {
+        name2 = match[1].trim();
+        type2 = match[2].trim();
+        value = match[3];
+        result = new RegistryItem(self2.host, self2.hive, self2.key, name2, type2, value, self2.arch);
+      }
+      cb(null, result);
+    }
+  });
+  proc.stdout.on("data", function(data) {
+    buffer += data.toString();
+  });
+  proc.on("error", function(err) {
+    error = err;
+    cb(err);
+  });
+  return this;
+};
+Registry$1.prototype.set = function set(name, type2, value, cb) {
+  if (typeof cb !== "function")
+    throw new TypeError("must specify a callback");
+  if (REG_TYPES.indexOf(type2) == -1)
+    throw Error("illegal type specified.");
+  var args = ["ADD", this.path];
+  if (name == "")
+    args.push("/ve");
+  else
+    args = args.concat(["/v", name]);
+  args = args.concat(["/t", type2, "/d", value, "/f"]);
+  pushArch(args, this.arch);
+  var proc = spawn(getRegExePath(), args, {
+    cwd: void 0,
+    env: process.env,
+    shell: true,
+    windowsHide: true,
+    stdio: ["ignore", "pipe", "pipe"]
+  }), error = null;
+  var output = captureOutput(proc);
+  proc.on("close", function(code) {
+    if (error) {
+      return;
+    } else if (code !== 0) {
+      cb(mkErrorMsg("ADD", code, output));
+    } else {
+      cb(null);
+    }
+  });
+  proc.stdout.on("data", function(data) {
+  });
+  proc.on("error", function(err) {
+    error = err;
+    cb(err);
+  });
+  return this;
+};
+Registry$1.prototype.remove = function remove(name, cb) {
+  if (typeof cb !== "function")
+    throw new TypeError("must specify a callback");
+  var args = name ? ["DELETE", this.path, "/f", "/v", name] : ["DELETE", this.path, "/f", "/ve"];
+  pushArch(args, this.arch);
+  var proc = spawn(getRegExePath(), args, {
+    cwd: void 0,
+    env: process.env,
+    shell: true,
+    windowsHide: true,
+    stdio: ["ignore", "pipe", "pipe"]
+  }), error = null;
+  var output = captureOutput(proc);
+  proc.on("close", function(code) {
+    if (error) {
+      return;
+    } else if (code !== 0) {
+      cb(mkErrorMsg("DELETE", code, output), null);
+    } else {
+      cb(null);
+    }
+  });
+  proc.stdout.on("data", function(data) {
+  });
+  proc.on("error", function(err) {
+    error = err;
+    cb(err);
+  });
+  return this;
+};
+Registry$1.prototype.clear = function clear(cb) {
+  if (typeof cb !== "function")
+    throw new TypeError("must specify a callback");
+  var args = ["DELETE", this.path, "/f", "/va"];
+  pushArch(args, this.arch);
+  var proc = spawn(getRegExePath(), args, {
+    cwd: void 0,
+    env: process.env,
+    shell: true,
+    windowsHide: true,
+    stdio: ["ignore", "pipe", "pipe"]
+  }), error = null;
+  var output = captureOutput(proc);
+  proc.on("close", function(code) {
+    if (error) {
+      return;
+    } else if (code !== 0) {
+      cb(mkErrorMsg("DELETE", code, output), null);
+    } else {
+      cb(null);
+    }
+  });
+  proc.stdout.on("data", function(data) {
+  });
+  proc.on("error", function(err) {
+    error = err;
+    cb(err);
+  });
+  return this;
+};
+Registry$1.prototype.erase = Registry$1.prototype.clear;
+Registry$1.prototype.destroy = function destroy2(cb) {
+  if (typeof cb !== "function")
+    throw new TypeError("must specify a callback");
+  var args = ["DELETE", this.path, "/f"];
+  pushArch(args, this.arch);
+  var proc = spawn(getRegExePath(), args, {
+    cwd: void 0,
+    env: process.env,
+    shell: true,
+    windowsHide: true,
+    stdio: ["ignore", "pipe", "pipe"]
+  }), error = null;
+  var output = captureOutput(proc);
+  proc.on("close", function(code) {
+    if (error) {
+      return;
+    } else if (code !== 0) {
+      cb(mkErrorMsg("DELETE", code, output), null);
+    } else {
+      cb(null);
+    }
+  });
+  proc.stdout.on("data", function(data) {
+  });
+  proc.on("error", function(err) {
+    error = err;
+    cb(err);
+  });
+  return this;
+};
+Registry$1.prototype.create = function create2(cb) {
+  if (typeof cb !== "function")
+    throw new TypeError("must specify a callback");
+  var args = ["ADD", this.path, "/f"];
+  pushArch(args, this.arch);
+  var proc = spawn(getRegExePath(), args, {
+    cwd: void 0,
+    env: process.env,
+    shell: true,
+    windowsHide: true,
+    stdio: ["ignore", "pipe", "pipe"]
+  }), error = null;
+  var output = captureOutput(proc);
+  proc.on("close", function(code) {
+    if (error) {
+      return;
+    } else if (code !== 0) {
+      cb(mkErrorMsg("ADD", code, output), null);
+    } else {
+      cb(null);
+    }
+  });
+  proc.stdout.on("data", function(data) {
+  });
+  proc.on("error", function(err) {
+    error = err;
+    cb(err);
+  });
+  return this;
+};
+Registry$1.prototype.keyExists = function keyExists(cb) {
+  this.values(function(err, items) {
+    if (err) {
+      if (err.code == 1) {
+        return cb(null, false);
+      }
+      return cb(err);
+    }
+    cb(null, true);
+  });
+  return this;
+};
+Registry$1.prototype.valueExists = function valueExists(name, cb) {
+  this.get(name, function(err, item) {
+    if (err) {
+      if (err.code == 1) {
+        return cb(null, false);
+      }
+      return cb(err);
+    }
+    cb(null, true);
+  });
+  return this;
+};
+var registry = Registry$1;
+const Registry = /* @__PURE__ */ getDefaultExportFromCjs(registry);
+function getSteamPath() {
+  return new Promise((resolve2) => {
+    const regKey = new Registry({
+      hive: Registry.HKCU,
+      key: "\\Software\\Valve\\Steam"
+    });
+    regKey.get("SteamPath", (err, item) => {
+      if (err || !item) {
+        resolve2(null);
+        return;
+      }
+      resolve2(item.value);
+    });
+  });
+}
 app.setName("ScoutTheSpire");
 app.setPath(
   "userData",
-  path$2.join(
+  path$3.join(
     app.getPath("appData"),
     APP_NAME,
     "app"
   )
 );
 createRequire(import.meta.url);
-const __dirname$1 = path$2.dirname(fileURLToPath(import.meta.url));
-process.env.APP_ROOT = path$2.join(__dirname$1, "..");
+const __dirname$1 = path$3.dirname(fileURLToPath(import.meta.url));
+process.env.APP_ROOT = path$3.join(__dirname$1, "..");
 const VITE_DEV_SERVER_URL = process.env["VITE_DEV_SERVER_URL"];
-const MAIN_DIST = path$2.join(process.env.APP_ROOT, "dist-electron");
-const RENDERER_DIST = path$2.join(process.env.APP_ROOT, "dist");
-process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path$2.join(process.env.APP_ROOT, "public") : RENDERER_DIST;
+const MAIN_DIST = path$3.join(process.env.APP_ROOT, "dist-electron");
+const RENDERER_DIST = path$3.join(process.env.APP_ROOT, "dist");
+process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path$3.join(process.env.APP_ROOT, "public") : RENDERER_DIST;
 let profileSavePath = null;
+let steamAvatarID = null;
 const getProfileSavePath = () => {
-  const steamDir = path$2.join(
+  const steamDir = path$3.join(
     app.getPath("appData"),
     "SlayTheSpire2",
     "steam"
@@ -18657,7 +19144,8 @@ const getProfileSavePath = () => {
   if (!idFolder) {
     return null;
   }
-  const jsonPath = path$2.join(
+  steamAvatarID = idFolder.name;
+  const jsonPath = path$3.join(
     steamDir,
     idFolder.name,
     "profile1",
@@ -18666,6 +19154,25 @@ const getProfileSavePath = () => {
   );
   return jsonPath;
 };
+async function getSteamAvatarURL() {
+  if (!steamAvatarID) {
+    return null;
+  }
+  const steamPath = await getSteamPath();
+  if (!steamPath) {
+    return null;
+  }
+  const avatarPath = path$3.join(
+    steamPath,
+    "config",
+    "avatarcache",
+    `${steamAvatarID}.png`
+  );
+  if (!fs$1.existsSync(avatarPath)) {
+    return null;
+  }
+  return `steam-avatar:///${steamAvatarID}.png`;
+}
 function readProfileSave() {
   if (!profileSavePath) {
     return null;
@@ -18684,12 +19191,15 @@ ipcMain.handle("read-profile-save", () => {
 ipcMain.handle("fetch-badge-data", async () => {
   return cachedBadgeData;
 });
+ipcMain.handle("get-steam-avatar-url", async () => {
+  return await getSteamAvatarURL();
+});
 let win;
 function createWindow() {
   win = new BrowserWindow({
-    icon: path$2.join(process.env.VITE_PUBLIC, "electron-vite.svg"),
+    icon: path$3.join(process.env.VITE_PUBLIC, "electron-vite.svg"),
     webPreferences: {
-      preload: path$2.join(__dirname$1, "preload.cjs")
+      preload: path$3.join(__dirname$1, "preload.cjs")
     }
   });
   win.webContents.on("did-finish-load", () => {
@@ -18698,7 +19208,7 @@ function createWindow() {
   if (VITE_DEV_SERVER_URL) {
     win.loadURL(VITE_DEV_SERVER_URL);
   } else {
-    win.loadFile(path$2.join(RENDERER_DIST, "index.html"));
+    win.loadFile(path$3.join(RENDERER_DIST, "index.html"));
   }
 }
 app.on("window-all-closed", () => {
@@ -18717,10 +19227,10 @@ app.whenReady().then(async () => {
   protocol.handle("badge", async (request) => {
     try {
       const url2 = new URL(request.url);
-      const safeName = path$2.basename(
+      const safeName = path$3.basename(
         url2.hostname + url2.pathname
       );
-      const filePath = path$2.join(
+      const filePath = path$3.join(
         app.getPath("userData"),
         "cache",
         "badges",
@@ -18745,6 +19255,48 @@ app.whenReady().then(async () => {
       });
     }
   });
+  protocol.handle(
+    "steam-avatar",
+    async (request) => {
+      try {
+        const steamPath = await getSteamPath();
+        if (!steamPath) {
+          return new Response("Steam not found", {
+            status: 404
+          });
+        }
+        const url2 = new URL(request.url);
+        const safeName = path$3.basename(
+          url2.pathname
+        );
+        const filePath = path$3.join(
+          steamPath,
+          "config",
+          "avatarcache",
+          safeName
+        );
+        if (!fs$1.existsSync(filePath)) {
+          return new Response("Not found", {
+            status: 404
+          });
+        }
+        const data = await fs$1.promises.readFile(filePath);
+        return new Response(data, {
+          headers: {
+            "Content-Type": "image/png"
+          }
+        });
+      } catch (err) {
+        console.error(
+          "Steam avatar protocol error",
+          err
+        );
+        return new Response("Internal error", {
+          status: 500
+        });
+      }
+    }
+  );
   try {
     const badgeData = await fetchBadgeData();
     console.log(`Fetched ${badgeData.length} badges from API`);

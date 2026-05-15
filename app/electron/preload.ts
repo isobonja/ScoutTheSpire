@@ -25,5 +25,6 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
 
 contextBridge.exposeInMainWorld('api', {
   readProfileSave: () => ipcRenderer.invoke('read-profile-save'),
-  fetchBadgeData: () => ipcRenderer.invoke('fetch-badge-data')
+  fetchBadgeData: () => ipcRenderer.invoke('fetch-badge-data'),
+  getSteamAvatarURL: () => ipcRenderer.invoke('get-steam-avatar-url'),
 })

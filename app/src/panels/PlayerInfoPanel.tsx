@@ -16,6 +16,8 @@ function PlayerInfoPanel(
   { active, profileData }: PlayerInfoPanelProps
 ) {
   const [badgeData, setBadgeData] = useState<BadgeData[]>([]);
+  const [steamAvatarURL, setSteamAvatarURL] = useState<string | null>(null);
+
   const totalWinLoss = useMemo(() => {
     const res = { wins: 0, losses: 0 };
     if (!profileData) return res;
@@ -43,7 +45,22 @@ function PlayerInfoPanel(
       }
     }
 
+    async function fetchSteamAvatar() {
+      try {
+        const url = await window.api.getSteamAvatarURL();
+        if (url) {
+          console.log("PFP URL:", url)
+          const img = new Image();
+          img.src = url;
+          setSteamAvatarURL(url);
+        }
+      } catch (error) {
+        console.error('Error fetching Steam avatar:', error);
+      }
+    }
+
     fetchBadgeData();
+    fetchSteamAvatar();
   }, [])
 
   const characterBadges: Record<string, CharacterBadgeInfoFull[]> = useMemo(() => {
@@ -114,18 +131,28 @@ function PlayerInfoPanel(
     <div className='h-full' hidden={!active}>
       <ScrollArea className="h-full p-2">
         {/* Overall Stats */}
-        <div className="space-y-2 info-panel p-4 ps-6 mb-4">
-          <h1 className='text-4xl text-orange-300 font-extrabold font-heading -ms-2'>Overall Stats</h1>
-          <p className='font-mono'>Architect Damage: {profileData?.architect_damage}</p>
-          <p className='font-mono'>Floors Climbed: {profileData?.floors_climbed}</p>
-          <p className='font-mono'>Total Playtime: {formatSecondsToHMS(profileData?.total_playtime ?? 0)}</p>
-          <p className='font-mono'>Wongo Points: {profileData?.wongo_points}</p>
-          <p className='font-mono'>
-            W/L Ratio: 
-            <span className='text-green-500'>{' ' + totalWinLoss.wins}</span>
-            /
-            <span className='text-red-500'>{totalWinLoss.losses}</span>
-          </p>
+        <div className="space-y-2 info-panel p-4 mb-4">
+          <div className='flex gap-8'>
+            {steamAvatarURL && 
+              <div className='border border-white'>
+                <img src={steamAvatarURL} alt="Steam PFP" />
+              </div>
+            }
+            <div className='flex-1'>
+              <h1 className='text-4xl text-orange-300 font-extrabold font-heading -ms-2'>Overall Stats</h1>
+              <p className='font-mono'>Architect Damage: {profileData?.architect_damage}</p>
+              <p className='font-mono'>Floors Climbed: {profileData?.floors_climbed}</p>
+              <p className='font-mono'>Total Playtime: {formatSecondsToHMS(profileData?.total_playtime ?? 0)}</p>
+              <p className='font-mono'>Wongo Points: {profileData?.wongo_points}</p>
+              <p className='font-mono'>
+                W/L Ratio: 
+                <span className='text-green-500'>{' ' + totalWinLoss.wins}</span>
+                /
+                <span className='text-red-500'>{totalWinLoss.losses}</span>
+              </p>
+            </div>
+          </div>
+          
         </div>
 
         {/* Character Stats */}

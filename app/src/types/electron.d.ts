@@ -8,6 +8,7 @@ declare global {
     api: {
       readProfileSave: () => Promise<ProfileSaveData | null>;
       fetchBadgeData: () => Promise<BadgeData[]>;
+      getSteamAvatarURL: () => Promise<string | null>;
     };
   }
 }
