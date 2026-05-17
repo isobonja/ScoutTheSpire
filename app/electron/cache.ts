@@ -5,6 +5,51 @@ import { app } from "electron";
 import type { BadgeData } from "shared/types/badges";
 import { SPIRE_CODEX_BASE_URL } from "../shared/constants";
 import { ImageFileCategory } from "shared/types/images";
+import { fetchImagesJSON } from "./requests";
+
+const IMAGE_JSON_REFRESH_TIME = 1000 * 60 * 60 // 1 hr
+
+export async function cacheImageJSON() {
+  const dataCachePath = path.join(
+    app.getPath('userData'),
+    "data_cache"
+  )
+
+  await ensureCache(dataCachePath)
+
+  const metaPath = path.join(dataCachePath, "images.meta.json")
+
+  if (fs.existsSync(metaPath)) {
+    const meta = JSON.parse(fs.readFileSync(metaPath, "utf-8"))
+    const lastModified = meta.last_modified
+    if (lastModified && Date.now() - lastModified <= IMAGE_JSON_REFRESH_TIME)  {
+      return JSON.parse(
+        fs.readFileSync(
+          path.join(dataCachePath, "images.json"),
+          "utf-8"
+        )
+      );
+    }
+  }
+
+  try {
+    const res = await fetchImagesJSON();
+
+    fs.writeFileSync(
+      path.join(dataCachePath, "images.json"),
+      JSON.stringify(res, null, 2),
+      "utf-8"
+    )
+
+    const metadata = JSON.stringify({ last_modified: Date.now() })
+    fs.writeFileSync(metaPath, metadata, "utf-8")
+
+    return res
+  } catch (err) {
+    console.error("Failed to retrieve image data:", err)
+  }
+}
+
 
 export async function ensureCache(dir: string) {
   if (!fs.existsSync(dir)) {

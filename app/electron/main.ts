@@ -7,7 +7,7 @@ import fs from 'fs';
 import type { ProfileSaveData } from '../shared/types/profileData'
 
 import { fetchBadgeData, fetchImagesJSON } from './requests';
-import { cacheAllBadgeImages } from './cache';
+import { cacheAllBadgeImages, cacheImageJSON } from './cache';
 import { BadgeData } from 'shared/types/badges';
 import { APP_NAME } from '../../shared/constants';
 import { getSteamPath } from './utils';
@@ -123,8 +123,8 @@ function readProfileSave(): ProfileSaveData | null {
 
 // IPC Handlers
 
-let cachedBadgeData: BadgeData[] = [];
 let cachedImageData: ImageFileCategory[] = [];
+let cachedBadgeData: BadgeData[] = [];
 
 ipcMain.handle('read-profile-save', () => {
   //console.log('Reading profile save data');
@@ -188,11 +188,7 @@ app.on('activate', () => {
 app.whenReady().then(async () => {
   profileSavePath = getProfileSavePath();
 
-  try {
-    cachedImageData = await fetchImagesJSON();
-  } catch (err) {
-    console.error("Failed to retrieve image data:", err)
-  }
+  cachedImageData = await cacheImageJSON();
 
   protocol.handle("asset", async (request) => {
     try {
