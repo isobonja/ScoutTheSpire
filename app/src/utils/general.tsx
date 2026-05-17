@@ -10,7 +10,7 @@ const COLOR_MAP: Record<string, string> = {
 };
 
 export const capitalize = (str: string) => {
-  return str.charAt(0).toUpperCase() + str.slice(1);
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 }
 
 export const formatSecondsToHMS = (seconds: number) => {
@@ -75,4 +75,14 @@ export function resolveSTSTextColorFormatTag(
   }
 
   return result;
+}
+
+export function extractNameFromSTSID(id: string) {
+  const regex = /\w+\.\w+/g;
+  if (!regex.test(id)) {
+    return ""
+  }
+
+  const name = id.split(".")[1]
+  return capitalize(name)
 }

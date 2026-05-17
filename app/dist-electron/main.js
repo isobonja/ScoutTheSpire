@@ -12112,7 +12112,14 @@ var _eval = EvalError;
 var range = RangeError;
 var ref = ReferenceError;
 var syntax = SyntaxError;
-var type = TypeError;
+var type;
+var hasRequiredType;
+function requireType() {
+  if (hasRequiredType) return type;
+  hasRequiredType = 1;
+  type = TypeError;
+  return type;
+}
 var uri = URIError;
 var abs$1 = Math.abs;
 var floor$1 = Math.floor;
@@ -12358,7 +12365,7 @@ function requireCallBindApplyHelpers() {
   if (hasRequiredCallBindApplyHelpers) return callBindApplyHelpers;
   hasRequiredCallBindApplyHelpers = 1;
   var bind3 = functionBind;
-  var $TypeError2 = type;
+  var $TypeError2 = requireType();
   var $call2 = requireFunctionCall();
   var $actualApply = requireActualApply();
   callBindApplyHelpers = function callBindBasic(args) {
@@ -12431,7 +12438,7 @@ var $EvalError = _eval;
 var $RangeError = range;
 var $ReferenceError = ref;
 var $SyntaxError = syntax;
-var $TypeError$1 = type;
+var $TypeError$1 = requireType();
 var $URIError = uri;
 var abs = abs$1;
 var floor = floor$1;
@@ -12762,7 +12769,7 @@ var GetIntrinsic2 = getIntrinsic;
 var $defineProperty = GetIntrinsic2("%Object.defineProperty%", true);
 var hasToStringTag = requireShams()();
 var hasOwn$1 = hasown;
-var $TypeError = type;
+var $TypeError = requireType();
 var toStringTag = hasToStringTag ? Symbol.toStringTag : null;
 var esSetTostringtag = function setToStringTag(object, value) {
   var overrideIfSet = arguments.length > 2 && !!arguments[2] && arguments[2].force;
@@ -18588,7 +18595,7 @@ async function ensureBadgeCache(dir) {
 async function cacheAllBadgeImages(badges) {
   const badgeCacheDir = path$2.join(
     app.getPath("userData"),
-    "cache",
+    "asset_cache",
     "badges"
   );
   await ensureBadgeCache(badgeCacheDir);
@@ -19224,32 +19231,50 @@ app.on("activate", () => {
 });
 app.whenReady().then(async () => {
   profileSavePath = getProfileSavePath();
-  protocol.handle("badge", async (request) => {
+  protocol.handle("asset", async (request) => {
     try {
       const url2 = new URL(request.url);
-      const safeName = path$3.basename(
-        url2.hostname + url2.pathname
+      const relativePath = path$3.normalize(
+        path$3.join(url2.hostname, url2.pathname)
+      );
+      const cacheRoot = path$3.join(
+        app.getPath("userData"),
+        "asset_cache"
       );
       const filePath = path$3.join(
-        app.getPath("userData"),
-        "cache",
-        "badges",
-        safeName
+        cacheRoot,
+        relativePath
       );
-      console.log("filePath:", filePath);
-      if (!fs$1.existsSync(filePath)) {
+      console.log("Asset path:", filePath);
+      if (!filePath.startsWith(cacheRoot)) {
+        return new Response("Forbidden", {
+          status: 403
+        });
+      }
+      try {
+        await fs$1.promises.access(filePath);
+      } catch {
         return new Response("Not found", {
           status: 404
         });
       }
       const data = await fs$1.promises.readFile(filePath);
+      const ext = path$3.extname(filePath).toLowerCase();
+      const mimeTypes2 = {
+        ".png": "image/png",
+        ".jpg": "image/jpeg",
+        ".jpeg": "image/jpeg",
+        ".webp": "image/webp",
+        ".gif": "image/gif",
+        ".svg": "image/svg+xml"
+      };
       return new Response(data, {
         headers: {
-          "Content-Type": "image/png"
+          "Content-Type": mimeTypes2[ext] || "application/octet-stream"
         }
       });
     } catch (err) {
-      console.error("Badge protocol error", err);
+      console.error("Asset protocol error", err);
       return new Response("Internal error", {
         status: 500
       });

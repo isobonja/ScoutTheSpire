@@ -1,4 +1,5 @@
-import { createRequire } from 'module'
+//import { createRequire } from 'module'
+import { CharacterID } from '@/types/general'
 import { CharacterBadgeData } from './badges'
 
 export type ProfileSaveData = {
@@ -21,10 +22,10 @@ export type ProfileSaveData = {
   wongo_points: number
 }
 
-type AncientStats = {
+export type AncientStats = {
   ancient_id: string
   character_stats: {
-    character: string
+    character: CharacterID
     losses: number
     wins: number
   }[]
@@ -73,4 +74,8 @@ type Epoch = {
   id: string
   obtain_date: number
   state: 'revealed' | 'hidden'
+}
+
+export type AncientStatsOverallData = {
+  [key: string]: { wins: number, losses: number}
 }

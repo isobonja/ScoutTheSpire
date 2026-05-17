@@ -6,11 +6,12 @@ import fs from 'fs';
 
 import type { ProfileSaveData } from '../shared/types/profileData'
 
-import { fetchBadgeData } from './requests';
+import { fetchBadgeData, fetchImagesJSON } from './requests';
 import { cacheAllBadgeImages } from './cache';
 import { BadgeData } from 'shared/types/badges';
 import { APP_NAME } from '../../shared/constants';
 import { getSteamPath } from './utils';
+import { ImageFileCategory } from 'shared/types/images';
 
 app.setName("ScoutTheSpire");
 
@@ -123,6 +124,7 @@ function readProfileSave(): ProfileSaveData | null {
 // IPC Handlers
 
 let cachedBadgeData: BadgeData[] = [];
+let cachedImageData: ImageFileCategory[] = [];
 
 ipcMain.handle('read-profile-save', () => {
   //console.log('Reading profile save data');
@@ -186,25 +188,47 @@ app.on('activate', () => {
 app.whenReady().then(async () => {
   profileSavePath = getProfileSavePath();
 
-  protocol.handle("badge", async (request) => {
+  try {
+    cachedImageData = await fetchImagesJSON();
+  } catch (err) {
+    console.error("Failed to retrieve image data:", err)
+  }
+
+  protocol.handle("asset", async (request) => {
     try {
       const url = new URL(request.url);
 
-      const safeName = path.basename(
-        url.hostname + url.pathname
+      // Example:
+      // asset://badges/ELITE.png
+      // hostname = "badges"
+      // pathname = "/ELITE.png"
+
+      const relativePath = path.normalize(
+        path.join(url.hostname, url.pathname)
       );
 
+      const cacheRoot = path.join(
+        app.getPath("userData"),
+        "asset_cache"
+      );
 
       const filePath = path.join(
-        app.getPath("userData"),
-        "cache",
-        "badges",
-        safeName
+        cacheRoot,
+        relativePath
       );
 
-      console.log("filePath:", filePath);
+      console.log("Asset path:", filePath);
 
-      if (!fs.existsSync(filePath)) {
+      // Prevent path traversal attacks
+      if (!filePath.startsWith(cacheRoot)) {
+        return new Response("Forbidden", {
+          status: 403,
+        });
+      }
+
+      try {
+        await fs.promises.access(filePath);
+      } catch {
         return new Response("Not found", {
           status: 404,
         });
@@ -212,13 +236,26 @@ app.whenReady().then(async () => {
 
       const data = await fs.promises.readFile(filePath);
 
+      const ext = path.extname(filePath).toLowerCase();
+
+      const mimeTypes: Record<string, string> = {
+        ".png": "image/png",
+        ".jpg": "image/jpeg",
+        ".jpeg": "image/jpeg",
+        ".webp": "image/webp",
+        ".gif": "image/gif",
+        ".svg": "image/svg+xml",
+      };
+
       return new Response(data, {
         headers: {
-          "Content-Type": "image/png",
+          "Content-Type":
+            mimeTypes[ext] ||
+            "application/octet-stream",
         },
       });
     } catch (err) {
-      console.error("Badge protocol error", err);
+      console.error("Asset protocol error", err);
 
       return new Response("Internal error", {
         status: 500,

@@ -6,6 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ProfileSaveData } from "shared/types/profileData";
 import CharacterInfoBox from "@/components/CharacterInfoBox";
 import { BadgeData, CharacterBadgeInfoFull } from "shared/types/badges";
+import AncientInfoBox from "@/components/AncientInfoBox";
 
 type PlayerInfoPanelProps = {
   active: boolean;
@@ -129,9 +130,9 @@ function PlayerInfoPanel(
 
   return (
     <div className='h-full' hidden={!active}>
-      <ScrollArea className="h-full p-2">
+      <ScrollArea className="h-full p-2 pt-0">
         {/* Overall Stats */}
-        <div className="space-y-2 info-panel p-4 mb-4">
+        <div className="space-y-2 info-panel p-4 mb-4 mt-4">
           <div className='flex gap-8'>
             {steamAvatarURL && 
               <div className='border border-white'>
@@ -157,7 +158,7 @@ function PlayerInfoPanel(
 
         {/* Character Stats */}
         <Tabs defaultValue={CHARACTERS[0].id} className="w-full h-full pb-2">
-          <TabsList className='bg-transparent p-0 h-auto gap-2 mb-0'>
+          <TabsList className='bg-transparent p-0 h-auto gap-2 mb-0 ps-4'>
             {Object.values(CHARACTERS).map((char) => (
               <TabsTrigger 
                 key={char.id} 
@@ -197,7 +198,6 @@ function PlayerInfoPanel(
                 ${CHARACTER_COLORS[char.id]?.light.border}
                 ${CHARACTER_COLORS[char.id]?.dark.bg}
                 rounded-md
-                rounded-tl-none
                 mt-0!
                 relative
               `}
@@ -211,8 +211,8 @@ function PlayerInfoPanel(
           ))}
         </Tabs>
 
-        
-
+        {/* Ancient Stats */}
+        <AncientInfoBox ancient_stats={profileData?.ancient_stats || null} steamAvatarURL={steamAvatarURL || ""}/>
 
         <ScrollBar orientation="vertical" className='w-16 bg-scrollbar-bg' />
       </ScrollArea>

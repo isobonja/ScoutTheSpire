@@ -113,6 +113,8 @@ export const CHARACTER_COLORS = {
 
 type CharacterColor = typeof CHARACTERS[number]
 
+
+
 export const CHARACTER_ICONS = {
   "CHARACTER.IRONCLAD": ironcladIcon,
   "CHARACTER.SILENT": silentIcon,
