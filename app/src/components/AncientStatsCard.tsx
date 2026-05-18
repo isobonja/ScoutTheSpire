@@ -17,7 +17,7 @@ function AncientStatsCard({ title, image, wins, losses, bg }: AncientInfoBoxProp
       <CardHeader className='relative'>
         <img src={image} alt="Character Icon" className='absolute left-2 top-0.5 w-6 h-6 rounded-full drop-shadow-[2px_2px_2px_rgba(0,0,0,0.8)]' />
         <div className='w-full text-center mb-0'>
-          <h2 className='text-2xl'>{title}</h2>
+          <h2 className='text-2xl font-bold'>{title}</h2>
         </div>
       </CardHeader>
       <Separator className='p-0 m-0 bg-white ' />

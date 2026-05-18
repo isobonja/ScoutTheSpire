@@ -65,11 +65,14 @@ function AncientInfoBox({ ancient_stats, steamAvatarURL, ancientsBackgroundImage
   }, [ancient_stats])
 
   return (
-    <div className="info-panel p-4 mb-4 w-full space-y-2">
-      <h1 className='text-4xl text-orange-300 font-extrabold font-heading'>Ancients</h1>
-      <div className='overflow-hidden rounded-xl p-0 m-0'>
+    <div 
+      className="p-4 mb-4 w-full space-y-2 relative"
+    >
+      <div className='absolute -m-4 w-full h-full border border-white rounded-xl mask-intersect mask-[var(--hidden-center-y-mask),var(--hidden-center-x-mask)]' />
+      <h1 className='text-4xl ms-8 text-orange-300 font-extrabold font-heading tracking-wide'>Ancients</h1>
+      <div className='overflow-hidden rounded-xl p-0 pt-1 m-0'>
         <Carousel 
-          className='w-full items-center max-w-full relative m-0 p-0'
+          className='w-full items-center max-w-full relative m-0 p-0 overflow-visible '
           opts={{
             loop: true,
           }}
@@ -77,8 +80,8 @@ function AncientInfoBox({ ancient_stats, steamAvatarURL, ancientsBackgroundImage
           <CarouselContent>
             {ancient_stats && ancient_stats.map((as) => {
               const bgConfig = ANCIENT_BG_LAYOUT_VALUES[as.ancient_id]
-              return <CarouselItem key={as.ancient_id}>
-                <Card className='relative overflow-hidden h-120  grow-0 min-w-0'>
+              return <CarouselItem key={as.ancient_id} className=''>
+                <Card className='relative overflow-hidden h-120  grow-0 min-w-0 '>
                   {/* Background image */}
                   <div
                     className="
@@ -99,9 +102,62 @@ function AncientInfoBox({ ancient_stats, steamAvatarURL, ancientsBackgroundImage
                   </CardContent>*/}
 
                   
-                  <CardContent className="flex items-start justify-start p-2 pe-8 z-1 h-full">
-                    <div className='flex-5 text-3xl font-semibold break-all text-center'>
-                      {extractNameFromSTSID(as.ancient_id)}
+                  <CardContent className="flex items-start justify-start p-2 pe-8 z-1 h-full ">
+                    <div 
+                      className='
+                        flex-5 
+                        break-all 
+                        text-center 
+                        relative
+                      '
+                      style= {{ fontFamily: "fangsong" }}
+                    >
+                      <div className='relative flex items-center justify-center w-full h-16 text-center overflow-visible'>
+                      <span className='
+                        opacity-60
+                        absolute 
+                        text-6xl 
+                        text-transparent
+                        font-extrabold 
+                        text-center 
+                        italic 
+                        text-shadow-sm
+                        text-shadow-blue-100
+                        z-20
+                      '>
+                        {extractNameFromSTSID(as.ancient_id)}
+                      </span>
+                      <span className='
+                        absolute 
+                        px-4
+                        text-6xl 
+                        text-gray-300 
+                        font-extrabold 
+                        text-center 
+                        italic 
+                        text-shadow-md 
+                        text-shadow-amber-300 
+                        mask-clip-border
+                        mask-b-from-60% mask-b-to-90% 
+                        z-20
+                        overflow-visible
+                      '>
+                        {extractNameFromSTSID(as.ancient_id)}
+                      </span>
+                      </div>
+                      
+                      <div className='
+                        absolute 
+                        top-0
+                        w-full
+                        h-[120%]
+                        bg-black/80 
+                        mask-y-from-70% mask-y-to-95%
+                        mask-x-from-70% mask-x-to-95%
+                        z-10
+                        drop-shadow-sm drop-shadow-red-700/40
+                      '/>
+                      
                     </div>
                     
                     <Card className='flex-7 h-full opacity-80 p-4 min-w-0 rounded-4xl!'>

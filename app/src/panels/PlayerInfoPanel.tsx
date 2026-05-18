@@ -8,6 +8,7 @@ import CharacterInfoBox from "@/components/CharacterInfoBox";
 import { BadgeData, CharacterBadgeInfoFull } from "shared/types/badges";
 import AncientInfoBox from "@/components/AncientInfoBox";
 import { AssetCategory, ImageFileCategory } from "shared/types/images";
+import { Separator } from "@/components/ui/separator";
 
 const PANEL_ASSET_CATEGORIES: AssetCategory[] = [
   "badges",
@@ -163,7 +164,7 @@ function PlayerInfoPanel(
 
   return (
     <div className='h-full' hidden={!active}>
-      <ScrollArea className="h-full p-2 pt-0">
+      <ScrollArea className="h-full p-2 pt-0 pe-4">
         {/* Overall Stats */}
         <div className="space-y-2 info-panel p-4 mb-4 mt-4">
           <div className='flex gap-8'>
@@ -188,9 +189,11 @@ function PlayerInfoPanel(
           </div>
           
         </div>
+        
+        <Separator className='bg-slate-500 mask-x-from-90% mask-x-to-95% mb-4' />
 
         {/* Character Stats */}
-        <Tabs defaultValue={CHARACTERS[0].id} className="w-full h-full pb-2">
+        <Tabs defaultValue={CHARACTERS[0].id} className="w-full h-full pb-2 mb-2">
           <TabsList className='bg-transparent p-0 h-auto gap-2 mb-0 ps-4'>
             {Object.values(CHARACTERS).map((char) => (
               <TabsTrigger 
@@ -245,6 +248,8 @@ function PlayerInfoPanel(
             </TabsContent>
           ))}
         </Tabs>
+
+        <Separator className='bg-slate-500 mask-x-from-90% mask-x-to-95% mb-4' />
 
         {/* Ancient Stats */}
         <AncientInfoBox 

@@ -32,6 +32,26 @@
     --color-scrollbar-bg: var(--color-slate-950);
     --color-scrollbar-thumb: var(--color-slate-500);
 
+    --hidden-center-x-mask: linear-gradient(
+      to left,
+      black 0%,
+      black 5%,
+      transparent 25%,
+      transparent 75%,
+      black 95%,
+      black 100%
+    );
+
+    --hidden-center-y-mask: linear-gradient(
+      to bottom,
+      black 0%,
+      black 5%,
+      transparent 25%,
+      transparent 75%,
+      black 95%,
+      black 100%
+    );
+
 
     --font-heading: var(--font-sans);
 
