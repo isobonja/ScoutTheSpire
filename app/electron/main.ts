@@ -142,6 +142,12 @@ ipcMain.handle('get-steam-avatar-url', async () => {
   return await getSteamAvatarURL();
 });
 
+ipcMain.handle('get-image-category-data', (_, categoryID: string) => {
+  if (!isRequiredAssetCategory(categoryID)) {
+    return null;
+  }
+  return cachedImageData.find((c) => c.id === categoryID) || null
+})
 
 // Window creation
 
