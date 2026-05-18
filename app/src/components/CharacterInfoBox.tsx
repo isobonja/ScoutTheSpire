@@ -6,6 +6,8 @@ import type { CharacterStats } from "shared/types/profileData";
 import AccolateBadge from "./AccolateBadge";
 import { ScrollArea, ScrollBar } from "./ui/scroll-area";
 import type { CharacterBadgeInfoFull } from "shared/types/badges";
+import { ImageFileCategory } from "shared/types/images";
+import { useMemo } from "react";
 
 
 type CharacterInfoBoxProps = {
@@ -14,10 +16,32 @@ type CharacterInfoBoxProps = {
     name: CharacterName;
   };
   info: CharacterStats | null;
-  badges: CharacterBadgeInfoFull[];
+  badgesInfo: CharacterBadgeInfoFull[];
+  badgeImages: ImageFileCategory | null;
 };
 
-function CharacterInfoBox({ character, info, badges }: CharacterInfoBoxProps) {
+function CharacterInfoBox({ character, info, badgesInfo, badgeImages }: CharacterInfoBoxProps) {
+
+  const badgeToImageURLMap: Record<string, string> = useMemo(() => {
+    if (!badgeImages) return {};
+
+    const imageLookup = new Map(
+      badgeImages.images.map((ifd) => [ifd.filename.toLowerCase(), ifd.url])
+    );
+
+    return Object.fromEntries(
+      badgesInfo.map((bi) => {
+
+        const target =
+          `badge_${bi.id.toLowerCase()}.webp`;
+
+        return [
+          bi.id,
+          imageLookup.get(target) ?? "",
+        ];
+      })
+    );
+  }, [badgesInfo, badgeImages])
 
   const totalRuns = () => {
     if (!info) return 0;
@@ -68,8 +92,12 @@ function CharacterInfoBox({ character, info, badges }: CharacterInfoBoxProps) {
           <ScrollArea className='bg-slate-900 rounded-lg p-2 flex-1 min-h-0 overflow-hidden'>
             <h2 className='text-lg font-bold text-blue-300 ps-2 pb-2 underline'>Badges</h2>
             <div className='flex flex-wrap gap-2 overflow-y-visible h-full'>
-              {badges && badges.map((badge) => (
-                <AccolateBadge key={`${character.id}_${badge.id}_${badge.rarity}`} badge={badge} />
+              {badgesInfo && badgesInfo.map((badge) => (
+                <AccolateBadge 
+                  key={`${character.id}_${badge.id}_${badge.rarity}`} 
+                  badge={badge} 
+                  badgeImageURL={badgeToImageURLMap[badge.id]}
+                />
               ))}
             </div>
             <ScrollBar />

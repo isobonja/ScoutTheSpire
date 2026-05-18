@@ -10,7 +10,7 @@ declare global {
       readProfileSave: () => Promise<ProfileSaveData | null>;
       fetchBadgeData: () => Promise<BadgeData[]>;
       getSteamAvatarURL: () => Promise<string | null>;
-      getImageCategoryData: () => Promise<ImageFileCategory | null>;
+      getImageCategoryData: (categoryID: string) => Promise<ImageFileCategory | null>;
     };
   }
 }

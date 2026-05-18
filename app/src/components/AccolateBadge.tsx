@@ -13,19 +13,21 @@ import { capitalize, resolveSTSTextColorFormatTag } from "@/utils/general";
 
 type AccolateBadgeProps = {
   badge: CharacterBadgeInfoFull;
+  badgeImageURL: string | null;
 };
 
-function AccolateBadge({ badge }: AccolateBadgeProps) {
+function AccolateBadge({ badge, badgeImageURL }: AccolateBadgeProps) {
 
-  // IMPLEMENT HOVERCARD
-
-  // Change rarity colors to be border of SVG, not fill
   return (
     <HoverCard openDelay={100} closeDelay={20}> 
       <HoverCardTrigger>
         <div className='bg-transparent aspect-square w-14 relative hover:scale-110'>
           <div className='items-center justify-center flex w-full h-full z-1'>
-            <img src={badge.image_url} alt={badge.name} className='w-[60%] h-[60%] object-contain z-1' />
+            {
+              badgeImageURL &&
+              <img src={badgeImageURL} alt={badge.name} className='w-[60%] h-[60%] object-contain z-1' />
+            }
+            
           </div>
           
           {badge.rarity === 'bronze' && <BadgeBronze stroke={badge.tiered ? "brown" : "grey"} fill="black" className='absolute inset-0 w-full h-full z-0 ' />}

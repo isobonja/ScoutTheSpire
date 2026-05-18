@@ -2,11 +2,17 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { capitalize, formatSecondsToHMS } from "@/utils/general";
 import { CHARACTER_COLORS, CHARACTER_ICONS, CHARACTER_RESTS, CHARACTERS } from "@/constants/characters";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ProfileSaveData } from "shared/types/profileData";
 import CharacterInfoBox from "@/components/CharacterInfoBox";
 import { BadgeData, CharacterBadgeInfoFull } from "shared/types/badges";
 import AncientInfoBox from "@/components/AncientInfoBox";
+import { AssetCategory, ImageFileCategory } from "shared/types/images";
+
+const PANEL_ASSET_CATEGORIES: AssetCategory[] = [
+  "badges",
+  "backgrounds"
+]
 
 type PlayerInfoPanelProps = {
   active: boolean;
@@ -18,6 +24,15 @@ function PlayerInfoPanel(
 ) {
   const [badgeData, setBadgeData] = useState<BadgeData[]>([]);
   const [steamAvatarURL, setSteamAvatarURL] = useState<string | null>(null);
+  const [assetCategories, setAssetCategories] =
+    useState<
+      Partial<
+        Record<
+          AssetCategory,
+          ImageFileCategory
+        >
+      >
+    >({});
 
   const totalWinLoss = useMemo(() => {
     const res = { wins: 0, losses: 0 };
@@ -50,9 +65,9 @@ function PlayerInfoPanel(
       try {
         const url = await window.api.getSteamAvatarURL();
         if (url) {
-          console.log("PFP URL:", url)
-          const img = new Image();
-          img.src = url;
+          //console.log("PFP URL:", url)
+          //const img = new Image();
+          //img.src = url;
           setSteamAvatarURL(url);
         }
       } catch (error) {
@@ -60,8 +75,26 @@ function PlayerInfoPanel(
       }
     }
 
+    async function fetchAssetData() {
+      try {
+        const res = await Promise.all(
+          PANEL_ASSET_CATEGORIES.map(
+            async (categoryID) => {
+              const data = await window.api.getImageCategoryData(categoryID);
+              return [categoryID, data] as const
+            }
+          )
+        )
+
+        setAssetCategories(Object.fromEntries(res))
+      } catch (error) {
+        console.error('Error fetching asset data:', error);
+      }
+    }
+
     fetchBadgeData();
     fetchSteamAvatar();
+    fetchAssetData();
   }, [])
 
   const characterBadges: Record<string, CharacterBadgeInfoFull[]> = useMemo(() => {
@@ -181,6 +214,7 @@ function PlayerInfoPanel(
                   mb-0!
                 `}
               >
+                {/* Should consider maybe moving icons to backend cache instead of frontend assets */}
                 <img src={CHARACTER_ICONS[char.id]} alt={char.name} className="w-6 h-6" />
                 {capitalize(char.name)}
               </TabsTrigger>
@@ -205,7 +239,8 @@ function PlayerInfoPanel(
               <CharacterInfoBox 
                 character={char} 
                 info={profileData?.character_stats.find((c) => c.id === char.id) || null} 
-                badges={characterBadges[char.id]}
+                badgesInfo={characterBadges[char.id]}
+                badgeImages={assetCategories.badges || null}
               />
             </TabsContent>
           ))}

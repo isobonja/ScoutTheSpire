@@ -1,11 +1,11 @@
-import { app, ipcMain, BrowserWindow, protocol } from "electron";
-import { createRequire } from "node:module";
-import { fileURLToPath } from "node:url";
-import path$3 from "node:path";
+import { app, protocol, ipcMain, BrowserWindow } from "electron";
 import fs$1 from "fs";
+import { createRequire } from "node:module";
+import path$3 from "node:path";
+import { fileURLToPath } from "node:url";
+import path$2, { resolve } from "path";
 import require$$1 from "util";
 import stream, { Readable } from "stream";
-import path$2, { resolve } from "path";
 import require$$3 from "http";
 import require$$4 from "https";
 import require$$5 from "url";
@@ -19,6 +19,28 @@ import require$$0$2, { EventEmitter } from "events";
 import http2 from "http2";
 import zlib from "zlib";
 import require$$2 from "child_process";
+const APP_NAME = "ScoutTheSpire";
+const SPIRE_CODEX_BASE_URL = "https://www.spire-codex.com";
+const SPIRE_CODEX_API_URL = "https://www.spire-codex.com/api";
+const SPIRE_CODEX_RATE_LIMIT = 1e3;
+const IMAGE_ASSET_CONFIG = {
+  badges: {
+    eager: true,
+    excludedFiles: []
+  },
+  backgrounds: {
+    eager: true,
+    excludedFiles: [
+      "main_menu.png",
+      "main_menu_bg.png",
+      "merchant.png",
+      "relic_inspect_frame.png",
+      "relic_inspect_inner.png",
+      "reward_panel.png",
+      "sts2_logo.png"
+    ]
+  }
+};
 function bind$2(fn, thisArg) {
   return function wrap2() {
     return fn.apply(thisArg, arguments);
@@ -12112,14 +12134,7 @@ var _eval = EvalError;
 var range = RangeError;
 var ref = ReferenceError;
 var syntax = SyntaxError;
-var type;
-var hasRequiredType;
-function requireType() {
-  if (hasRequiredType) return type;
-  hasRequiredType = 1;
-  type = TypeError;
-  return type;
-}
+var type = TypeError;
 var uri = URIError;
 var abs$1 = Math.abs;
 var floor$1 = Math.floor;
@@ -12365,7 +12380,7 @@ function requireCallBindApplyHelpers() {
   if (hasRequiredCallBindApplyHelpers) return callBindApplyHelpers;
   hasRequiredCallBindApplyHelpers = 1;
   var bind3 = functionBind;
-  var $TypeError2 = requireType();
+  var $TypeError2 = type;
   var $call2 = requireFunctionCall();
   var $actualApply = requireActualApply();
   callBindApplyHelpers = function callBindBasic(args) {
@@ -12438,7 +12453,7 @@ var $EvalError = _eval;
 var $RangeError = range;
 var $ReferenceError = ref;
 var $SyntaxError = syntax;
-var $TypeError$1 = requireType();
+var $TypeError$1 = type;
 var $URIError = uri;
 var abs = abs$1;
 var floor = floor$1;
@@ -12769,7 +12784,7 @@ var GetIntrinsic2 = getIntrinsic;
 var $defineProperty = GetIntrinsic2("%Object.defineProperty%", true);
 var hasToStringTag = requireShams()();
 var hasOwn$1 = hasown;
-var $TypeError = requireType();
+var $TypeError = type;
 var toStringTag = hasToStringTag ? Symbol.toStringTag : null;
 var esSetTostringtag = function setToStringTag(object, value) {
   var overrideIfSet = arguments.length > 2 && !!arguments[2] && arguments[2].force;
@@ -12810,9 +12825,9 @@ var asynckit = asynckit$1;
 var setToStringTag2 = esSetTostringtag;
 var hasOwn = hasown;
 var populate = populate$1;
-function FormData$2(options) {
-  if (!(this instanceof FormData$2)) {
-    return new FormData$2(options);
+function FormData$1(options) {
+  if (!(this instanceof FormData$1)) {
+    return new FormData$1(options);
   }
   this._overheadLength = 0;
   this._valueLength = 0;
@@ -12823,10 +12838,10 @@ function FormData$2(options) {
     this[option] = options[option];
   }
 }
-util$1.inherits(FormData$2, CombinedStream);
-FormData$2.LINE_BREAK = "\r\n";
-FormData$2.DEFAULT_CONTENT_TYPE = "application/octet-stream";
-FormData$2.prototype.append = function(field, value, options) {
+util$1.inherits(FormData$1, CombinedStream);
+FormData$1.LINE_BREAK = "\r\n";
+FormData$1.DEFAULT_CONTENT_TYPE = "application/octet-stream";
+FormData$1.prototype.append = function(field, value, options) {
   options = options || {};
   if (typeof options === "string") {
     options = { filename: options };
@@ -12846,7 +12861,7 @@ FormData$2.prototype.append = function(field, value, options) {
   append2(footer);
   this._trackLength(header, value, options);
 };
-FormData$2.prototype._trackLength = function(header, value, options) {
+FormData$1.prototype._trackLength = function(header, value, options) {
   var valueLength = 0;
   if (options.knownLength != null) {
     valueLength += Number(options.knownLength);
@@ -12856,7 +12871,7 @@ FormData$2.prototype._trackLength = function(header, value, options) {
     valueLength = Buffer.byteLength(value);
   }
   this._valueLength += valueLength;
-  this._overheadLength += Buffer.byteLength(header) + FormData$2.LINE_BREAK.length;
+  this._overheadLength += Buffer.byteLength(header) + FormData$1.LINE_BREAK.length;
   if (!value || !value.path && !(value.readable && hasOwn(value, "httpVersion")) && !(value instanceof Stream)) {
     return;
   }
@@ -12864,7 +12879,7 @@ FormData$2.prototype._trackLength = function(header, value, options) {
     this._valuesToMeasure.push(value);
   }
 };
-FormData$2.prototype._lengthRetriever = function(value, callback) {
+FormData$1.prototype._lengthRetriever = function(value, callback) {
   if (hasOwn(value, "fd")) {
     if (value.end != void 0 && value.end != Infinity && value.start != void 0) {
       callback(null, value.end + 1 - (value.start ? value.start : 0));
@@ -12890,7 +12905,7 @@ FormData$2.prototype._lengthRetriever = function(value, callback) {
     callback("Unknown stream");
   }
 };
-FormData$2.prototype._multiPartHeader = function(field, value, options) {
+FormData$1.prototype._multiPartHeader = function(field, value, options) {
   if (typeof options.header === "string") {
     return options.header;
   }
@@ -12917,13 +12932,13 @@ FormData$2.prototype._multiPartHeader = function(field, value, options) {
         header = [header];
       }
       if (header.length) {
-        contents += prop + ": " + header.join("; ") + FormData$2.LINE_BREAK;
+        contents += prop + ": " + header.join("; ") + FormData$1.LINE_BREAK;
       }
     }
   }
-  return "--" + this.getBoundary() + FormData$2.LINE_BREAK + contents + FormData$2.LINE_BREAK;
+  return "--" + this.getBoundary() + FormData$1.LINE_BREAK + contents + FormData$1.LINE_BREAK;
 };
-FormData$2.prototype._getContentDisposition = function(value, options) {
+FormData$1.prototype._getContentDisposition = function(value, options) {
   var filename;
   if (typeof options.filepath === "string") {
     filename = path$1.normalize(options.filepath).replace(/\\/g, "/");
@@ -12936,7 +12951,7 @@ FormData$2.prototype._getContentDisposition = function(value, options) {
     return 'filename="' + filename + '"';
   }
 };
-FormData$2.prototype._getContentType = function(value, options) {
+FormData$1.prototype._getContentType = function(value, options) {
   var contentType = options.contentType;
   if (!contentType && value && value.name) {
     contentType = mime.lookup(value.name);
@@ -12951,13 +12966,13 @@ FormData$2.prototype._getContentType = function(value, options) {
     contentType = mime.lookup(options.filepath || options.filename);
   }
   if (!contentType && value && typeof value === "object") {
-    contentType = FormData$2.DEFAULT_CONTENT_TYPE;
+    contentType = FormData$1.DEFAULT_CONTENT_TYPE;
   }
   return contentType;
 };
-FormData$2.prototype._multiPartFooter = function() {
+FormData$1.prototype._multiPartFooter = function() {
   return (function(next) {
-    var footer = FormData$2.LINE_BREAK;
+    var footer = FormData$1.LINE_BREAK;
     var lastPart = this._streams.length === 0;
     if (lastPart) {
       footer += this._lastBoundary();
@@ -12965,10 +12980,10 @@ FormData$2.prototype._multiPartFooter = function() {
     next(footer);
   }).bind(this);
 };
-FormData$2.prototype._lastBoundary = function() {
-  return "--" + this.getBoundary() + "--" + FormData$2.LINE_BREAK;
+FormData$1.prototype._lastBoundary = function() {
+  return "--" + this.getBoundary() + "--" + FormData$1.LINE_BREAK;
 };
-FormData$2.prototype.getHeaders = function(userHeaders) {
+FormData$1.prototype.getHeaders = function(userHeaders) {
   var header;
   var formHeaders = {
     "content-type": "multipart/form-data; boundary=" + this.getBoundary()
@@ -12980,19 +12995,19 @@ FormData$2.prototype.getHeaders = function(userHeaders) {
   }
   return formHeaders;
 };
-FormData$2.prototype.setBoundary = function(boundary) {
+FormData$1.prototype.setBoundary = function(boundary) {
   if (typeof boundary !== "string") {
     throw new TypeError("FormData boundary must be a string");
   }
   this._boundary = boundary;
 };
-FormData$2.prototype.getBoundary = function() {
+FormData$1.prototype.getBoundary = function() {
   if (!this._boundary) {
     this._generateBoundary();
   }
   return this._boundary;
 };
-FormData$2.prototype.getBuffer = function() {
+FormData$1.prototype.getBuffer = function() {
   var dataBuffer = new Buffer.alloc(0);
   var boundary = this.getBoundary();
   for (var i = 0, len = this._streams.length; i < len; i++) {
@@ -13003,16 +13018,16 @@ FormData$2.prototype.getBuffer = function() {
         dataBuffer = Buffer.concat([dataBuffer, Buffer.from(this._streams[i])]);
       }
       if (typeof this._streams[i] !== "string" || this._streams[i].substring(2, boundary.length + 2) !== boundary) {
-        dataBuffer = Buffer.concat([dataBuffer, Buffer.from(FormData$2.LINE_BREAK)]);
+        dataBuffer = Buffer.concat([dataBuffer, Buffer.from(FormData$1.LINE_BREAK)]);
       }
     }
   }
   return Buffer.concat([dataBuffer, Buffer.from(this._lastBoundary())]);
 };
-FormData$2.prototype._generateBoundary = function() {
+FormData$1.prototype._generateBoundary = function() {
   this._boundary = "--------------------------" + crypto.randomBytes(12).toString("hex");
 };
-FormData$2.prototype.getLengthSync = function() {
+FormData$1.prototype.getLengthSync = function() {
   var knownLength = this._overheadLength + this._valueLength;
   if (this._streams.length) {
     knownLength += this._lastBoundary().length;
@@ -13022,14 +13037,14 @@ FormData$2.prototype.getLengthSync = function() {
   }
   return knownLength;
 };
-FormData$2.prototype.hasKnownLength = function() {
+FormData$1.prototype.hasKnownLength = function() {
   var hasKnownLength = true;
   if (this._valuesToMeasure.length) {
     hasKnownLength = false;
   }
   return hasKnownLength;
 };
-FormData$2.prototype.getLength = function(cb) {
+FormData$1.prototype.getLength = function(cb) {
   var knownLength = this._overheadLength + this._valueLength;
   if (this._streams.length) {
     knownLength += this._lastBoundary().length;
@@ -13049,7 +13064,7 @@ FormData$2.prototype.getLength = function(cb) {
     cb(null, knownLength);
   });
 };
-FormData$2.prototype.submit = function(params, cb) {
+FormData$1.prototype.submit = function(params, cb) {
   var request;
   var options;
   var defaults2 = { method: "post" };
@@ -13096,19 +13111,19 @@ FormData$2.prototype.submit = function(params, cb) {
   }).bind(this));
   return request;
 };
-FormData$2.prototype._error = function(err) {
+FormData$1.prototype._error = function(err) {
   if (!this.error) {
     this.error = err;
     this.pause();
     this.emit("error", err);
   }
 };
-FormData$2.prototype.toString = function() {
+FormData$1.prototype.toString = function() {
   return "[object FormData]";
 };
-setToStringTag2(FormData$2.prototype, "FormData");
-var form_data = FormData$2;
-const FormData$1 = /* @__PURE__ */ getDefaultExportFromCjs(form_data);
+setToStringTag2(FormData$1.prototype, "FormData");
+var form_data = FormData$1;
+const FormData$2 = /* @__PURE__ */ getDefaultExportFromCjs(form_data);
 function isVisitable(thing) {
   return utils$1.isPlainObject(thing) || utils$1.isArray(thing);
 }
@@ -13132,7 +13147,7 @@ function toFormData$1(obj, formData, options) {
   if (!utils$1.isObject(obj)) {
     throw new TypeError("target must be an object");
   }
-  formData = formData || new (FormData$1 || FormData)();
+  formData = formData || new (FormData$2 || FormData)();
   options = utils$1.toFlatObject(
     options,
     {
@@ -13377,7 +13392,7 @@ const platform$1 = {
   isNode: true,
   classes: {
     URLSearchParams,
-    FormData: FormData$1,
+    FormData: FormData$2,
     Blob: typeof Blob !== "undefined" && Blob || null
   },
   ALPHABET,
@@ -18569,9 +18584,6 @@ src.exports.AxiosRateLimiter = AxiosRateLimit;
 src.exports.getLimiter = getLimiter;
 var srcExports = src.exports;
 const RateLimit = /* @__PURE__ */ getDefaultExportFromCjs(srcExports);
-const SPIRE_CODEX_BASE_URL = "https://www.spire-codex.com";
-const SPIRE_CODEX_API_URL = "https://www.spire-codex.com/api";
-const SPIRE_CODEX_RATE_LIMIT = 1e3;
 const http = RateLimit(
   axios.create({
     baseURL: SPIRE_CODEX_API_URL
@@ -18587,54 +18599,29 @@ async function fetchBadgeData() {
     throw error;
   }
 }
-async function ensureBadgeCache(dir) {
-  if (!fs$1.existsSync(dir)) {
-    fs$1.mkdirSync(dir, { recursive: true });
+async function fetchImagesJSON() {
+  try {
+    const res = await http.get("/images");
+    return res.data;
+  } catch (error) {
+    console.error("Error fetching image data:", error);
+    throw error;
   }
 }
-async function cacheAllBadgeImages(badges) {
-  const badgeCacheDir = path$2.join(
-    app.getPath("userData"),
-    "asset_cache",
-    "badges"
-  );
-  await ensureBadgeCache(badgeCacheDir);
-  return Promise.all(
-    badges.map(async (badge) => {
-      try {
-        const imgUrl = `${SPIRE_CODEX_BASE_URL}${badge.image_url}`;
-        const ext = path$2.extname(imgUrl) || ".png";
-        const localPath = path$2.join(
-          badgeCacheDir,
-          `${badge.id}${ext}`
-        );
-        if (!fs$1.existsSync(localPath)) {
-          const response = await axios.get(
-            imgUrl,
-            {
-              responseType: "arraybuffer"
-            }
-          );
-          fs$1.writeFileSync(
-            localPath,
-            response.data
-          );
-        }
-        return {
-          ...badge,
-          image_url: `badge:///${badge.id}${ext}`
-        };
-      } catch (err) {
-        console.error(
-          `Failed caching ${badge.id}`,
-          err
-        );
-        return badge;
+async function fetchExternalImage(url2) {
+  try {
+    const res = await http.get(
+      url2,
+      {
+        responseType: "arraybuffer"
       }
-    })
-  );
+    );
+    return Buffer.from(res.data);
+  } catch (error) {
+    console.error("Error fetching image:", error);
+    throw error;
+  }
 }
-const APP_NAME = "ScoutTheSpire";
 var util = require$$1, path = path$2, spawn = require$$2.spawn, HKLM = "HKLM", HKCU = "HKCU", HKCR = "HKCR", HKU = "HKU", HKCC = "HKCC", HIVES = [HKLM, HKCU, HKCR, HKU, HKCC], REG_SZ = "REG_SZ", REG_MULTI_SZ = "REG_MULTI_SZ", REG_EXPAND_SZ = "REG_EXPAND_SZ", REG_DWORD = "REG_DWORD", REG_QWORD = "REG_QWORD", REG_BINARY = "REG_BINARY", REG_NONE = "REG_NONE", REG_TYPES = [REG_SZ, REG_MULTI_SZ, REG_EXPAND_SZ, REG_DWORD, REG_QWORD, REG_BINARY, REG_NONE], DEFAULT_VALUE = "", KEY_PATTERN = /(\\[a-zA-Z0-9_\s]+)*/, PATH_PATTERN = /^(HKEY_LOCAL_MACHINE|HKEY_CURRENT_USER|HKEY_CLASSES_ROOT|HKEY_USERS|HKEY_CURRENT_CONFIG)(.*)$/, ITEM_PATTERN = /^(.*)\s(REG_SZ|REG_MULTI_SZ|REG_EXPAND_SZ|REG_DWORD|REG_QWORD|REG_BINARY|REG_NONE)\s+([^\s].*)$/;
 function ProcessUncleanExitError(message, code) {
   if (!(this instanceof ProcessUncleanExitError))
@@ -18715,9 +18702,9 @@ function RegistryItem(host, hive, key, name, type2, value, arch) {
   });
 }
 util.inherits(RegistryItem, Object);
-function Registry$1(options) {
-  if (!(this instanceof Registry$1))
-    return new Registry$1(options);
+function Registry(options) {
+  if (!(this instanceof Registry))
+    return new Registry(options);
   var _options = options || {}, _host = "" + (_options.host || ""), _hive = "" + (_options.hive || HKLM), _key = "" + (_options.key || ""), _arch = _options.arch || null;
   this.__defineGetter__("host", function() {
     return _host;
@@ -18736,7 +18723,7 @@ function Registry$1(options) {
   });
   this.__defineGetter__("parent", function() {
     var i = _key.lastIndexOf("\\");
-    return new Registry$1({
+    return new Registry({
       host: this.host,
       hive: this.hive,
       key: i == -1 ? "" : _key.substring(0, i),
@@ -18750,22 +18737,22 @@ function Registry$1(options) {
   if (_arch && _arch != "x64" && _arch != "x86")
     throw new Error("illegal architecture specified (use x86 or x64)");
 }
-Registry$1.HKLM = HKLM;
-Registry$1.HKCU = HKCU;
-Registry$1.HKCR = HKCR;
-Registry$1.HKU = HKU;
-Registry$1.HKCC = HKCC;
-Registry$1.HIVES = HIVES;
-Registry$1.REG_SZ = REG_SZ;
-Registry$1.REG_MULTI_SZ = REG_MULTI_SZ;
-Registry$1.REG_EXPAND_SZ = REG_EXPAND_SZ;
-Registry$1.REG_DWORD = REG_DWORD;
-Registry$1.REG_QWORD = REG_QWORD;
-Registry$1.REG_BINARY = REG_BINARY;
-Registry$1.REG_NONE = REG_NONE;
-Registry$1.REG_TYPES = REG_TYPES;
-Registry$1.DEFAULT_VALUE = DEFAULT_VALUE;
-Registry$1.prototype.values = function values(cb) {
+Registry.HKLM = HKLM;
+Registry.HKCU = HKCU;
+Registry.HKCR = HKCR;
+Registry.HKU = HKU;
+Registry.HKCC = HKCC;
+Registry.HIVES = HIVES;
+Registry.REG_SZ = REG_SZ;
+Registry.REG_MULTI_SZ = REG_MULTI_SZ;
+Registry.REG_EXPAND_SZ = REG_EXPAND_SZ;
+Registry.REG_DWORD = REG_DWORD;
+Registry.REG_QWORD = REG_QWORD;
+Registry.REG_BINARY = REG_BINARY;
+Registry.REG_NONE = REG_NONE;
+Registry.REG_TYPES = REG_TYPES;
+Registry.DEFAULT_VALUE = DEFAULT_VALUE;
+Registry.prototype.values = function values(cb) {
   if (typeof cb !== "function")
     throw new TypeError("must specify a callback");
   var args = ["QUERY", this.path];
@@ -18815,7 +18802,7 @@ Registry$1.prototype.values = function values(cb) {
   });
   return this;
 };
-Registry$1.prototype.keys = function keys(cb) {
+Registry.prototype.keys = function keys(cb) {
   if (typeof cb !== "function")
     throw new TypeError("must specify a callback");
   var args = ["QUERY", this.path];
@@ -18852,7 +18839,7 @@ Registry$1.prototype.keys = function keys(cb) {
         match[1];
         key = match[2];
         if (key && key !== self2.key) {
-          result.push(new Registry$1({
+          result.push(new Registry({
             host: self2.host,
             hive: self2.hive,
             key,
@@ -18869,7 +18856,7 @@ Registry$1.prototype.keys = function keys(cb) {
   });
   return this;
 };
-Registry$1.prototype.get = function get2(name, cb) {
+Registry.prototype.get = function get2(name, cb) {
   if (typeof cb !== "function")
     throw new TypeError("must specify a callback");
   var args = ["QUERY", this.path];
@@ -18921,7 +18908,7 @@ Registry$1.prototype.get = function get2(name, cb) {
   });
   return this;
 };
-Registry$1.prototype.set = function set(name, type2, value, cb) {
+Registry.prototype.set = function set(name, type2, value, cb) {
   if (typeof cb !== "function")
     throw new TypeError("must specify a callback");
   if (REG_TYPES.indexOf(type2) == -1)
@@ -18958,7 +18945,7 @@ Registry$1.prototype.set = function set(name, type2, value, cb) {
   });
   return this;
 };
-Registry$1.prototype.remove = function remove(name, cb) {
+Registry.prototype.remove = function remove(name, cb) {
   if (typeof cb !== "function")
     throw new TypeError("must specify a callback");
   var args = name ? ["DELETE", this.path, "/f", "/v", name] : ["DELETE", this.path, "/f", "/ve"];
@@ -18988,7 +18975,7 @@ Registry$1.prototype.remove = function remove(name, cb) {
   });
   return this;
 };
-Registry$1.prototype.clear = function clear(cb) {
+Registry.prototype.clear = function clear(cb) {
   if (typeof cb !== "function")
     throw new TypeError("must specify a callback");
   var args = ["DELETE", this.path, "/f", "/va"];
@@ -19018,8 +19005,8 @@ Registry$1.prototype.clear = function clear(cb) {
   });
   return this;
 };
-Registry$1.prototype.erase = Registry$1.prototype.clear;
-Registry$1.prototype.destroy = function destroy2(cb) {
+Registry.prototype.erase = Registry.prototype.clear;
+Registry.prototype.destroy = function destroy2(cb) {
   if (typeof cb !== "function")
     throw new TypeError("must specify a callback");
   var args = ["DELETE", this.path, "/f"];
@@ -19049,7 +19036,7 @@ Registry$1.prototype.destroy = function destroy2(cb) {
   });
   return this;
 };
-Registry$1.prototype.create = function create2(cb) {
+Registry.prototype.create = function create2(cb) {
   if (typeof cb !== "function")
     throw new TypeError("must specify a callback");
   var args = ["ADD", this.path, "/f"];
@@ -19079,7 +19066,7 @@ Registry$1.prototype.create = function create2(cb) {
   });
   return this;
 };
-Registry$1.prototype.keyExists = function keyExists(cb) {
+Registry.prototype.keyExists = function keyExists(cb) {
   this.values(function(err, items) {
     if (err) {
       if (err.code == 1) {
@@ -19091,7 +19078,7 @@ Registry$1.prototype.keyExists = function keyExists(cb) {
   });
   return this;
 };
-Registry$1.prototype.valueExists = function valueExists(name, cb) {
+Registry.prototype.valueExists = function valueExists(name, cb) {
   this.get(name, function(err, item) {
     if (err) {
       if (err.code == 1) {
@@ -19103,12 +19090,12 @@ Registry$1.prototype.valueExists = function valueExists(name, cb) {
   });
   return this;
 };
-var registry = Registry$1;
-const Registry = /* @__PURE__ */ getDefaultExportFromCjs(registry);
+var registry = Registry;
+const Registry$1 = /* @__PURE__ */ getDefaultExportFromCjs(registry);
 function getSteamPath() {
   return new Promise((resolve2) => {
-    const regKey = new Registry({
-      hive: Registry.HKCU,
+    const regKey = new Registry$1({
+      hive: Registry$1.HKCU,
       key: "\\Software\\Valve\\Steam"
     });
     regKey.get("SteamPath", (err, item) => {
@@ -19120,117 +19107,109 @@ function getSteamPath() {
     });
   });
 }
-app.setName("ScoutTheSpire");
-app.setPath(
-  "userData",
-  path$3.join(
-    app.getPath("appData"),
-    APP_NAME,
-    "app"
-  )
+function isRequiredAssetCategory(id) {
+  return id in IMAGE_ASSET_CONFIG;
+}
+const IMAGE_JSON_REFRESH_TIME = 1e3 * 60 * 60;
+const assetCacheDir = () => path$2.join(
+  app.getPath("userData"),
+  "asset_cache"
 );
-createRequire(import.meta.url);
-const __dirname$1 = path$3.dirname(fileURLToPath(import.meta.url));
-process.env.APP_ROOT = path$3.join(__dirname$1, "..");
-const VITE_DEV_SERVER_URL = process.env["VITE_DEV_SERVER_URL"];
-const MAIN_DIST = path$3.join(process.env.APP_ROOT, "dist-electron");
-const RENDERER_DIST = path$3.join(process.env.APP_ROOT, "dist");
-process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path$3.join(process.env.APP_ROOT, "public") : RENDERER_DIST;
-let profileSavePath = null;
-let steamAvatarID = null;
-const getProfileSavePath = () => {
-  const steamDir = path$3.join(
-    app.getPath("appData"),
-    "SlayTheSpire2",
-    "steam"
-  );
-  const childDirs = fs$1.readdirSync(steamDir, { withFileTypes: true });
-  const idFolder = childDirs.find(
-    (dir) => dir.isDirectory() && /^\d+$/.test(dir.name)
-  );
-  if (!idFolder) {
-    return null;
+async function ensureCache(dir) {
+  if (!fs$1.existsSync(dir)) {
+    fs$1.mkdirSync(dir, { recursive: true });
   }
-  steamAvatarID = idFolder.name;
-  const jsonPath = path$3.join(
-    steamDir,
-    idFolder.name,
-    "profile1",
-    "saves",
-    "progress.save"
-  );
-  return jsonPath;
-};
-async function getSteamAvatarURL() {
-  if (!steamAvatarID) {
-    return null;
-  }
-  const steamPath = await getSteamPath();
-  if (!steamPath) {
-    return null;
-  }
-  const avatarPath = path$3.join(
-    steamPath,
-    "config",
-    "avatarcache",
-    `${steamAvatarID}.png`
-  );
-  if (!fs$1.existsSync(avatarPath)) {
-    return null;
-  }
-  return `steam-avatar:///${steamAvatarID}.png`;
 }
-function readProfileSave() {
-  if (!profileSavePath) {
-    return null;
-  }
-  const data = fs$1.readFileSync(profileSavePath, "utf-8");
-  if (!data) {
-    console.error("Failed to read profile save data");
-    return null;
-  }
-  return JSON.parse(data);
-}
-let cachedBadgeData = [];
-ipcMain.handle("read-profile-save", () => {
-  return readProfileSave();
-});
-ipcMain.handle("fetch-badge-data", async () => {
-  return cachedBadgeData;
-});
-ipcMain.handle("get-steam-avatar-url", async () => {
-  return await getSteamAvatarURL();
-});
-let win;
-function createWindow() {
-  win = new BrowserWindow({
-    icon: path$3.join(process.env.VITE_PUBLIC, "electron-vite.svg"),
-    webPreferences: {
-      preload: path$3.join(__dirname$1, "preload.cjs")
+async function cacheImageJSON() {
+  console.log("-Electron-: Beginning caching of Spire-Codex images JSON...");
+  const dataCachePath = path$2.join(
+    app.getPath("userData"),
+    "data_cache"
+  );
+  await ensureCache(dataCachePath);
+  console.log("-Electron-: Data cache directory exists!");
+  const metaPath = path$2.join(dataCachePath, "images.meta.json");
+  if (fs$1.existsSync(metaPath)) {
+    const meta = JSON.parse(fs$1.readFileSync(metaPath, "utf-8"));
+    const lastModified = meta.last_modified;
+    if (lastModified && Date.now() - lastModified <= IMAGE_JSON_REFRESH_TIME) {
+      console.log("-Electron-: Images JSON exists and does not need to be updated!");
+      return JSON.parse(
+        fs$1.readFileSync(
+          path$2.join(dataCachePath, "images.json"),
+          "utf-8"
+        )
+      );
     }
-  });
-  win.webContents.on("did-finish-load", () => {
-    win == null ? void 0 : win.webContents.send("main-process-message", (/* @__PURE__ */ new Date()).toLocaleString());
-  });
-  if (VITE_DEV_SERVER_URL) {
-    win.loadURL(VITE_DEV_SERVER_URL);
-  } else {
-    win.loadFile(path$3.join(RENDERER_DIST, "index.html"));
+  }
+  try {
+    console.log("-Electron-: Fetching Images JSON from Spire-Codex...");
+    const res = await fetchImagesJSON();
+    if (res) {
+      console.log("-Electron-: Successfully fetched Images JSON from Spire-Codex!");
+    }
+    fs$1.writeFileSync(
+      path$2.join(dataCachePath, "images.json"),
+      JSON.stringify(res, null, 2),
+      "utf-8"
+    );
+    const metadata = JSON.stringify({ last_modified: Date.now() });
+    fs$1.writeFileSync(metaPath, metadata, "utf-8");
+    console.log("-Electron-: Images JSON metadata updated...");
+    return res;
+  } catch (err) {
+    console.error("Failed to retrieve image data:", err);
   }
 }
-app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
-    app.quit();
-    win = null;
+async function cacheImage(categoryID, ifd) {
+  console.log(`-Electron-: Caching ${ifd.filename} in category ${categoryID}`);
+  await ensureCache(path$2.join(assetCacheDir(), categoryID));
+  try {
+    const imgUrl = `${SPIRE_CODEX_BASE_URL}${ifd.url}`;
+    const localPath = path$2.join(
+      assetCacheDir(),
+      categoryID,
+      `${ifd.filename}`
+    );
+    if (!fs$1.existsSync(localPath)) {
+      console.log(`-Electron-: Fetching`, imgUrl);
+      const data = await fetchExternalImage(imgUrl);
+      console.log(`-Electron-: Fetched`, imgUrl, "!");
+      fs$1.writeFileSync(
+        localPath,
+        data
+      );
+    }
+    return {
+      ...ifd,
+      url: `asset://${categoryID}/${ifd.filename}`
+    };
+  } catch (err) {
+    console.error(
+      `Failed caching ${ifd.filename}`,
+      err
+    );
+    return ifd;
   }
-});
-app.on("activate", () => {
-  if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow();
+}
+async function cacheImagesBulk(category) {
+  console.log(`-Electron-: Caching bulk images in category ${category.id}`);
+  if (!isRequiredAssetCategory(category.id)) {
+    return category;
   }
-});
-app.whenReady().then(async () => {
-  profileSavePath = getProfileSavePath();
+  await ensureCache(path$2.join(assetCacheDir(), category.id));
+  const config = IMAGE_ASSET_CONFIG[category.id];
+  const images = await Promise.all(
+    category.images.map((ifd) => {
+      if (config.excludedFiles.includes(ifd.filename)) {
+        return ifd;
+      }
+      return cacheImage(category.id, ifd);
+    })
+  );
+  return { ...category, images };
+}
+function initializeProtocols() {
   protocol.handle("asset", async (request) => {
     try {
       const url2 = new URL(request.url);
@@ -19322,12 +19301,145 @@ app.whenReady().then(async () => {
       }
     }
   );
+  console.log("-Electron-: Protocols Initialized!");
+}
+app.setName("ScoutTheSpire");
+app.setPath(
+  "userData",
+  path$3.join(
+    app.getPath("appData"),
+    APP_NAME,
+    "app"
+  )
+);
+createRequire(import.meta.url);
+const __dirname$1 = path$3.dirname(fileURLToPath(import.meta.url));
+process.env.APP_ROOT = path$3.join(__dirname$1, "..");
+const VITE_DEV_SERVER_URL = process.env["VITE_DEV_SERVER_URL"];
+const MAIN_DIST = path$3.join(process.env.APP_ROOT, "dist-electron");
+const RENDERER_DIST = path$3.join(process.env.APP_ROOT, "dist");
+process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path$3.join(process.env.APP_ROOT, "public") : RENDERER_DIST;
+let profileSavePath = null;
+let steamAvatarID = null;
+const getProfileSavePath = () => {
+  const steamDir = path$3.join(
+    app.getPath("appData"),
+    "SlayTheSpire2",
+    "steam"
+  );
+  const childDirs = fs$1.readdirSync(steamDir, { withFileTypes: true });
+  const idFolder = childDirs.find(
+    (dir) => dir.isDirectory() && /^\d+$/.test(dir.name)
+  );
+  if (!idFolder) {
+    return null;
+  }
+  steamAvatarID = idFolder.name;
+  const jsonPath = path$3.join(
+    steamDir,
+    idFolder.name,
+    "profile1",
+    "saves",
+    "progress.save"
+  );
+  return jsonPath;
+};
+async function getSteamAvatarURL() {
+  if (!steamAvatarID) {
+    return null;
+  }
+  const steamPath = await getSteamPath();
+  if (!steamPath) {
+    return null;
+  }
+  const avatarPath = path$3.join(
+    steamPath,
+    "config",
+    "avatarcache",
+    `${steamAvatarID}.png`
+  );
+  if (!fs$1.existsSync(avatarPath)) {
+    return null;
+  }
+  return `steam-avatar:///${steamAvatarID}.png`;
+}
+function readProfileSave() {
+  if (!profileSavePath) {
+    return null;
+  }
+  const data = fs$1.readFileSync(profileSavePath, "utf-8");
+  if (!data) {
+    console.error("Failed to read profile save data");
+    return null;
+  }
+  return JSON.parse(data);
+}
+let cachedImageData = [];
+let cachedBadgeData = [];
+ipcMain.handle("read-profile-save", () => {
+  return readProfileSave();
+});
+ipcMain.handle("fetch-badge-data", async () => {
+  return cachedBadgeData;
+});
+ipcMain.handle("get-steam-avatar-url", async () => {
+  return await getSteamAvatarURL();
+});
+ipcMain.handle("get-image-category-data", (_, categoryID) => {
+  console.log("-Electron-: Getting image category data of category", categoryID);
+  if (!isRequiredAssetCategory(categoryID)) {
+    return null;
+  }
+  return cachedImageData.find((c) => c.id === categoryID) || null;
+});
+let win;
+function createWindow() {
+  win = new BrowserWindow({
+    icon: path$3.join(process.env.VITE_PUBLIC, "electron-vite.svg"),
+    webPreferences: {
+      preload: path$3.join(__dirname$1, "preload.cjs")
+    }
+  });
+  win.webContents.on("did-finish-load", () => {
+    win == null ? void 0 : win.webContents.send("main-process-message", (/* @__PURE__ */ new Date()).toLocaleString());
+  });
+  if (VITE_DEV_SERVER_URL) {
+    win.loadURL(VITE_DEV_SERVER_URL);
+  } else {
+    win.loadFile(path$3.join(RENDERER_DIST, "index.html"));
+  }
+}
+app.on("window-all-closed", () => {
+  if (process.platform !== "darwin") {
+    app.quit();
+    win = null;
+  }
+});
+app.on("activate", () => {
+  if (BrowserWindow.getAllWindows().length === 0) {
+    createWindow();
+  }
+});
+app.whenReady().then(async () => {
+  profileSavePath = getProfileSavePath();
+  cachedImageData = await cacheImageJSON();
+  initializeProtocols();
   try {
-    const badgeData = await fetchBadgeData();
-    console.log(`Fetched ${badgeData.length} badges from API`);
-    cachedBadgeData = await cacheAllBadgeImages(
-      badgeData
+    cachedImageData = await Promise.all(
+      cachedImageData.map((category) => {
+        if (isRequiredAssetCategory(category.id)) {
+          console.log("-Electron-: Caching Images for required asset category", category);
+          return cacheImagesBulk(category);
+        }
+        return category;
+      })
     );
+  } catch (err) {
+    console.error("Error caching required assets:", err);
+  }
+  try {
+    cachedBadgeData = await fetchBadgeData();
+    console.log(`Fetched ${cachedBadgeData.length} badges from API`);
     console.log("Badge cache ready");
   } catch (err) {
     console.error("Failed to initialize badge cache", err);

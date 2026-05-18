@@ -1,5 +1,5 @@
-import { IMAGE_ASSET_CONFIG } from "shared/constants";
-import { AssetCategory } from "shared/types/images";
+import { IMAGE_ASSET_CONFIG } from "../shared/constants";
+import { AssetCategory } from "../shared/types/images";
 import Registry from "winreg";
 
 export function getSteamPath(): Promise<string | null> {

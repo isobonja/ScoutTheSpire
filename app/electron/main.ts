@@ -143,6 +143,7 @@ ipcMain.handle('get-steam-avatar-url', async () => {
 });
 
 ipcMain.handle('get-image-category-data', (_, categoryID: string) => {
+  console.log("-Electron-: Getting image category data of category", categoryID)
   if (!isRequiredAssetCategory(categoryID)) {
     return null;
   }
@@ -204,6 +205,7 @@ app.whenReady().then(async () => {
     cachedImageData = await Promise.all(
       cachedImageData.map((category) => {
         if (isRequiredAssetCategory(category.id)) {
+          console.log("-Electron-: Caching Images for required asset category", category)
           return cacheImagesBulk(category);
         }
 
@@ -218,10 +220,6 @@ app.whenReady().then(async () => {
     cachedBadgeData = await fetchBadgeData();
 
     console.log(`Fetched ${cachedBadgeData.length} badges from API`);
-
-    /*cachedBadgeData = await cacheAllBadgeImages(
-      badgeData
-    );*/
 
     console.log("Badge cache ready");
   } catch (err) {

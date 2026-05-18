@@ -124,4 +124,6 @@ export function initializeProtocols() {
       }
     }
   );
+
+  console.log("-Electron-: Protocols Initialized!")
 }
