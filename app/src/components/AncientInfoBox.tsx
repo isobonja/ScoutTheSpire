@@ -19,13 +19,37 @@ import { Separator } from "./ui/separator"
 import { useMemo } from "react"
 import AncientStatsCard from "./AncientStatsCard"
 import { CHARACTER_COLORS, CHARACTER_ICONS } from "@/constants/characters"
+import { ImageFileCategory } from "shared/types/images"
+import { ANCIENT_BG_LAYOUT_VALUES } from "@/constants/ancients"
 
 type AncientInfoBoxProps = {
   ancient_stats: AncientStats[] | null;
   steamAvatarURL: string;
+  ancientsBackgroundImageData: ImageFileCategory | null;
 }
 
-function AncientInfoBox({ ancient_stats, steamAvatarURL }: AncientInfoBoxProps) {
+function AncientInfoBox({ ancient_stats, steamAvatarURL, ancientsBackgroundImageData }: AncientInfoBoxProps) {
+
+  const ancientToImageURLMap: Record<string, string> = useMemo(() => {
+    if (!ancientsBackgroundImageData || !ancient_stats) return {};
+
+    const imageLookup = new Map(
+      ancientsBackgroundImageData.images.map((ifd) => [ifd.filename.toLowerCase(), ifd.url])
+    );
+
+    return Object.fromEntries(
+      ancient_stats.map((as) => {
+
+        const target =
+          `${as.ancient_id.toLowerCase().split('.')[1]}.png`;
+
+        return [
+          as.ancient_id,
+          imageLookup.get(target) ?? "",
+        ];
+      })
+    );
+  }, [ancient_stats, ancientsBackgroundImageData])
 
   const totalWinsLosses: AncientStatsOverallData = useMemo(() => {
     const res: AncientStatsOverallData = {}
@@ -51,8 +75,9 @@ function AncientInfoBox({ ancient_stats, steamAvatarURL }: AncientInfoBoxProps) 
           }}
         >
           <CarouselContent>
-            {ancient_stats && ancient_stats.map((as) => (
-              <CarouselItem key={as.ancient_id}>
+            {ancient_stats && ancient_stats.map((as) => {
+              const bgConfig = ANCIENT_BG_LAYOUT_VALUES[as.ancient_id]
+              return <CarouselItem key={as.ancient_id}>
                 <Card className='relative overflow-hidden h-120  grow-0 min-w-0'>
                   {/* Background image */}
                   <div
@@ -61,9 +86,9 @@ function AncientInfoBox({ ancient_stats, steamAvatarURL }: AncientInfoBoxProps) 
                       bg-no-repeat
                     "
                     style={{
-                      backgroundImage: `url(${darv})`,
-                      backgroundSize: "auto 180%",
-                      backgroundPosition: "right 25%",
+                      backgroundImage: `url(${ancientToImageURLMap[as.ancient_id]})`,
+                      backgroundSize: bgConfig.backgroundSize,
+                      backgroundPosition: bgConfig.backgroundPosition,
                     }}
                   />
 
@@ -105,7 +130,7 @@ function AncientInfoBox({ ancient_stats, steamAvatarURL }: AncientInfoBoxProps) 
                   </CardContent>
                 </Card>
               </CarouselItem>
-            ))}
+            })}
           </CarouselContent>
           <CarouselPrevious variant='ghost' className='absolute inset-s-0! h-full active:-translate-y-1/2! active:scale-90! -translate-y-1/2'/>
           <CarouselNext variant='ghost' className='absolute inset-e-0! h-full active:-translate-y-1/2! active:scale-90! -translate-y-1/2' />

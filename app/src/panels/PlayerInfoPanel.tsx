@@ -247,7 +247,11 @@ function PlayerInfoPanel(
         </Tabs>
 
         {/* Ancient Stats */}
-        <AncientInfoBox ancient_stats={profileData?.ancient_stats || null} steamAvatarURL={steamAvatarURL || ""}/>
+        <AncientInfoBox 
+          ancient_stats={profileData?.ancient_stats || null} 
+          steamAvatarURL={steamAvatarURL || ""}
+          ancientsBackgroundImageData={assetCategories.backgrounds || null}
+        />
 
         <ScrollBar orientation="vertical" className='w-16 bg-scrollbar-bg' />
       </ScrollArea>
