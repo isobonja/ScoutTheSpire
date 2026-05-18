@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import RateLimit from 'axios-rate-limit';
 import { SPIRE_CODEX_API_URL, SPIRE_CODEX_RATE_LIMIT } from '../shared/constants';
 import type { BadgeData } from '../shared/types/badges';
@@ -31,4 +31,19 @@ async function fetchImagesJSON(): Promise<ImageFileCategory[]> {
   }
 }
 
-export { fetchBadgeData, fetchImagesJSON };
+async function fetchExternalImage(url: string): Promise<Buffer> {
+  try {
+    const res = await http.get(
+      url,
+      {
+        responseType: "arraybuffer",
+      }
+    );
+    return Buffer.from(res.data);
+  } catch (error) {
+    console.error('Error fetching image:', error);
+    throw error;
+  }
+}
+
+export { fetchBadgeData, fetchImagesJSON, fetchExternalImage };

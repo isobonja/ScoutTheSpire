@@ -1,18 +1,18 @@
-import { app, BrowserWindow, ipcMain, protocol } from 'electron'
-import { createRequire } from 'node:module'
-import { fileURLToPath } from 'node:url'
-import path from 'node:path'
+import { app, BrowserWindow, ipcMain } from 'electron';
 import fs from 'fs';
+import { createRequire } from 'node:module';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-import type { ProfileSaveData } from '../shared/types/profileData'
-
-import { fetchBadgeData, fetchImagesJSON } from './requests';
-import { cacheAllBadgeImages, cacheImageJSON } from './cache';
-import { BadgeData } from 'shared/types/badges';
 import { APP_NAME } from '../../shared/constants';
-import { getSteamPath } from './utils';
-import { ImageFileCategory } from 'shared/types/images';
+import { cacheImageJSON, cacheImagesBulk } from './cache';
 import { initializeProtocols } from './protocols';
+import { fetchBadgeData } from './requests';
+import { getSteamPath, isRequiredAssetCategory } from './utils';
+
+import type { BadgeData } from 'shared/types/badges';
+import type { ImageFileCategory } from 'shared/types/images';
+import type { ProfileSaveData } from '../shared/types/profileData';
 
 app.setName("ScoutTheSpire");
 
@@ -121,11 +121,12 @@ function readProfileSave(): ProfileSaveData | null {
   return JSON.parse(data);
 }
 
-
-// IPC Handlers
+// Cached Data
 
 let cachedImageData: ImageFileCategory[] = [];
 let cachedBadgeData: BadgeData[] = [];
+
+// IPC Handlers
 
 ipcMain.handle('read-profile-save', () => {
   //console.log('Reading profile save data');
@@ -140,10 +141,6 @@ ipcMain.handle('fetch-badge-data', async () => {
 ipcMain.handle('get-steam-avatar-url', async () => {
   return await getSteamAvatarURL();
 });
-
-ipcMain.handle('get-image-data', async (_, categoryID: string) => {
-  return cachedImageData.find((cat) => cat.id === categoryID) || null
-})
 
 
 // Window creation
@@ -198,13 +195,27 @@ app.whenReady().then(async () => {
   initializeProtocols();
 
   try {
-    const badgeData = await fetchBadgeData();
+    cachedImageData = await Promise.all(
+      cachedImageData.map((category) => {
+        if (isRequiredAssetCategory(category.id)) {
+          return cacheImagesBulk(category);
+        }
 
-    console.log(`Fetched ${badgeData.length} badges from API`);
-
-    cachedBadgeData = await cacheAllBadgeImages(
-      badgeData
+        return category
+      })
     );
+  } catch (err) {
+    console.error("Error caching required assets:", err);
+  }
+
+  try {
+    cachedBadgeData = await fetchBadgeData();
+
+    console.log(`Fetched ${cachedBadgeData.length} badges from API`);
+
+    /*cachedBadgeData = await cacheAllBadgeImages(
+      badgeData
+    );*/
 
     console.log("Badge cache ready");
   } catch (err) {

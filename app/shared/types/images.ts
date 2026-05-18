@@ -10,3 +10,7 @@ export type ImageFileData = {
   filename: string
   url: string
 }
+
+export type AssetCategory =
+  | "badges"
+  | "backgrounds";

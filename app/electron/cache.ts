@@ -1,13 +1,25 @@
-import axios from "axios";
 import fs from "fs";
 import path from "path";
 import { app } from "electron";
-import type { BadgeData } from "shared/types/badges";
-import { SPIRE_CODEX_BASE_URL } from "../shared/constants";
-import { ImageFileCategory } from "shared/types/images";
-import { fetchImagesJSON } from "./requests";
+
+import { IMAGE_ASSET_CONFIG, SPIRE_CODEX_BASE_URL } from "../shared/constants";
+import { fetchExternalImage, fetchImagesJSON } from "./requests";
+import { isRequiredAssetCategory } from "./utils";
+
+import type { ImageFileCategory, ImageFileData } from "shared/types/images";
 
 const IMAGE_JSON_REFRESH_TIME = 1000 * 60 * 60 // 1 hr
+
+const assetCacheDir = path.join(
+  app.getPath("userData"),
+  "asset_cache"
+);
+
+export async function ensureCache(dir: string) {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+}
 
 export async function cacheImageJSON() {
   const dataCachePath = path.join(
@@ -50,137 +62,60 @@ export async function cacheImageJSON() {
   }
 }
 
+export async function cacheImage(categoryID: string, ifd: ImageFileData) {
+  await ensureCache(path.join(assetCacheDir, categoryID));
 
-export async function ensureCache(dir: string) {
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
+  try {
+    const imgUrl = `${SPIRE_CODEX_BASE_URL}${ifd.url}`;
+
+    const localPath = path.join(
+      assetCacheDir,
+      categoryID,
+      `${ifd.filename}`
+    );
+
+    if (!fs.existsSync(localPath)) {
+      const data = await fetchExternalImage(imgUrl)
+
+      fs.writeFileSync(
+        localPath,
+        data
+      );
+    }
+
+    return {
+      ...ifd,
+      url: `asset://${categoryID}/${ifd.filename}`,
+    };
+  } catch (err) {
+    console.error(
+      `Failed caching ${ifd.filename}`,
+      err
+    );
+
+    return ifd;
   }
 }
 
-
-/*
-  I could remove this and replace it with a generic function for any assets, 
-  but I would need to do pre-processing to make sure all params sent into the 
-  generic function are the same types for every asset.
-
-  Currently this function uses results from `/api/badges/`, but I could also 
-  get the images for the badges from `/api/images/`, which is the route to 
-  get all image assets from the game. 
-
-  I'd need to change the cachedBadgeData var and the ipc handler in main.ts, 
-  I would need to make an ipc handler func specifically for retrieving image 
-  paths. Id have it accept a parameter to determine the category of images to 
-  return. 
-
-  Make a separate git branch for an attempt at implementing this.
-
-*/
-export async function cacheAllBadgeImages(
-  badges: BadgeData[]
+export async function cacheImagesBulk(
+  category: ImageFileCategory
 ) {
-  const badgeCacheDir = path.join(
-    app.getPath("userData"),
-    "asset_cache",
-    "badges"
-  );
+  if (!isRequiredAssetCategory(category.id)) {
+    return category;
+  }
 
-  await ensureCache(badgeCacheDir);
+  await ensureCache(path.join(assetCacheDir, category.id));
 
-  return Promise.all(
-    badges.map(async (badge) => {
-      try {
-        const imgUrl = `${SPIRE_CODEX_BASE_URL}${badge.image_url}`;
-        //console.log(`Caching badge ${badge.id} from ${imgUrl}`);
-        const ext =
-          path.extname(imgUrl) || ".png";
+  const config = IMAGE_ASSET_CONFIG[category.id]
 
-        const localPath = path.join(
-          badgeCacheDir,
-          `${badge.id}${ext}`
-        );
-
-        // Download only once
-        if (!fs.existsSync(localPath)) {
-          const response = await axios.get(
-            imgUrl,
-            {
-              responseType: "arraybuffer",
-            }
-          );
-
-          fs.writeFileSync(
-            localPath,
-            response.data
-          );
-        }
-
-        return {
-          ...badge,
-          image_url: `asset://badges/${badge.id}${ext}`,
-        };
-      } catch (err) {
-        console.error(
-          `Failed caching ${badge.id}`,
-          err
-        );
-
-        return badge;
-      }
-    })
-  );
-}
-
-export async function cacheBackgroundImages(
-  bi: ImageFileCategory
-) {
-  const bgCacheDir = path.join(
-    app.getPath("userData"),
-    "asset_cache",
-    "backgrounds"
-  );
-
-  await ensureCache(bgCacheDir);
-
-  return Promise.all(
-    bi.images.map(async (ifd) => {
-      try {
-        const imgUrl = `${SPIRE_CODEX_BASE_URL}${ifd.url}`;
-        //console.log(`Caching badge ${badge.id} from ${imgUrl}`);
-        const ext =
-          path.extname(imgUrl) || ".png";
-
-        const localPath = path.join(
-          bgCacheDir,
-          `${ifd.filename}`
-        );
-
-        // Download only once
-        if (!fs.existsSync(localPath)) {
-          const response = await axios.get(
-            imgUrl,
-            {
-              responseType: "arraybuffer",
-            }
-          );
-
-          fs.writeFileSync(
-            localPath,
-            response.data
-          );
-        }
-
-        return {
-          ...ifd,
-          url: `asset://backgrounds/${ifd.filename}`,
-        };
-      } catch (err) {
-        console.error(
-          `Failed caching ${ifd.filename}`,
-          err
-        );
-
+  const images = await Promise.all(
+    category.images.map((ifd) => {
+      if (config.excludedFiles.includes(ifd.filename)) {
         return ifd;
       }
+      return cacheImage(category.id, ifd)
     })
-  );
+  )
+
+  return { ...category, images }
 }

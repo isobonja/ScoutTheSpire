@@ -1,3 +1,5 @@
+import { IMAGE_ASSET_CONFIG } from "shared/constants";
+import { AssetCategory } from "shared/types/images";
 import Registry from "winreg";
 
 export function getSteamPath(): Promise<string | null> {
@@ -16,4 +18,10 @@ export function getSteamPath(): Promise<string | null> {
       resolve(item.value);
     });
   });
+}
+
+export function isRequiredAssetCategory(
+  id: string
+): id is AssetCategory {
+  return id in IMAGE_ASSET_CONFIG;
 }

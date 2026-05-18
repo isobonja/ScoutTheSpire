@@ -6,7 +6,6 @@ export type BadgeData = {
   tiers: BadgeTier[]
   requires_win: boolean
   multiplayer_only: boolean
-  image_url: string
 }
 
 export type BadgeTier = {
@@ -30,6 +29,5 @@ export type CharacterBadgeInfoFull = {
   rarity: string
   tier_info: BadgeTier
   multiplayer_only: boolean
-  image_url: string
   count: number
 }
