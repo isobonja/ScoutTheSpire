@@ -3,6 +3,11 @@ export type BackgroundConfig = {
   backgroundPosition: string
 }
 
+export type AncientBackgroundPosition = {
+  focalX: number
+  focalY: number
+}
+
 /*
   THIS IS NOT A GOOD SOLUTION!!!!
 
@@ -17,6 +22,13 @@ export type BackgroundConfig = {
   are only so big. It might be best to decide on a constant size for every ancient (except 
   Tez because her image is broken), and then just make the image fade out on the right side, 
   so that its at least a smooth transition and not a harsh cutoff. 
+
+  -----
+
+  Change described above implemented
+
+
+  THIS IS UNUSED FOR NOW!!!!
 
 */
 export const ANCIENT_BG_LAYOUT_VALUES: Record<string, BackgroundConfig> = {
@@ -51,5 +63,40 @@ export const ANCIENT_BG_LAYOUT_VALUES: Record<string, BackgroundConfig> = {
   "EVENT.PAEL": {
     backgroundSize: "auto 200%",
     backgroundPosition: "right 20%",
+  },
+}
+
+export const ANCIENT_BG_FOCAL_POINTS: Record<string, AncientBackgroundPosition> = {
+  "EVENT.NEOW": {
+    focalX: 1355,
+    focalY: 430
+  },
+  "EVENT.DARV": {
+    focalX: 1160,
+    focalY: 450
+  },
+  "EVENT.NONUPEIPE": {
+    focalX: 1390,
+    focalY: 250
+  },
+  "EVENT.OROBAS": {
+    focalX: 1210,
+    focalY: 425
+  },
+  "EVENT.TANX": {
+    focalX: 1180,
+    focalY: 325
+  },
+  "EVENT.TEZCATARA": { 
+    focalX: 1000,
+    focalY: 920
+  },
+  "EVENT.VAKUU": {
+    focalX: 1050,
+    focalY: 260
+  },
+  "EVENT.PAEL": {
+    focalX: 1455,
+    focalY: 475
   },
 }
