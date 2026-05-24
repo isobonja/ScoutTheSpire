@@ -53,7 +53,7 @@ function CharacterInfoBox({ character, info, badgesInfo, badgeImages }: Characte
       <div className='flex gap-4'>
         {/* Character Image */}
         <div className='flex flex-col gap-2 items-center rounded-lg bg-slate-950 p-2 relative h-80 w-72 shrink-0'>
-          <h1 className='text-4xl text-orange-300 font-extrabold font-heading'>{capitalize(character.name)}</h1>
+          <h1 className='text-4xl text-orange-300 font-extrabold font-heading' style= {{ fontFamily: "fangsong" }}>{capitalize(character.name)}</h1>
           <img src={CHARACTER_RESTS[character.id]} alt={character.name} className="max-w-64 max-h-64" />
           {character.id == "CHARACTER.NECROBINDER" && (
             <img src={CHARACTER_RESTS["CHARACTER.OSTY"]} alt="Osty" className="absolute left-2 bottom-0 max-w-32" />

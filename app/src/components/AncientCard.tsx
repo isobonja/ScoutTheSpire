@@ -3,7 +3,7 @@ import AncientStatsCard from './AncientStatsCard';
 import { CHARACTER_COLORS, CHARACTER_ICONS } from '@/constants/characters';
 import { extractNameFromSTSID } from '@/utils/general';
 import type { AncientStats } from 'shared/types/profileData';
-import { MutableRefObject, useLayoutEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import { ANCIENT_BG_FOCAL_POINTS } from '@/constants/ancients';
 
 type AncientCardProps = {

@@ -111,7 +111,7 @@ export const CHARACTER_COLORS = {
   }
 }
 
-type CharacterColor = typeof CHARACTERS[number]
+//type CharacterColor = typeof CHARACTERS[number]
 
 
 

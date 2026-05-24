@@ -6,21 +6,10 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel"
 
-import {
-  Card,
-  CardContent,
-  CardHeader
-} from "@/components/ui/card"
-
-import darv from "@/assets/ancients/darv.png"
 import type { AncientStats, AncientStatsOverallData } from "shared/types/profileData"
-import { extractNameFromSTSID } from "@/utils/general"
-import { Separator } from "./ui/separator"
-import { useMemo, useRef } from "react"
-import AncientStatsCard from "./AncientStatsCard"
-import { CHARACTER_COLORS, CHARACTER_ICONS } from "@/constants/characters"
+import { useMemo } from "react"
 import { ImageFileCategory } from "shared/types/images"
-import { ANCIENT_BG_LAYOUT_VALUES } from "@/constants/ancients"
+//import { ANCIENT_BG_LAYOUT_VALUES } from "@/constants/ancients"
 import AncientCard from "./AncientCard"
 
 type AncientInfoBoxProps = {
@@ -70,10 +59,10 @@ function AncientInfoBox({ ancient_stats, steamAvatarURL, ancientsBackgroundImage
 
   return (
     <div 
-      className="p-4 mb-4 w-full space-y-2 relative"
+      className="p-2 mb-4 w-full space-y-2 relative"
     >
-      <div className='absolute -m-4 w-full h-full border border-white rounded-xl mask-intersect mask-[var(--hidden-center-y-mask),var(--hidden-center-x-mask)]' />
-      <h1 className='text-4xl ms-8 text-orange-300 font-extrabold font-heading tracking-wide'>Ancients</h1>
+      <div className='absolute -m-2 w-full h-full border border-white rounded-xl mask-intersect mask-[var(--hidden-center-y-mask),var(--hidden-center-x-mask)] z-30 pointer-events-none' />
+      <h1 className='text-4xl ms-8 pt-2 text-orange-300 font-extrabold font-heading tracking-wide'>Ancients</h1>
       <div className='overflow-hidden rounded-xl p-0 pt-1 m-0'>
         <Carousel 
           className='w-full items-center max-w-full relative m-0 p-0 overflow-visible '
@@ -83,7 +72,7 @@ function AncientInfoBox({ ancient_stats, steamAvatarURL, ancientsBackgroundImage
         >
           <CarouselContent>
             {ancient_stats && ancient_stats.map((as) => {
-              const bgConfig = ANCIENT_BG_LAYOUT_VALUES[as.ancient_id]
+              //const bgConfig = ANCIENT_BG_LAYOUT_VALUES[as.ancient_id]
               return <CarouselItem key={as.ancient_id} className=''>
                 <AncientCard
                   key={as.ancient_id}

@@ -2,13 +2,14 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { capitalize, formatSecondsToHMS } from "@/utils/general";
 import { CHARACTER_COLORS, CHARACTER_ICONS, CHARACTER_RESTS, CHARACTERS } from "@/constants/characters";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ProfileSaveData } from "shared/types/profileData";
 import CharacterInfoBox from "@/components/CharacterInfoBox";
 import { BadgeData, CharacterBadgeInfoFull } from "shared/types/badges";
 import AncientInfoBox from "@/components/AncientInfoBox";
 import { AssetCategory, ImageFileCategory } from "shared/types/images";
 import { Separator } from "@/components/ui/separator";
+import EnemyEncounterInfoBox from "@/components/EnemyEncounterInfoBox";
 
 const PANEL_ASSET_CATEGORIES: AssetCategory[] = [
   "badges",
@@ -257,6 +258,12 @@ function PlayerInfoPanel(
           steamAvatarURL={steamAvatarURL || ""}
           ancientsBackgroundImageData={assetCategories.backgrounds || null}
         />
+
+        <Separator className='bg-slate-500 mask-x-from-90% mask-x-to-95% mb-4' />
+        
+        {/* Enemy Encounter Stats */}
+        <EnemyEncounterInfoBox />
+
 
         <ScrollBar orientation="vertical" className='w-16 bg-scrollbar-bg' />
       </ScrollArea>

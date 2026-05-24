@@ -5,7 +5,7 @@ import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/componen
 import { ProfileSaveData } from '../shared/types/profileData'
 import { PanelType } from './types/general'
 import PlayerInfoPanel from './panels/PlayerInfoPanel'
-import SpireCodexChangelog from './components/SpireCodexChangelog'
+//import SpireCodexChangelog from './components/SpireCodexChangelog'
 
 function App() {
   const DATA_REFRESH_INTERVAL = 30000; // ms

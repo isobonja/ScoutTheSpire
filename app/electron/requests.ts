@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosResponse } from 'axios';
+import axios, { AxiosInstance } from 'axios';
 import RateLimit from 'axios-rate-limit';
 import { SPIRE_CODEX_API_URL, SPIRE_CODEX_RATE_LIMIT } from '../shared/constants';
 import type { BadgeData } from '../shared/types/badges';
