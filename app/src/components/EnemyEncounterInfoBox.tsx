@@ -1,6 +1,12 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { capitalize } from "@/utils/general";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Payment } from "electron/utility";
+import { CharacterWLData } from "shared/types/profileData";
+import { ColumnDef } from "@tanstack/react-table";
+import { DataTable } from "./DataTable";
+import { Button } from "./ui/button";
+import { ArrowUpDown } from "lucide-react";
 
 
 
@@ -35,6 +41,7 @@ function EnemyEncounterInfoBox() {
     {
       id: string
       name: string
+      type: "Normal" | "Elite" | "Boss"
       icon: string (url)
       acts: number[]
       timesEncountered: number
@@ -49,6 +56,102 @@ function EnemyEncounterInfoBox() {
 
 
   */
+
+
+  /* The following is temporary just for testing purposes:
+  */
+ type Enemy = {
+    id: string
+    name: string
+    type: "Normal" | "Elite" | "Boss"
+    icon: null // temp null
+    // So the /api/monsters endpoint does not include act info. It includes 
+    // encounter info, so I will need to look at the encounter data from 
+    // /api/encounters to get the acts in which each enemy is encountered. 
+    acts: number[]
+    totalTimesEncountered: number
+    totalTimesKilled: number
+    totalTimesDiedTo: number
+    fightStats: CharacterWLData[]
+  }
+  
+  const enemies: Enemy[] = [
+    {
+      id: "test1",
+      name: "Test Enemy 1",
+      type: "Normal",
+      icon: null,
+      acts: [1, 2],
+      totalTimesEncountered: 5,
+      totalTimesKilled: 3,
+      totalTimesDiedTo: 2,
+      fightStats: [
+        {
+          character: "CHARACTER.IRONCLAD",
+          losses: 1,
+          wins: 2
+        }
+      ]
+    },
+    {
+      id: "489e1d42",
+      name: "Test Enemy 2",
+      type: "Elite",
+      icon: null,
+      acts: [2, 3],
+      totalTimesEncountered: 4,
+      totalTimesKilled: 2,
+      totalTimesDiedTo: 2,
+      fightStats: [
+        {
+          character: "CHARACTER.IRONCLAD",
+          losses: 2,
+          wins: 1
+        },
+        {
+          character: "CHARACTER.SILENT",
+          losses: 0,
+          wins: 1
+        }
+      ]
+    }
+  ]
+
+  const columns: ColumnDef<Enemy>[] = [
+    {
+      accessorKey: "name",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Name
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        )
+      },
+    },
+    {
+      accessorKey: "acts",
+      header: "Act(s)",
+      cell: ({ row }) => row.original.acts.join(", ")
+    },
+    {
+      accessorKey: "totalTimesEncountered",
+      header: "Times Encountered"
+    },
+    {
+      accessorKey: "totalTimesKilled",
+      header: "Times Killed"
+    },
+    { 
+      accessorKey: "totalTimesDiedTo",
+      header: "Times Died To"
+    }
+  ]
+
+
   return (
     <Tabs defaultValue={TABS[0]} className="w-full h-160 pb-2 mb-2">
       <TabsList className='bg-transparent p-0 h-auto gap-2 mb-0 ps-4'>
@@ -113,25 +216,7 @@ function EnemyEncounterInfoBox() {
         `}
       >
         <h1 className='text-4xl ms-4 mt-2 text-orange-300 font-extrabold font-heading tracking-wide'>{capitalize(TABS[1])}</h1>
-        <Table>
-          <TableCaption>A list of your recent invoices.</TableCaption>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="">Invoice</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Method</TableHead>
-              <TableHead className="text-right">Amount</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            <TableRow>
-              <TableCell className="font-medium">INV001</TableCell>
-              <TableCell>Paid</TableCell>
-              <TableCell>Credit Card</TableCell>
-              <TableCell className="text-right">$250.00</TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
+        <DataTable columns={columns} data={enemies} />
       </TabsContent>
 
       

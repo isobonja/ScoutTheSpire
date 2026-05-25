@@ -52,22 +52,20 @@ export type CharacterStats = {
   total_wins: number
 }
 
+export type CharacterWLData = {
+  character: CharacterID
+  losses: number
+  wins: number
+}
+
 type EncounterStats = {
   encounter_id: string
-  fight_stats: {
-    character: string
-    losses: number
-    wins: number
-  }[]
+  fight_stats: CharacterWLData[]
 }
 
 type EnemyStats = {
   enemy_id: string
-  fight_stats: {
-    character: string
-    losses: number
-    wins: number
-  }[]
+  fight_stats: CharacterWLData[]
 }
 
 type Epoch = {

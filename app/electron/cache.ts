@@ -19,7 +19,7 @@ export async function ensureCache(dir: string) {
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
   }
-}
+} 
 
 export async function cacheImageJSON() {
   console.log("-Electron-: Beginning caching of Spire-Codex images JSON...")

@@ -7,12 +7,13 @@ import { fileURLToPath } from 'node:url';
 import { APP_NAME } from '../../shared/constants';
 import { cacheImageJSON, cacheImagesBulk } from './cache';
 import { initializeProtocols } from './protocols';
-import { fetchBadgeData } from './requests';
+import { fetchBadgeData, fetchEnemyData } from './requests';
 import { getSteamPath, isRequiredAssetCategory } from './utils';
 
 import type { BadgeData } from 'shared/types/badges';
 import type { ImageFileCategory } from 'shared/types/images';
 import type { ProfileSaveData } from '../shared/types/profileData';
+import { EnemiesData } from 'shared/types/enemies';
 
 app.setName("ScoutTheSpire");
 
@@ -125,6 +126,7 @@ function readProfileSave(): ProfileSaveData | null {
 
 let cachedImageData: ImageFileCategory[] = [];
 let cachedBadgeData: BadgeData[] = [];
+let cachedEnemyData: EnemiesData[] = [];
 
 // IPC Handlers
 
@@ -136,6 +138,11 @@ ipcMain.handle('read-profile-save', () => {
 ipcMain.handle('fetch-badge-data', async () => {
   //return await fetchBadgeData();
   return cachedBadgeData;
+});
+
+ipcMain.handle('fetch-enemy-data', async () => {
+  //return await fetchEnemyData();
+  return cachedEnemyData;
 });
 
 ipcMain.handle('get-steam-avatar-url', async () => {
@@ -224,6 +231,25 @@ app.whenReady().then(async () => {
     console.log("Badge cache ready");
   } catch (err) {
     console.error("Failed to initialize badge cache", err);
+  }
+
+  /*
+    Currently, badge and enemy data are fetched on-demand separately, and are never 
+    saved locally like the images JSON. However, it might be worth changing this to 
+    work similarly to the images JSON, where all badge and enemy data is fetched and 
+    cached so that the endpoints do not need to be called whenever the app is booted or 
+    the data is necessary. A local copy will be saved and only updated every X hours or 
+    when the user clicks a "refresh data" button or something similar.
+
+  */
+  try {
+    cachedEnemyData = await fetchEnemyData();
+
+    console.log(`Fetched ${cachedEnemyData.length} enemies from API`);
+
+    console.log("Enemy cache ready");
+  } catch (err) {
+    console.error("Failed to initialize enemy cache", err);
   }
 
   createWindow();

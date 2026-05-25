@@ -28,4 +28,5 @@ contextBridge.exposeInMainWorld('api', {
   fetchBadgeData: () => ipcRenderer.invoke('fetch-badge-data'),
   getSteamAvatarURL: () => ipcRenderer.invoke('get-steam-avatar-url'),
   getImageCategoryData: (categoryID: string) => ipcRenderer.invoke('get-image-category-data', categoryID),
+  fetchEnemyData: () => ipcRenderer.invoke('fetch-enemy-data'),
 })
