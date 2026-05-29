@@ -86,6 +86,8 @@
   }
     */
 
+import { CharacterWLData } from "./profileData"
+
 export type EnemiesData = {
   id: string
   name: string
@@ -104,7 +106,7 @@ export type EnemiesData = {
     normal: number
     ascension: number
   }> | null
-  encounters: EnemyEncounters[]
+  encounters: EnemyEncounters[] | null
   innate_powers: unknown[] | null
   attack_pattern: EnemyAttackPattern
 }
@@ -145,4 +147,19 @@ type EnemyAttackPatternState = {
   must_perform_once: boolean | null
   next: string
   branches: unknown | null
+}
+
+export type EnemyTableRowData = {
+  id: string
+  name: string
+  type: "Normal" | "Elite" | "Boss"
+  icon: string | null // image url
+  // So the /api/monsters endpoint does not include act info. It includes 
+  // encounter info, so I will need to look at the encounter data from 
+  // /api/encounters to get the acts in which each enemy is encountered. 
+  acts: number[]
+  totalTimesEncountered: number | null
+  totalTimesKilled: number | null
+  totalTimesDiedTo: number | null
+  fightStats: CharacterWLData[]
 }

@@ -4,6 +4,7 @@ import { SPIRE_CODEX_API_URL, SPIRE_CODEX_RATE_LIMIT } from '../shared/constants
 import type { BadgeData } from '../shared/types/badges';
 import type { ImageFileCategory } from '../shared/types/images';
 import type { EnemiesData } from '../shared/types/enemies';
+import { EncounterData } from 'shared/types/encounters';
 
 const http: AxiosInstance = RateLimit(
   axios.create({ 
@@ -42,6 +43,16 @@ async function fetchEnemyData(): Promise<EnemiesData[]> {
   }
 }
 
+async function fetchEncounterData(): Promise<EncounterData[]> {
+  try {
+    const res = await http.get('/encounters');
+    return res.data;
+  } catch (error) {
+    console.error('Error fetching encounter data:', error);
+    throw error;
+  }
+}
+
 async function fetchExternalImage(url: string): Promise<Buffer> {
   try {
     const res = await http.get(
@@ -61,5 +72,6 @@ export {
   fetchBadgeData, 
   fetchImagesJSON, 
   fetchEnemyData,
+  fetchEncounterData,
   fetchExternalImage 
 };

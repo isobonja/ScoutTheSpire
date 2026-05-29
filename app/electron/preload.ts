@@ -26,7 +26,9 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
 contextBridge.exposeInMainWorld('api', {
   readProfileSave: () => ipcRenderer.invoke('read-profile-save'),
   fetchBadgeData: () => ipcRenderer.invoke('fetch-badge-data'),
+  fetchEnemyData: () => ipcRenderer.invoke('fetch-enemy-data'),
+  fetchEncounterData: () => ipcRenderer.invoke('fetch-encounter-data'),
   getSteamAvatarURL: () => ipcRenderer.invoke('get-steam-avatar-url'),
   getImageCategoryData: (categoryID: string) => ipcRenderer.invoke('get-image-category-data', categoryID),
-  fetchEnemyData: () => ipcRenderer.invoke('fetch-enemy-data'),
+  
 })

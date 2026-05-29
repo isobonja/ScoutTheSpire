@@ -7,13 +7,14 @@ import { fileURLToPath } from 'node:url';
 import { APP_NAME } from '../../shared/constants';
 import { cacheImageJSON, cacheImagesBulk } from './cache';
 import { initializeProtocols } from './protocols';
-import { fetchBadgeData, fetchEnemyData } from './requests';
+import { fetchBadgeData, fetchEncounterData, fetchEnemyData } from './requests';
 import { getSteamPath, isRequiredAssetCategory } from './utils';
 
 import type { BadgeData } from 'shared/types/badges';
 import type { ImageFileCategory } from 'shared/types/images';
 import type { ProfileSaveData } from '../shared/types/profileData';
-import { EnemiesData } from 'shared/types/enemies';
+import type { EnemiesData } from 'shared/types/enemies';
+import type { EncounterData } from 'shared/types/encounters';
 
 app.setName("ScoutTheSpire");
 
@@ -127,6 +128,7 @@ function readProfileSave(): ProfileSaveData | null {
 let cachedImageData: ImageFileCategory[] = [];
 let cachedBadgeData: BadgeData[] = [];
 let cachedEnemyData: EnemiesData[] = [];
+let cachedEncounterData: EncounterData[] = [];
 
 // IPC Handlers
 
@@ -143,6 +145,11 @@ ipcMain.handle('fetch-badge-data', async () => {
 ipcMain.handle('fetch-enemy-data', async () => {
   //return await fetchEnemyData();
   return cachedEnemyData;
+});
+
+ipcMain.handle('fetch-encounter-data', async () => {
+  //return await fetchEncounterData();
+  return cachedEncounterData;
 });
 
 ipcMain.handle('get-steam-avatar-url', async () => {
@@ -250,6 +257,16 @@ app.whenReady().then(async () => {
     console.log("Enemy cache ready");
   } catch (err) {
     console.error("Failed to initialize enemy cache", err);
+  }
+
+  try {
+    cachedEncounterData = await fetchEncounterData();
+
+    console.log(`Fetched ${cachedEncounterData.length} encounters from API`);
+
+    console.log("Encounter cache ready");
+  } catch (err) {
+    console.error("Failed to initialize encounter cache", err);
   }
 
   createWindow();

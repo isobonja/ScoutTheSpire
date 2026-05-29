@@ -12134,7 +12134,14 @@ var _eval = EvalError;
 var range = RangeError;
 var ref = ReferenceError;
 var syntax = SyntaxError;
-var type = TypeError;
+var type;
+var hasRequiredType;
+function requireType() {
+  if (hasRequiredType) return type;
+  hasRequiredType = 1;
+  type = TypeError;
+  return type;
+}
 var uri = URIError;
 var abs$1 = Math.abs;
 var floor$1 = Math.floor;
@@ -12380,7 +12387,7 @@ function requireCallBindApplyHelpers() {
   if (hasRequiredCallBindApplyHelpers) return callBindApplyHelpers;
   hasRequiredCallBindApplyHelpers = 1;
   var bind3 = functionBind;
-  var $TypeError2 = type;
+  var $TypeError2 = requireType();
   var $call2 = requireFunctionCall();
   var $actualApply = requireActualApply();
   callBindApplyHelpers = function callBindBasic(args) {
@@ -12453,7 +12460,7 @@ var $EvalError = _eval;
 var $RangeError = range;
 var $ReferenceError = ref;
 var $SyntaxError = syntax;
-var $TypeError$1 = type;
+var $TypeError$1 = requireType();
 var $URIError = uri;
 var abs = abs$1;
 var floor = floor$1;
@@ -12784,7 +12791,7 @@ var GetIntrinsic2 = getIntrinsic;
 var $defineProperty = GetIntrinsic2("%Object.defineProperty%", true);
 var hasToStringTag = requireShams()();
 var hasOwn$1 = hasown;
-var $TypeError = type;
+var $TypeError = requireType();
 var toStringTag = hasToStringTag ? Symbol.toStringTag : null;
 var esSetTostringtag = function setToStringTag(object, value) {
   var overrideIfSet = arguments.length > 2 && !!arguments[2] && arguments[2].force;
@@ -12825,9 +12832,9 @@ var asynckit = asynckit$1;
 var setToStringTag2 = esSetTostringtag;
 var hasOwn = hasown;
 var populate = populate$1;
-function FormData$2(options) {
-  if (!(this instanceof FormData$2)) {
-    return new FormData$2(options);
+function FormData$1(options) {
+  if (!(this instanceof FormData$1)) {
+    return new FormData$1(options);
   }
   this._overheadLength = 0;
   this._valueLength = 0;
@@ -12838,10 +12845,10 @@ function FormData$2(options) {
     this[option] = options[option];
   }
 }
-util$1.inherits(FormData$2, CombinedStream);
-FormData$2.LINE_BREAK = "\r\n";
-FormData$2.DEFAULT_CONTENT_TYPE = "application/octet-stream";
-FormData$2.prototype.append = function(field, value, options) {
+util$1.inherits(FormData$1, CombinedStream);
+FormData$1.LINE_BREAK = "\r\n";
+FormData$1.DEFAULT_CONTENT_TYPE = "application/octet-stream";
+FormData$1.prototype.append = function(field, value, options) {
   options = options || {};
   if (typeof options === "string") {
     options = { filename: options };
@@ -12861,7 +12868,7 @@ FormData$2.prototype.append = function(field, value, options) {
   append2(footer);
   this._trackLength(header, value, options);
 };
-FormData$2.prototype._trackLength = function(header, value, options) {
+FormData$1.prototype._trackLength = function(header, value, options) {
   var valueLength = 0;
   if (options.knownLength != null) {
     valueLength += Number(options.knownLength);
@@ -12871,7 +12878,7 @@ FormData$2.prototype._trackLength = function(header, value, options) {
     valueLength = Buffer.byteLength(value);
   }
   this._valueLength += valueLength;
-  this._overheadLength += Buffer.byteLength(header) + FormData$2.LINE_BREAK.length;
+  this._overheadLength += Buffer.byteLength(header) + FormData$1.LINE_BREAK.length;
   if (!value || !value.path && !(value.readable && hasOwn(value, "httpVersion")) && !(value instanceof Stream)) {
     return;
   }
@@ -12879,7 +12886,7 @@ FormData$2.prototype._trackLength = function(header, value, options) {
     this._valuesToMeasure.push(value);
   }
 };
-FormData$2.prototype._lengthRetriever = function(value, callback) {
+FormData$1.prototype._lengthRetriever = function(value, callback) {
   if (hasOwn(value, "fd")) {
     if (value.end != void 0 && value.end != Infinity && value.start != void 0) {
       callback(null, value.end + 1 - (value.start ? value.start : 0));
@@ -12905,7 +12912,7 @@ FormData$2.prototype._lengthRetriever = function(value, callback) {
     callback("Unknown stream");
   }
 };
-FormData$2.prototype._multiPartHeader = function(field, value, options) {
+FormData$1.prototype._multiPartHeader = function(field, value, options) {
   if (typeof options.header === "string") {
     return options.header;
   }
@@ -12932,13 +12939,13 @@ FormData$2.prototype._multiPartHeader = function(field, value, options) {
         header = [header];
       }
       if (header.length) {
-        contents += prop + ": " + header.join("; ") + FormData$2.LINE_BREAK;
+        contents += prop + ": " + header.join("; ") + FormData$1.LINE_BREAK;
       }
     }
   }
-  return "--" + this.getBoundary() + FormData$2.LINE_BREAK + contents + FormData$2.LINE_BREAK;
+  return "--" + this.getBoundary() + FormData$1.LINE_BREAK + contents + FormData$1.LINE_BREAK;
 };
-FormData$2.prototype._getContentDisposition = function(value, options) {
+FormData$1.prototype._getContentDisposition = function(value, options) {
   var filename;
   if (typeof options.filepath === "string") {
     filename = path$1.normalize(options.filepath).replace(/\\/g, "/");
@@ -12951,7 +12958,7 @@ FormData$2.prototype._getContentDisposition = function(value, options) {
     return 'filename="' + filename + '"';
   }
 };
-FormData$2.prototype._getContentType = function(value, options) {
+FormData$1.prototype._getContentType = function(value, options) {
   var contentType = options.contentType;
   if (!contentType && value && value.name) {
     contentType = mime.lookup(value.name);
@@ -12966,13 +12973,13 @@ FormData$2.prototype._getContentType = function(value, options) {
     contentType = mime.lookup(options.filepath || options.filename);
   }
   if (!contentType && value && typeof value === "object") {
-    contentType = FormData$2.DEFAULT_CONTENT_TYPE;
+    contentType = FormData$1.DEFAULT_CONTENT_TYPE;
   }
   return contentType;
 };
-FormData$2.prototype._multiPartFooter = function() {
+FormData$1.prototype._multiPartFooter = function() {
   return (function(next) {
-    var footer = FormData$2.LINE_BREAK;
+    var footer = FormData$1.LINE_BREAK;
     var lastPart = this._streams.length === 0;
     if (lastPart) {
       footer += this._lastBoundary();
@@ -12980,10 +12987,10 @@ FormData$2.prototype._multiPartFooter = function() {
     next(footer);
   }).bind(this);
 };
-FormData$2.prototype._lastBoundary = function() {
-  return "--" + this.getBoundary() + "--" + FormData$2.LINE_BREAK;
+FormData$1.prototype._lastBoundary = function() {
+  return "--" + this.getBoundary() + "--" + FormData$1.LINE_BREAK;
 };
-FormData$2.prototype.getHeaders = function(userHeaders) {
+FormData$1.prototype.getHeaders = function(userHeaders) {
   var header;
   var formHeaders = {
     "content-type": "multipart/form-data; boundary=" + this.getBoundary()
@@ -12995,19 +13002,19 @@ FormData$2.prototype.getHeaders = function(userHeaders) {
   }
   return formHeaders;
 };
-FormData$2.prototype.setBoundary = function(boundary) {
+FormData$1.prototype.setBoundary = function(boundary) {
   if (typeof boundary !== "string") {
     throw new TypeError("FormData boundary must be a string");
   }
   this._boundary = boundary;
 };
-FormData$2.prototype.getBoundary = function() {
+FormData$1.prototype.getBoundary = function() {
   if (!this._boundary) {
     this._generateBoundary();
   }
   return this._boundary;
 };
-FormData$2.prototype.getBuffer = function() {
+FormData$1.prototype.getBuffer = function() {
   var dataBuffer = new Buffer.alloc(0);
   var boundary = this.getBoundary();
   for (var i = 0, len = this._streams.length; i < len; i++) {
@@ -13018,16 +13025,16 @@ FormData$2.prototype.getBuffer = function() {
         dataBuffer = Buffer.concat([dataBuffer, Buffer.from(this._streams[i])]);
       }
       if (typeof this._streams[i] !== "string" || this._streams[i].substring(2, boundary.length + 2) !== boundary) {
-        dataBuffer = Buffer.concat([dataBuffer, Buffer.from(FormData$2.LINE_BREAK)]);
+        dataBuffer = Buffer.concat([dataBuffer, Buffer.from(FormData$1.LINE_BREAK)]);
       }
     }
   }
   return Buffer.concat([dataBuffer, Buffer.from(this._lastBoundary())]);
 };
-FormData$2.prototype._generateBoundary = function() {
+FormData$1.prototype._generateBoundary = function() {
   this._boundary = "--------------------------" + crypto.randomBytes(12).toString("hex");
 };
-FormData$2.prototype.getLengthSync = function() {
+FormData$1.prototype.getLengthSync = function() {
   var knownLength = this._overheadLength + this._valueLength;
   if (this._streams.length) {
     knownLength += this._lastBoundary().length;
@@ -13037,14 +13044,14 @@ FormData$2.prototype.getLengthSync = function() {
   }
   return knownLength;
 };
-FormData$2.prototype.hasKnownLength = function() {
+FormData$1.prototype.hasKnownLength = function() {
   var hasKnownLength = true;
   if (this._valuesToMeasure.length) {
     hasKnownLength = false;
   }
   return hasKnownLength;
 };
-FormData$2.prototype.getLength = function(cb) {
+FormData$1.prototype.getLength = function(cb) {
   var knownLength = this._overheadLength + this._valueLength;
   if (this._streams.length) {
     knownLength += this._lastBoundary().length;
@@ -13064,7 +13071,7 @@ FormData$2.prototype.getLength = function(cb) {
     cb(null, knownLength);
   });
 };
-FormData$2.prototype.submit = function(params, cb) {
+FormData$1.prototype.submit = function(params, cb) {
   var request;
   var options;
   var defaults2 = { method: "post" };
@@ -13111,19 +13118,19 @@ FormData$2.prototype.submit = function(params, cb) {
   }).bind(this));
   return request;
 };
-FormData$2.prototype._error = function(err) {
+FormData$1.prototype._error = function(err) {
   if (!this.error) {
     this.error = err;
     this.pause();
     this.emit("error", err);
   }
 };
-FormData$2.prototype.toString = function() {
+FormData$1.prototype.toString = function() {
   return "[object FormData]";
 };
-setToStringTag2(FormData$2.prototype, "FormData");
-var form_data = FormData$2;
-const FormData$1 = /* @__PURE__ */ getDefaultExportFromCjs(form_data);
+setToStringTag2(FormData$1.prototype, "FormData");
+var form_data = FormData$1;
+const FormData$2 = /* @__PURE__ */ getDefaultExportFromCjs(form_data);
 function isVisitable(thing) {
   return utils$1.isPlainObject(thing) || utils$1.isArray(thing);
 }
@@ -13147,7 +13154,7 @@ function toFormData$1(obj, formData, options) {
   if (!utils$1.isObject(obj)) {
     throw new TypeError("target must be an object");
   }
-  formData = formData || new (FormData$1 || FormData)();
+  formData = formData || new (FormData$2 || FormData)();
   options = utils$1.toFlatObject(
     options,
     {
@@ -13392,7 +13399,7 @@ const platform$1 = {
   isNode: true,
   classes: {
     URLSearchParams,
-    FormData: FormData$1,
+    FormData: FormData$2,
     Blob: typeof Blob !== "undefined" && Blob || null
   },
   ALPHABET,
@@ -18608,6 +18615,24 @@ async function fetchImagesJSON() {
     throw error;
   }
 }
+async function fetchEnemyData() {
+  try {
+    const res = await http.get("/monsters");
+    return res.data;
+  } catch (error) {
+    console.error("Error fetching enemy data:", error);
+    throw error;
+  }
+}
+async function fetchEncounterData() {
+  try {
+    const res = await http.get("/encounters");
+    return res.data;
+  } catch (error) {
+    console.error("Error fetching encounter data:", error);
+    throw error;
+  }
+}
 async function fetchExternalImage(url2) {
   try {
     const res = await http.get(
@@ -18702,9 +18727,9 @@ function RegistryItem(host, hive, key, name, type2, value, arch) {
   });
 }
 util.inherits(RegistryItem, Object);
-function Registry$1(options) {
-  if (!(this instanceof Registry$1))
-    return new Registry$1(options);
+function Registry(options) {
+  if (!(this instanceof Registry))
+    return new Registry(options);
   var _options = options || {}, _host = "" + (_options.host || ""), _hive = "" + (_options.hive || HKLM), _key = "" + (_options.key || ""), _arch = _options.arch || null;
   this.__defineGetter__("host", function() {
     return _host;
@@ -18723,7 +18748,7 @@ function Registry$1(options) {
   });
   this.__defineGetter__("parent", function() {
     var i = _key.lastIndexOf("\\");
-    return new Registry$1({
+    return new Registry({
       host: this.host,
       hive: this.hive,
       key: i == -1 ? "" : _key.substring(0, i),
@@ -18737,22 +18762,22 @@ function Registry$1(options) {
   if (_arch && _arch != "x64" && _arch != "x86")
     throw new Error("illegal architecture specified (use x86 or x64)");
 }
-Registry$1.HKLM = HKLM;
-Registry$1.HKCU = HKCU;
-Registry$1.HKCR = HKCR;
-Registry$1.HKU = HKU;
-Registry$1.HKCC = HKCC;
-Registry$1.HIVES = HIVES;
-Registry$1.REG_SZ = REG_SZ;
-Registry$1.REG_MULTI_SZ = REG_MULTI_SZ;
-Registry$1.REG_EXPAND_SZ = REG_EXPAND_SZ;
-Registry$1.REG_DWORD = REG_DWORD;
-Registry$1.REG_QWORD = REG_QWORD;
-Registry$1.REG_BINARY = REG_BINARY;
-Registry$1.REG_NONE = REG_NONE;
-Registry$1.REG_TYPES = REG_TYPES;
-Registry$1.DEFAULT_VALUE = DEFAULT_VALUE;
-Registry$1.prototype.values = function values(cb) {
+Registry.HKLM = HKLM;
+Registry.HKCU = HKCU;
+Registry.HKCR = HKCR;
+Registry.HKU = HKU;
+Registry.HKCC = HKCC;
+Registry.HIVES = HIVES;
+Registry.REG_SZ = REG_SZ;
+Registry.REG_MULTI_SZ = REG_MULTI_SZ;
+Registry.REG_EXPAND_SZ = REG_EXPAND_SZ;
+Registry.REG_DWORD = REG_DWORD;
+Registry.REG_QWORD = REG_QWORD;
+Registry.REG_BINARY = REG_BINARY;
+Registry.REG_NONE = REG_NONE;
+Registry.REG_TYPES = REG_TYPES;
+Registry.DEFAULT_VALUE = DEFAULT_VALUE;
+Registry.prototype.values = function values(cb) {
   if (typeof cb !== "function")
     throw new TypeError("must specify a callback");
   var args = ["QUERY", this.path];
@@ -18802,7 +18827,7 @@ Registry$1.prototype.values = function values(cb) {
   });
   return this;
 };
-Registry$1.prototype.keys = function keys(cb) {
+Registry.prototype.keys = function keys(cb) {
   if (typeof cb !== "function")
     throw new TypeError("must specify a callback");
   var args = ["QUERY", this.path];
@@ -18839,7 +18864,7 @@ Registry$1.prototype.keys = function keys(cb) {
         match[1];
         key = match[2];
         if (key && key !== self2.key) {
-          result.push(new Registry$1({
+          result.push(new Registry({
             host: self2.host,
             hive: self2.hive,
             key,
@@ -18856,7 +18881,7 @@ Registry$1.prototype.keys = function keys(cb) {
   });
   return this;
 };
-Registry$1.prototype.get = function get2(name, cb) {
+Registry.prototype.get = function get2(name, cb) {
   if (typeof cb !== "function")
     throw new TypeError("must specify a callback");
   var args = ["QUERY", this.path];
@@ -18908,7 +18933,7 @@ Registry$1.prototype.get = function get2(name, cb) {
   });
   return this;
 };
-Registry$1.prototype.set = function set(name, type2, value, cb) {
+Registry.prototype.set = function set(name, type2, value, cb) {
   if (typeof cb !== "function")
     throw new TypeError("must specify a callback");
   if (REG_TYPES.indexOf(type2) == -1)
@@ -18945,7 +18970,7 @@ Registry$1.prototype.set = function set(name, type2, value, cb) {
   });
   return this;
 };
-Registry$1.prototype.remove = function remove(name, cb) {
+Registry.prototype.remove = function remove(name, cb) {
   if (typeof cb !== "function")
     throw new TypeError("must specify a callback");
   var args = name ? ["DELETE", this.path, "/f", "/v", name] : ["DELETE", this.path, "/f", "/ve"];
@@ -18975,7 +19000,7 @@ Registry$1.prototype.remove = function remove(name, cb) {
   });
   return this;
 };
-Registry$1.prototype.clear = function clear(cb) {
+Registry.prototype.clear = function clear(cb) {
   if (typeof cb !== "function")
     throw new TypeError("must specify a callback");
   var args = ["DELETE", this.path, "/f", "/va"];
@@ -19005,8 +19030,8 @@ Registry$1.prototype.clear = function clear(cb) {
   });
   return this;
 };
-Registry$1.prototype.erase = Registry$1.prototype.clear;
-Registry$1.prototype.destroy = function destroy2(cb) {
+Registry.prototype.erase = Registry.prototype.clear;
+Registry.prototype.destroy = function destroy2(cb) {
   if (typeof cb !== "function")
     throw new TypeError("must specify a callback");
   var args = ["DELETE", this.path, "/f"];
@@ -19036,7 +19061,7 @@ Registry$1.prototype.destroy = function destroy2(cb) {
   });
   return this;
 };
-Registry$1.prototype.create = function create2(cb) {
+Registry.prototype.create = function create2(cb) {
   if (typeof cb !== "function")
     throw new TypeError("must specify a callback");
   var args = ["ADD", this.path, "/f"];
@@ -19066,7 +19091,7 @@ Registry$1.prototype.create = function create2(cb) {
   });
   return this;
 };
-Registry$1.prototype.keyExists = function keyExists(cb) {
+Registry.prototype.keyExists = function keyExists(cb) {
   this.values(function(err, items) {
     if (err) {
       if (err.code == 1) {
@@ -19078,7 +19103,7 @@ Registry$1.prototype.keyExists = function keyExists(cb) {
   });
   return this;
 };
-Registry$1.prototype.valueExists = function valueExists(name, cb) {
+Registry.prototype.valueExists = function valueExists(name, cb) {
   this.get(name, function(err, item) {
     if (err) {
       if (err.code == 1) {
@@ -19090,12 +19115,12 @@ Registry$1.prototype.valueExists = function valueExists(name, cb) {
   });
   return this;
 };
-var registry = Registry$1;
-const Registry = /* @__PURE__ */ getDefaultExportFromCjs(registry);
+var registry = Registry;
+const Registry$1 = /* @__PURE__ */ getDefaultExportFromCjs(registry);
 function getSteamPath() {
   return new Promise((resolve2) => {
-    const regKey = new Registry({
-      hive: Registry.HKCU,
+    const regKey = new Registry$1({
+      hive: Registry$1.HKCU,
       key: "\\Software\\Valve\\Steam"
     });
     regKey.get("SteamPath", (err, item) => {
@@ -19376,11 +19401,19 @@ function readProfileSave() {
 }
 let cachedImageData = [];
 let cachedBadgeData = [];
+let cachedEnemyData = [];
+let cachedEncounterData = [];
 ipcMain.handle("read-profile-save", () => {
   return readProfileSave();
 });
 ipcMain.handle("fetch-badge-data", async () => {
   return cachedBadgeData;
+});
+ipcMain.handle("fetch-enemy-data", async () => {
+  return cachedEnemyData;
+});
+ipcMain.handle("fetch-encounter-data", async () => {
+  return cachedEncounterData;
 });
 ipcMain.handle("get-steam-avatar-url", async () => {
   return await getSteamAvatarURL();
@@ -19443,6 +19476,20 @@ app.whenReady().then(async () => {
     console.log("Badge cache ready");
   } catch (err) {
     console.error("Failed to initialize badge cache", err);
+  }
+  try {
+    cachedEnemyData = await fetchEnemyData();
+    console.log(`Fetched ${cachedEnemyData.length} enemies from API`);
+    console.log("Enemy cache ready");
+  } catch (err) {
+    console.error("Failed to initialize enemy cache", err);
+  }
+  try {
+    cachedEncounterData = await fetchEncounterData();
+    console.log(`Fetched ${cachedEncounterData.length} encounters from API`);
+    console.log("Encounter cache ready");
+  } catch (err) {
+    console.error("Failed to initialize encounter cache", err);
   }
   createWindow();
 });

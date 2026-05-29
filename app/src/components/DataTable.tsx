@@ -27,11 +27,13 @@ import { Input } from "./ui/input"
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
+  handleRowClick?: (id: number) => void
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  handleRowClick,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
@@ -51,10 +53,12 @@ export function DataTable<TData, TValue>({
       sorting,
       columnFilters,
     },
+    autoResetPageIndex: false,
+    autoResetAll: false,
   })
 
   return (
-    <div>
+    <div className='h-133 flex flex-col'>
       <div className="flex items-center py-4 ps-4">
         <Input
           placeholder="Filter names..."
@@ -62,17 +66,17 @@ export function DataTable<TData, TValue>({
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)
           }
-          className="max-w-sm"
+          className="w-full mr-6"
         />
       </div>
-      <div className="overflow-hidden rounded-md border">
+      <div className="flex-1 overflow-hidden rounded-md border border-slate-600">
         <Table>
-          <TableHeader>
+          <TableHeader >
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
+              <TableRow key={headerGroup.id} className="bg-blue-950 hover:bg-blue-950">
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead key={header.id} className="w-[20%]">
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -91,9 +95,11 @@ export function DataTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
+                  className="hover:bg-slate-800"
+                  onClick={() => handleRowClick && handleRowClick(parseInt(row.id))}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id}  className="w-[20%]">
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}
@@ -118,6 +124,13 @@ export function DataTable<TData, TValue>({
         >
           Previous
         </Button>
+        <span className="flex items-center gap-1">
+          <div>Page</div>
+          <strong>
+            {table.getState().pagination.pageIndex + 1} of{" "}
+            {table.getPageCount()}
+          </strong>
+        </span>
         <Button
           variant="outline"
           size="sm"

@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Separator } from './ui/separator'
 
-type AncientInfoBoxProps = {
+type CharacterWLStatsCardProps = {
   title: string;
   image: string;
   wins: number;
@@ -9,7 +9,7 @@ type AncientInfoBoxProps = {
   bg: string;
 }
 
-function AncientStatsCard({ title, image, wins, losses, bg }: AncientInfoBoxProps) {
+function CharacterWLStatsCard({ title, image, wins, losses, bg }: CharacterWLStatsCardProps) {
 
 
   return (
@@ -42,4 +42,4 @@ function AncientStatsCard({ title, image, wins, losses, bg }: AncientInfoBoxProp
   )
 }
 
-export default AncientStatsCard;
+export default CharacterWLStatsCard;

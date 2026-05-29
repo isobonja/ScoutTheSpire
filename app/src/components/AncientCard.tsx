@@ -1,5 +1,5 @@
 import { Card, CardContent } from '@/components/ui/card'
-import AncientStatsCard from './AncientStatsCard';
+import AncientStatsCard from './CharacterWLStatsCard';
 import { CHARACTER_COLORS, CHARACTER_ICONS } from '@/constants/characters';
 import { extractNameFromSTSID } from '@/utils/general';
 import type { AncientStats } from 'shared/types/profileData';
