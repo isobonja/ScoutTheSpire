@@ -154,9 +154,6 @@ export type EnemyTableRowData = {
   name: string
   type: "Normal" | "Elite" | "Boss"
   icon: string | null // image url
-  // So the /api/monsters endpoint does not include act info. It includes 
-  // encounter info, so I will need to look at the encounter data from 
-  // /api/encounters to get the acts in which each enemy is encountered. 
   acts: number[]
   totalTimesEncountered: number | null
   totalTimesKilled: number | null

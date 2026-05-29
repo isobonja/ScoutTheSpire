@@ -262,7 +262,10 @@ function PlayerInfoPanel(
         <Separator className='bg-slate-500 mask-x-from-90% mask-x-to-95% mb-4' />
         
         {/* Enemy Encounter Stats */}
-        <EnemyEncounterInfoBox enemiesStats={profileData?.enemy_stats || null} />
+        <EnemyEncounterInfoBox 
+          enemiesStats={profileData?.enemy_stats || null} 
+          encountersStats={profileData?.encounter_stats || null}
+        />
 
 
         <ScrollBar orientation="vertical" className='w-16 bg-scrollbar-bg' />

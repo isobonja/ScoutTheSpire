@@ -76,7 +76,7 @@ export function DataTable<TData, TValue>({
               <TableRow key={headerGroup.id} className="bg-blue-950 hover:bg-blue-950">
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id} className="w-[20%]">
+                    <TableHead key={header.id} className="">
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -99,7 +99,7 @@ export function DataTable<TData, TValue>({
                   onClick={() => handleRowClick && handleRowClick(parseInt(row.id))}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}  className="w-[20%]">
+                    <TableCell key={cell.id}  className="">
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}

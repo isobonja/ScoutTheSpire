@@ -12,7 +12,7 @@ export type ProfileSaveData = {
   discovered_events: string[]
   discovered_potions: string[]
   discovered_relics: string[]
-  encounter_stats: EncounterStats[]
+  encounter_stats: EncounterProfileStats[]
   enemy_stats: EnemyProfileStats[]
   epochs: Epoch[]
   floors_climbed: number
@@ -58,7 +58,7 @@ export type CharacterWLData = {
   wins: number
 }
 
-type EncounterStats = {
+export type EncounterProfileStats = {
   encounter_id: string
   fight_stats: CharacterWLData[]
 }
