@@ -7,14 +7,15 @@ import { fileURLToPath } from 'node:url';
 import { APP_NAME } from '../../shared/constants';
 import { cacheImageJSON, cacheImagesBulk } from './cache';
 import { initializeProtocols } from './protocols';
-import { fetchBadgeData, fetchEncounterData, fetchEnemyData } from './requests';
+import { fetchBadgeData, fetchEncounterData, fetchEnemyData, fetchEpochsData } from './requests';
 import { getSteamPath, isRequiredAssetCategory } from './utils';
 
 import type { BadgeData } from 'shared/types/badges';
 import type { ImageFileCategory } from 'shared/types/images';
 import type { ProfileSaveData } from '../shared/types/profileData';
 import type { EnemiesData } from 'shared/types/enemies';
-import type { EncounterData } from 'shared/types/encounters';
+import type { EncountersData } from 'shared/types/encounters';
+import type { EpochsData } from '../shared/types/epochs';
 
 app.setName("ScoutTheSpire");
 
@@ -128,7 +129,8 @@ function readProfileSave(): ProfileSaveData | null {
 let cachedImageData: ImageFileCategory[] = [];
 let cachedBadgeData: BadgeData[] = [];
 let cachedEnemyData: EnemiesData[] = [];
-let cachedEncounterData: EncounterData[] = [];
+let cachedEncounterData: EncountersData[] = [];
+let cachedEpochsData: EpochsData[] = [];
 
 // IPC Handlers
 
@@ -150,6 +152,10 @@ ipcMain.handle('fetch-enemy-data', async () => {
 ipcMain.handle('fetch-encounter-data', async () => {
   //return await fetchEncounterData();
   return cachedEncounterData;
+});
+
+ipcMain.handle('fetch-epochs-data', async () => {
+  return cachedEpochsData;
 });
 
 ipcMain.handle('get-steam-avatar-url', async () => {
@@ -241,7 +247,7 @@ app.whenReady().then(async () => {
   }
 
   /*
-    Currently, badge and enemy data are fetched on-demand separately, and are never 
+    Currently, the data below is fetched on-demand separately, and are never 
     saved locally like the images JSON. However, it might be worth changing this to 
     work similarly to the images JSON, where all badge and enemy data is fetched and 
     cached so that the endpoints do not need to be called whenever the app is booted or 
@@ -267,6 +273,16 @@ app.whenReady().then(async () => {
     console.log("Encounter cache ready");
   } catch (err) {
     console.error("Failed to initialize encounter cache", err);
+  }
+
+  try {
+    cachedEpochsData = await fetchEpochsData();
+
+    console.log(`Fetched ${cachedEpochsData.length} epochs from API`);
+
+    console.log("Epoch cache ready");
+  } catch (err) {
+    console.error("Failed to initialize epoch cache", err);
   }
 
   createWindow();

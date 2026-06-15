@@ -5,6 +5,7 @@ import type { BadgeData } from "../../shared/types/badges";
 import type { ImageFileCategory } from "../../shared/types/images";
 import type { EnemiesData } from "../../shared/types/enemies";
 import type { EncounterData } from "shared/types/encounters";
+import type { EpochData } from "shared/types/epochs";
 
 declare global {
   interface Window {
@@ -15,6 +16,7 @@ declare global {
       getImageCategoryData: (categoryID: string) => Promise<ImageFileCategory | null>;
       fetchEnemyData: () => Promise<EnemiesData[]>;
       fetchEncounterData: () => Promise<EncounterData[]>;
+      fetchEpochsData: () => Promise<EpochData[]>;
     };
   }
 }

@@ -14,7 +14,7 @@ export type ProfileSaveData = {
   discovered_relics: string[]
   encounter_stats: EncounterProfileStats[]
   enemy_stats: EnemyProfileStats[]
-  epochs: Epoch[]
+  epochs: PlayerEpochData[]
   floors_climbed: number
   max_multiplayer_ascension: number
   preferred_multiplayer_ascension: number
@@ -68,7 +68,7 @@ export type EnemyProfileStats = {
   fight_stats: CharacterWLData[]
 }
 
-type Epoch = {
+export type PlayerEpochData = {
   id: string
   obtain_date: number
   state: 'revealed' | 'hidden'

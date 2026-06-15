@@ -1,0 +1,2 @@
+export const EPOCH_TIMELINE_BOX_WIDTH = 200;
+export const EPOCH_TIMELINE_BOX_HEIGHT = 120;

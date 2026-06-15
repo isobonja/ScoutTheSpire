@@ -198,7 +198,7 @@ function EnemyEncounterInfoBox({ enemiesStats, encountersStats }: EnemyEncounter
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Times Encountered
+            Encountered
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         )
@@ -217,7 +217,7 @@ function EnemyEncounterInfoBox({ enemiesStats, encountersStats }: EnemyEncounter
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Times Killed
+            Killed
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         )
@@ -236,7 +236,7 @@ function EnemyEncounterInfoBox({ enemiesStats, encountersStats }: EnemyEncounter
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Times Died To
+            Died To
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         )
@@ -310,7 +310,7 @@ function EnemyEncounterInfoBox({ enemiesStats, encountersStats }: EnemyEncounter
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Times Encountered
+            Encountered
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         )
@@ -329,7 +329,7 @@ function EnemyEncounterInfoBox({ enemiesStats, encountersStats }: EnemyEncounter
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Times Killed
+            Killed
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         )
@@ -348,7 +348,7 @@ function EnemyEncounterInfoBox({ enemiesStats, encountersStats }: EnemyEncounter
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Times Died To
+            Died To
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         )
@@ -363,7 +363,7 @@ function EnemyEncounterInfoBox({ enemiesStats, encountersStats }: EnemyEncounter
 
 
   return (
-    <Tabs defaultValue={TABS[0]} className="w-full h-150 pb-2 mb-2">
+    <Tabs defaultValue={TABS[0]} className="w-full h-150 pb-2 mb-10">
       <TabsList className='bg-transparent p-0 h-auto gap-2 mb-0 ps-4'>
         {TABS.map((tab) => (
           <TabsTrigger 

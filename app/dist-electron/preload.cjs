@@ -25,6 +25,7 @@ electron.contextBridge.exposeInMainWorld("api", {
   fetchBadgeData: () => electron.ipcRenderer.invoke("fetch-badge-data"),
   fetchEnemyData: () => electron.ipcRenderer.invoke("fetch-enemy-data"),
   fetchEncounterData: () => electron.ipcRenderer.invoke("fetch-encounter-data"),
+  fetchEpochData: () => electron.ipcRenderer.invoke("fetch-epoch-data"),
   getSteamAvatarURL: () => electron.ipcRenderer.invoke("get-steam-avatar-url"),
   getImageCategoryData: (categoryID) => electron.ipcRenderer.invoke("get-image-category-data", categoryID)
 });

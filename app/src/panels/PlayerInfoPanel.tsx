@@ -10,6 +10,8 @@ import AncientInfoBox from "@/components/AncientInfoBox";
 import { AssetCategory, ImageFileCategory } from "shared/types/images";
 import { Separator } from "@/components/ui/separator";
 import EnemyEncounterInfoBox from "@/components/EnemyEncounterInfoBox";
+import { EthernetPortIcon } from "lucide-react";
+import EpochsInfoBox from "@/components/EpochsInfoBox";
 
 const PANEL_ASSET_CATEGORIES: AssetCategory[] = [
   "badges",
@@ -266,6 +268,11 @@ function PlayerInfoPanel(
           enemiesStats={profileData?.enemy_stats || null} 
           encountersStats={profileData?.encounter_stats || null}
         />
+
+        <Separator className='bg-slate-500 mask-x-from-90% mask-x-to-95% mb-4' />
+
+        {/* Epochs */}
+        <EpochsInfoBox />
 
 
         <ScrollBar orientation="vertical" className='w-16 bg-scrollbar-bg' />
