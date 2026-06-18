@@ -41,7 +41,9 @@ export type PlayerEpochDataFull = {
   description: string
   unlock_info: string
   unlock_text: string | null
-  unlock_type: 'card' | 'relic' | 'potion' | 'other'
+  unlock_type: EpochUnlockType
   unlocks: string[]
   revealed_epochs: string[]
 }
+
+export type EpochUnlockType = 'card' | 'relic' | 'potion' | 'other';

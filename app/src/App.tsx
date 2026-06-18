@@ -40,9 +40,9 @@ function App() {
           <SideNav selected={selectedPanel} onPanelChange={setSelectedPanel} />
         </ResizablePanel>
         <ResizableHandle withHandle className=''/>
-        <ResizablePanel className=''>
+        <ResizablePanel className='min-w-0'>
           {/*<ContentPanel selectedPanel={selectedPanel} />*/}
-          <div className='flex-1 p-4 pt-0 pe-0 dark:bg-slate-900 h-full'>
+          <div className='flex-1 min-w-0 p-4 pt-0 pe-0 dark:bg-slate-900 h-full'>
             <PlayerInfoPanel active={selectedPanel == 'profile'} profileData={profileData} />
           </div>
         </ResizablePanel>

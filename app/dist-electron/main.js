@@ -18633,7 +18633,7 @@ async function fetchEncounterData() {
     throw error;
   }
 }
-async function fetchEpochData() {
+async function fetchEpochsData() {
   try {
     const res = await http.get("/epochs");
     return res.data;
@@ -19412,7 +19412,7 @@ let cachedImageData = [];
 let cachedBadgeData = [];
 let cachedEnemyData = [];
 let cachedEncounterData = [];
-let cachedEpochData = [];
+let cachedEpochsData = [];
 ipcMain.handle("read-profile-save", () => {
   return readProfileSave();
 });
@@ -19425,8 +19425,8 @@ ipcMain.handle("fetch-enemy-data", async () => {
 ipcMain.handle("fetch-encounter-data", async () => {
   return cachedEncounterData;
 });
-ipcMain.handle("fetch-epoch-data", async () => {
-  return cachedEpochData;
+ipcMain.handle("fetch-epochs-data", async () => {
+  return cachedEpochsData;
 });
 ipcMain.handle("get-steam-avatar-url", async () => {
   return await getSteamAvatarURL();
@@ -19505,8 +19505,8 @@ app.whenReady().then(async () => {
     console.error("Failed to initialize encounter cache", err);
   }
   try {
-    cachedEpochData = await fetchEpochData();
-    console.log(`Fetched ${cachedEpochData.length} epochs from API`);
+    cachedEpochsData = await fetchEpochsData();
+    console.log(`Fetched ${cachedEpochsData.length} epochs from API`);
     console.log("Epoch cache ready");
   } catch (err) {
     console.error("Failed to initialize epoch cache", err);

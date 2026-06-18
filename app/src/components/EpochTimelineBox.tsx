@@ -1,5 +1,6 @@
 import { EPOCH_TIMELINE_BOX_HEIGHT, EPOCH_TIMELINE_BOX_WIDTH } from "@/constants/epochs";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import { EpochUnlockType } from "../../shared/types/epochs";
 
 type EpochTimelineBoxProps = {
   id: string
@@ -7,10 +8,9 @@ type EpochTimelineBoxProps = {
   description: string
   unlock_info: string
   unlock_text: string | null
-  unlocks_cards: string[]
-  unlocks_relics: string[]
-  unlocks_potions: string[]
-  expands_timeline: string[]
+  unlock_type: EpochUnlockType
+  unlocks: string[]
+  revealed_epochs: string[]
 }
 
 function EpochTimelineBox({ 
@@ -19,58 +19,53 @@ function EpochTimelineBox({
   description, 
   unlock_info, 
   unlock_text, 
-  unlocks_cards, 
-  unlocks_relics, 
-  unlocks_potions, 
-  expands_timeline 
+  unlock_type,
+  unlocks,
+  revealed_epochs 
 }: EpochTimelineBoxProps) {
   return (
-    <div key={id} className="w-full border border-slate-300" style={{ width: EPOCH_TIMELINE_BOX_WIDTH, height: EPOCH_TIMELINE_BOX_HEIGHT }}>
+    <div key={id} className="w-full border border-slate-300 rounded-lg overflow-hidden" style={{ width: EPOCH_TIMELINE_BOX_WIDTH, height: EPOCH_TIMELINE_BOX_HEIGHT }}>
       <HoverCard openDelay={10} closeDelay={100} >
         <HoverCardTrigger asChild>
-          <div className="w-full p-2 flex flex-col">
-            <h1>{title}</h1>
-            <p>{description}</p>
+          <div className={`
+            w-full 
+            h-full 
+            p-2 
+            text-xl 
+            flex 
+            flex-col 
+            select-none 
+            justify-center 
+            items-center 
+            text-center 
+            rounded-lg 
+            hover:inset-ring-2 hover:inset-ring-purple-300 
+            hover:inset-shadow-sm hover:inset-shadow-sky-300
+            hover:text-2xl
+            `}
+          >
+            <h1 className=''>{title}</h1>
+            {/*<p>{description}</p>*/}
           </div>
         </HoverCardTrigger>
-        <HoverCardContent className="flex w-64 flex-col gap-0.5">
+        <HoverCardContent side="left" className="flex w-64 flex-col gap-0.5">
           <div>{unlock_info}</div>
           {unlock_text && <div>{unlock_text}</div>}
-          {unlocks_cards.length > 0 && (
+          {unlocks.length > 0 && (
             <div>
-              <h2 className="font-bold">Unlocks Cards:</h2>
+              <h2 className="font-bold">{unlock_type + " unlocks"}:</h2>
               <ul className="list-disc list-inside">
-                {unlocks_cards.map((card) => (
-                  <li key={card}>{card}</li>
+                {unlocks.map((unlock) => (
+                  <li key={unlock}>{unlock}</li>
                 ))}
               </ul>
             </div>
           )}
-          {unlocks_relics.length > 0 && (
+          {revealed_epochs.length > 0 && (
             <div>
-              <h2 className="font-bold">Unlocks Relics:</h2>
+              <h2 className="font-bold">Revealed Epochs:</h2>
               <ul className="list-disc list-inside">
-                {unlocks_relics.map((relic) => (
-                  <li key={relic}>{relic}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-          {unlocks_potions.length > 0 && (
-            <div>
-              <h2 className="font-bold">Unlocks Potions:</h2>
-              <ul className="list-disc list-inside">
-                {unlocks_potions.map((potion) => (
-                  <li key={potion}>{potion}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-          {expands_timeline.length > 0 && (
-            <div>
-              <h2 className="font-bold">Expands Timeline:</h2>
-              <ul className="list-disc list-inside">
-                {expands_timeline.map((epoch) => (
+                {revealed_epochs.map((epoch) => (
                   <li key={epoch}>{epoch}</li>
                 ))}
               </ul>

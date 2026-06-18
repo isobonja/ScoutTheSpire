@@ -166,115 +166,119 @@ function PlayerInfoPanel(
   }, [profileData, badgeData]);
 
   return (
-    <div className='h-full' hidden={!active}>
-      <ScrollArea className="h-full p-2 pt-0 pe-4">
-        {/* Overall Stats */}
-        <div className="space-y-2 info-panel p-4 mb-4 mt-4">
-          <div className='flex gap-8'>
-            {steamAvatarURL && 
-              <div className='border border-white'>
-                <img src={steamAvatarURL} alt="Steam PFP" />
+    <div className='h-full min-w-0' hidden={!active}>
+      <ScrollArea className="h-full min-w-0 p-2 pt-0 pe-4 border border-red-400">
+        <div className="w-full min-w-0 max-w-full">
+          {/* Overall Stats */}
+          <div className="space-y-2 info-panel p-4 mb-4 mt-4">
+            <div className='flex gap-8'>
+              {steamAvatarURL && 
+                <div className='border border-white'>
+                  <img src={steamAvatarURL} alt="Steam PFP" />
+                </div>
+              }
+              <div className='flex-1'>
+                <h1 className='text-4xl text-orange-300 font-extrabold font-heading -ms-2'>Overall Stats</h1>
+                <p className='font-mono'>Architect Damage: {profileData?.architect_damage}</p>
+                <p className='font-mono'>Floors Climbed: {profileData?.floors_climbed}</p>
+                <p className='font-mono'>Total Playtime: {formatSecondsToHMS(profileData?.total_playtime ?? 0)}</p>
+                <p className='font-mono'>Wongo Points: {profileData?.wongo_points}</p>
+                <p className='font-mono'>
+                  W/L Ratio: 
+                  <span className='text-green-500'>{' ' + totalWinLoss.wins}</span>
+                  /
+                  <span className='text-red-500'>{totalWinLoss.losses}</span>
+                </p>
               </div>
-            }
-            <div className='flex-1'>
-              <h1 className='text-4xl text-orange-300 font-extrabold font-heading -ms-2'>Overall Stats</h1>
-              <p className='font-mono'>Architect Damage: {profileData?.architect_damage}</p>
-              <p className='font-mono'>Floors Climbed: {profileData?.floors_climbed}</p>
-              <p className='font-mono'>Total Playtime: {formatSecondsToHMS(profileData?.total_playtime ?? 0)}</p>
-              <p className='font-mono'>Wongo Points: {profileData?.wongo_points}</p>
-              <p className='font-mono'>
-                W/L Ratio: 
-                <span className='text-green-500'>{' ' + totalWinLoss.wins}</span>
-                /
-                <span className='text-red-500'>{totalWinLoss.losses}</span>
-              </p>
             </div>
+            
           </div>
           
-        </div>
-        
-        <Separator className='bg-slate-500 mask-x-from-90% mask-x-to-95% mb-4' />
+          <Separator className='bg-slate-500 mask-x-from-90% mask-x-to-95% mb-4' />
 
-        {/* Character Stats */}
-        <Tabs defaultValue={CHARACTERS[0].id} className="w-full h-full pb-2 mb-2">
-          <TabsList className='bg-transparent p-0 h-auto gap-2 mb-0 ps-4'>
+          {/* Character Stats */}
+          <Tabs defaultValue={CHARACTERS[0].id} className="w-full h-full pb-2 mb-2">
+            <TabsList className='bg-transparent p-0 h-auto gap-2 mb-0 ps-4'>
+              {Object.values(CHARACTERS).map((char) => (
+                <TabsTrigger 
+                  key={char.id} 
+                  value={char.id} 
+                  className={`
+                    px-4
+                    rounded-b-none
+                    ring ring-slate-700
+                    text-white!
+                    animation-none!
+                    bg-slate-600
+                    ${CHARACTER_COLORS[char.id]?.tabs.activeBg}
+                    data-active:ring-0!
+                    data-active:border!
+                    ${CHARACTER_COLORS[char.id]?.tabs.border}
+                    data-active:border-b-0!
+                    data-active:-mb-5.25!
+                    data-active:shadow-none!
+                    z-10
+                    mb-0!
+                  `}
+                >
+                  {/* Should consider maybe moving icons to backend cache instead of frontend assets */}
+                  <img src={CHARACTER_ICONS[char.id]} alt={char.name} className="w-6 h-6" />
+                  {capitalize(char.name)}
+                </TabsTrigger>
+              ))}
+            </TabsList>
             {Object.values(CHARACTERS).map((char) => (
-              <TabsTrigger 
+              <TabsContent 
                 key={char.id} 
                 value={char.id} 
                 className={`
-                  px-4
-                  rounded-b-none
-                  ring ring-slate-700
-                  text-white!
-                  animation-none!
-                  bg-slate-600
-                  ${CHARACTER_COLORS[char.id]?.tabs.activeBg}
-                  data-active:ring-0!
-                  data-active:border!
-                  ${CHARACTER_COLORS[char.id]?.tabs.border}
-                  data-active:border-b-0!
-                  data-active:-mb-5.25!
-                  data-active:shadow-none!
-                  z-10
-                  mb-0!
+                  w-full
+                  h-full 
+                  info-panel-colorless
+                  border-2!
+                  ${CHARACTER_COLORS[char.id]?.light.border}
+                  ${CHARACTER_COLORS[char.id]?.dark.bg}
+                  rounded-md
+                  mt-0!
+                  relative
                 `}
               >
-                {/* Should consider maybe moving icons to backend cache instead of frontend assets */}
-                <img src={CHARACTER_ICONS[char.id]} alt={char.name} className="w-6 h-6" />
-                {capitalize(char.name)}
-              </TabsTrigger>
+                <CharacterInfoBox 
+                  character={char} 
+                  info={profileData?.character_stats.find((c) => c.id === char.id) || null} 
+                  badgesInfo={characterBadges[char.id]}
+                  badgeImages={assetCategories.badges || null}
+                />
+              </TabsContent>
             ))}
-          </TabsList>
-          {Object.values(CHARACTERS).map((char) => (
-            <TabsContent 
-              key={char.id} 
-              value={char.id} 
-              className={`
-                w-full
-                h-full 
-                info-panel-colorless
-                border-2!
-                ${CHARACTER_COLORS[char.id]?.light.border}
-                ${CHARACTER_COLORS[char.id]?.dark.bg}
-                rounded-md
-                mt-0!
-                relative
-              `}
-            >
-              <CharacterInfoBox 
-                character={char} 
-                info={profileData?.character_stats.find((c) => c.id === char.id) || null} 
-                badgesInfo={characterBadges[char.id]}
-                badgeImages={assetCategories.badges || null}
-              />
-            </TabsContent>
-          ))}
-        </Tabs>
+          </Tabs>
 
-        <Separator className='bg-slate-500 mask-x-from-90% mask-x-to-95% mb-4' />
+          <Separator className='bg-slate-500 mask-x-from-90% mask-x-to-95% mb-4' />
 
-        {/* Ancient Stats */}
-        <AncientInfoBox 
-          ancient_stats={profileData?.ancient_stats || null} 
-          steamAvatarURL={steamAvatarURL || ""}
-          ancientsBackgroundImageData={assetCategories.backgrounds || null}
-        />
+          {/* Ancient Stats */}
+          <AncientInfoBox 
+            ancient_stats={profileData?.ancient_stats || null} 
+            steamAvatarURL={steamAvatarURL || ""}
+            ancientsBackgroundImageData={assetCategories.backgrounds || null}
+          />
 
-        <Separator className='bg-slate-500 mask-x-from-90% mask-x-to-95% mb-4' />
-        
-        {/* Enemy Encounter Stats */}
-        <EnemyEncounterInfoBox 
-          enemiesStats={profileData?.enemy_stats || null} 
-          encountersStats={profileData?.encounter_stats || null}
-        />
+          <Separator className='bg-slate-500 mask-x-from-90% mask-x-to-95% mb-4' />
+          
+          {/* Enemy Encounter Stats */}
+          <EnemyEncounterInfoBox 
+            enemiesStats={profileData?.enemy_stats || null} 
+            encountersStats={profileData?.encounter_stats || null}
+          />
 
-        <Separator className='bg-slate-500 mask-x-from-90% mask-x-to-95% mb-4' />
+          <Separator className='bg-slate-500 mask-x-from-90% mask-x-to-95% mb-4' />
 
-        {/* Epochs */}
-        <EpochsInfoBox />
+          {/* Epochs */}
+          <EpochsInfoBox 
+            epochsStats={profileData?.epochs || null}
+          />
 
 
+        </div>
         <ScrollBar orientation="vertical" className='w-16 bg-scrollbar-bg' />
       </ScrollArea>
     </div>
