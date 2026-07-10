@@ -1,3 +1,6 @@
+/**
+ * Badge info retrieved from the Spire Codex API.
+ */
 export type BadgeData = {
   id: string
   name: string
@@ -14,13 +17,20 @@ export type BadgeTier = {
   description: string
 }
 
+/**
+ * The player's badge data for each character, including the 
+ * count of each badge they have earned.
+ */
 export type CharacterBadgeData = {
   count: number
   id: string
   rarity: string
 }
 
-// Used for displaying characters' badges
+/**
+ * Full information about a character's badge, including details and tier information.
+ * Primarily used for displaying badge information in the UI.
+ */
 export type CharacterBadgeInfoFull = {
   id: string
   name: string

@@ -1,5 +1,8 @@
 import type { CharacterWLData } from "./profileData"
 
+/**
+ * Encounters data retrieved from the Spire Codex API.
+ */
 export type EncountersData = {
   id: string
   name: string
@@ -14,6 +17,9 @@ export type EncountersData = {
   loss_text: string
 }
 
+/**
+ * Data structure representing a row in the encounter table, including encounter details and statistics.
+ */
 export type EncounterTableRowData = {
   id: string
   name: string

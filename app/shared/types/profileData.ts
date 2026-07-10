@@ -1,7 +1,9 @@
-//import { createRequire } from 'module'
 import { CharacterID } from '@/types/general'
 import { CharacterBadgeData } from './badges'
 
+/**
+ * The player's profile save data.
+ */
 export type ProfileSaveData = {
   ancient_stats: AncientStats[]
   architect_damage: number
@@ -22,6 +24,9 @@ export type ProfileSaveData = {
   wongo_points: number
 }
 
+/**
+ * Player stats pertaining to Ancients.
+ */
 export type AncientStats = {
   ancient_id: string
   character_stats: {
@@ -31,6 +36,9 @@ export type AncientStats = {
   }[]
 }
 
+/**
+ * Player stats pertaining to cards.
+ */
 type CardStats = {
   id: string
   times_lost: number
@@ -39,6 +47,9 @@ type CardStats = {
   times_won: number
 }
 
+/**
+ * Player stats pertaining to the different in-game playable characters.
+ */
 export type CharacterStats = {
   badges: CharacterBadgeData[]
   best_win_streak: number
@@ -52,28 +63,45 @@ export type CharacterStats = {
   total_wins: number
 }
 
+/**
+ * Win/Loss data for a character.
+ */
 export type CharacterWLData = {
   character: CharacterID
   losses: number
   wins: number
 }
 
+/**
+ * Player stats pertaining to encounters.
+ */
 export type EncounterProfileStats = {
   encounter_id: string
   fight_stats: CharacterWLData[]
 }
 
+/**
+ * Player stats pertaining to enemies.
+ */
 export type EnemyProfileStats = {
   enemy_id: string
   fight_stats: CharacterWLData[]
 }
 
+/**
+ * Player stats pertaining to epochs.
+ */
 export type PlayerEpochData = {
   id: string
   obtain_date: number
   state: 'revealed' | 'hidden'
 }
 
+/**
+ * Overall Ancient data.
+ * The profile data does not contain total wins/losses across all characters,
+ * so this type is used to represent that data in a more convenient way.
+ */
 export type AncientStatsOverallData = {
   [key: string]: { wins: number, losses: number}
 }

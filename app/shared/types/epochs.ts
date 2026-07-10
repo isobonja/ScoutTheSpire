@@ -1,3 +1,6 @@
+/**
+ * Epochs data retrieved from the Spire Codex API.
+ */
 export type EpochsData = {
   id: string
   slug: string
@@ -21,7 +24,6 @@ export type EpochsData = {
 //   they will be in the same column. 
 // use 'sort_order' to determine vertical order within the column.
 
-
 // I could refer to epochs by either 'id' or 'stug'; 
 //   'id' isn't really obvious so maybe 'stug' is better in this case
 
@@ -34,6 +36,9 @@ export type EpochsData = {
 //  epoch is unlocked. I could add some lines connecting these to their 
 //  "parent" epoch in the timeline graphic.
 
+/**
+ * The player's epoch data combined with the full epoch data.
+ */
 export type PlayerEpochDataFull = {
   obtain_date: number
   state: 'revealed' | 'hidden'
