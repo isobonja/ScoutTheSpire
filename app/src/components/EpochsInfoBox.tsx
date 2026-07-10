@@ -94,7 +94,7 @@ function EpochsInfoBox({ epochsStats }: EpochsInfoBoxProps) {
         info-panel-colorless
         border-2!
         border-slate-300
-        bg-black
+        bg-epoch-panel
         rounded-md
         mt-0!
         relative

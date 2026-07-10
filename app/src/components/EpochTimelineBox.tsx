@@ -1,6 +1,8 @@
 import { EPOCH_TIMELINE_BOX_HEIGHT, EPOCH_TIMELINE_BOX_WIDTH } from "@/constants/epochs";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { EpochUnlockType } from "../../shared/types/epochs";
+import { Separator } from "./ui/separator";
+import { resolveSTSTextColorFormatTag } from '../utils/general';
 
 type EpochTimelineBoxProps = {
   id: string
@@ -24,7 +26,7 @@ function EpochTimelineBox({
   revealed_epochs 
 }: EpochTimelineBoxProps) {
   return (
-    <div key={id} className="w-full border border-slate-300 rounded-lg overflow-hidden" style={{ width: EPOCH_TIMELINE_BOX_WIDTH, height: EPOCH_TIMELINE_BOX_HEIGHT }}>
+    <div key={id} className="w-full border border-slate-300 bg-gray-950 rounded-lg overflow-hidden" style={{ width: EPOCH_TIMELINE_BOX_WIDTH, height: EPOCH_TIMELINE_BOX_HEIGHT }}>
       <HoverCard openDelay={10} closeDelay={100} >
         <HoverCardTrigger asChild>
           <div className={`
@@ -48,9 +50,12 @@ function EpochTimelineBox({
             {/*<p>{description}</p>*/}
           </div>
         </HoverCardTrigger>
-        <HoverCardContent side="left" className="flex w-64 flex-col gap-0.5">
-          <div>{unlock_info}</div>
-          {unlock_text && <div>{unlock_text}</div>}
+        <HoverCardContent side="left" className="flex w-64 flex-col gap-0.5 w-100">
+          <div className='text-justify'>{resolveSTSTextColorFormatTag(description)}</div>
+          <Separator className='bg-white my-2' />
+          <div>{resolveSTSTextColorFormatTag(unlock_info)}</div>
+          {unlock_text && <div>{resolveSTSTextColorFormatTag(unlock_text)}</div>}
+          <Separator className='bg-white my-2' />
           {unlocks.length > 0 && (
             <div>
               <h2 className="font-bold">{unlock_type + " unlocks"}:</h2>
@@ -61,6 +66,7 @@ function EpochTimelineBox({
               </ul>
             </div>
           )}
+          <Separator className='bg-white my-2' />
           {revealed_epochs.length > 0 && (
             <div>
               <h2 className="font-bold">Revealed Epochs:</h2>

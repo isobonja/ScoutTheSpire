@@ -1,3 +1,8 @@
+/**
+ * This module provides functions for making HTTP requests to the Spire Codex API.
+ * It uses the axios library with rate limiting to ensure that requests are made
+ * at a controlled rate, preventing potential abuse of the API.
+ */
 import axios, { AxiosInstance } from 'axios';
 import RateLimit from 'axios-rate-limit';
 import { SPIRE_CODEX_API_URL, SPIRE_CODEX_RATE_LIMIT } from '../shared/constants';

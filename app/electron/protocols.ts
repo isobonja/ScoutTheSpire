@@ -3,15 +3,17 @@ import path from 'node:path'
 import fs from 'fs';
 import { getSteamPath } from './utils';
 
+/**
+ * Initialize custom protocols for handling asset and Steam avatar requests.
+ * 
+ * This function sets up two protocols:
+ * - `asset://` for serving cached asset files from the user's data directory.
+ * - `steam-avatar://` for serving the user's Steam avatar image from the Steam cache.
+ */
 export function initializeProtocols() {
   protocol.handle("asset", async (request) => {
     try {
       const url = new URL(request.url);
-
-      // Example:
-      // asset://badges/ELITE.png
-      // hostname = "badges"
-      // pathname = "/ELITE.png"
 
       const relativePath = path.normalize(
         path.join(url.hostname, url.pathname)
@@ -29,7 +31,6 @@ export function initializeProtocols() {
 
       console.log("Asset path:", filePath);
 
-      // Prevent path traversal attacks
       if (!filePath.startsWith(cacheRoot)) {
         return new Response("Forbidden", {
           status: 403,

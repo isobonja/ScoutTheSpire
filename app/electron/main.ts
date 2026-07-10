@@ -52,6 +52,11 @@ process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path.join(process.env.APP_ROOT, 
 let profileSavePath: string | null = null
 let steamAvatarID: string | null = null
 
+/**
+ * Retrieve the path to the user's profile save file for Slay the Spire.
+ * 
+ * @returns The path to the profile save file, or null if not found
+ */
 const getProfileSavePath = () => {
   const steamDir = path.join(
     app.getPath('appData'),
@@ -79,11 +84,14 @@ const getProfileSavePath = () => {
     'progress.save'
   );
 
-  //console.log(jsonPath);
-
   return jsonPath;
 }
 
+/**
+ * Retrieve the URL for the user's Steam avatar based on the cached avatar ID.
+ * 
+ * @returns A Promise that resolves to the Steam avatar URL, or null if not available
+ */
 async function getSteamAvatarURL(): Promise<string | null> {
   if (!steamAvatarID) {
     return null;
@@ -108,6 +116,11 @@ async function getSteamAvatarURL(): Promise<string | null> {
   return `steam-avatar:///${steamAvatarID}.png`;
 }
 
+/**
+ * Read the user's profile save data.
+ * 
+ * @returns The parsed profile save data, or null if not found
+ */
 function readProfileSave(): ProfileSaveData | null {
   //console.log('Reading profile save data');
   if (!profileSavePath) {
@@ -124,7 +137,7 @@ function readProfileSave(): ProfileSaveData | null {
   return JSON.parse(data);
 }
 
-// Cached Data
+// ***** Cached Data *****
 
 let cachedImageData: ImageFileCategory[] = [];
 let cachedBadgeData: BadgeData[] = [];
@@ -132,25 +145,21 @@ let cachedEnemyData: EnemiesData[] = [];
 let cachedEncounterData: EncountersData[] = [];
 let cachedEpochsData: EpochsData[] = [];
 
-// IPC Handlers
+// ***** IPC Handlers *****
 
 ipcMain.handle('read-profile-save', () => {
-  //console.log('Reading profile save data');
   return readProfileSave();
 });
 
 ipcMain.handle('fetch-badge-data', async () => {
-  //return await fetchBadgeData();
   return cachedBadgeData;
 });
 
 ipcMain.handle('fetch-enemy-data', async () => {
-  //return await fetchEnemyData();
   return cachedEnemyData;
 });
 
 ipcMain.handle('fetch-encounter-data', async () => {
-  //return await fetchEncounterData();
   return cachedEncounterData;
 });
 
@@ -170,7 +179,7 @@ ipcMain.handle('get-image-category-data', (_, categoryID: string) => {
   return cachedImageData.find((c) => c.id === categoryID) || null
 })
 
-// Window creation
+// ***** Window creation *****
 
 let win: BrowserWindow | null
 

@@ -22,6 +22,13 @@
   --color-defect-dark: #2A7DB5;
   --color-colorless-dark: #6B6B6B;
 
+  --epoch-panel-bg: radial-gradient(
+      circle at center bottom,
+      var(--color-slate-700) 0%,
+      var(--color-slate-950) 70%,
+      var(--color-black) 100%
+    )
+
 }
 
 /* 
@@ -51,6 +58,8 @@
       black 95%,
       black 100%
     );
+
+    
 
 
     --font-heading: var(--font-sans);
@@ -306,4 +315,10 @@
     .info-tab-active {
       @apply border-2 border-slate-500 p-2 bg-red-400;
     }
+}
+
+@layer utilities {
+  .bg-epoch-panel {
+    background: var(--epoch-panel-bg);
+  }
 }

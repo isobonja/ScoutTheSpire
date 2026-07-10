@@ -10,17 +10,30 @@ import type { ImageFileCategory, ImageFileData } from "shared/types/images";
 
 const IMAGE_JSON_REFRESH_TIME = 1000 * 60 * 60 // 1 hr
 
+/* Retrieve asset cache directory path */
 const assetCacheDir = () => path.join(
   app.getPath("userData"),
   "asset_cache"
 );
 
+
+/**
+ * Ensure that the specified cache directory exists, creating it if necessary.
+ * 
+ * @param dir - The path to the cache directory to ensure exists
+ * @returns A Promise that resolves when the directory has been ensured to exist
+ */
 export async function ensureCache(dir: string) {
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
   }
 } 
 
+/**
+ * Cache the Spire-Codex images JSON file and return the parsed data.
+ * 
+ * @returns A Promise that resolves to the parsed images JSON data
+ */
 export async function cacheImageJSON() {
   console.log("-Electron-: Beginning caching of Spire-Codex images JSON...")
   const dataCachePath = path.join(
@@ -73,6 +86,13 @@ export async function cacheImageJSON() {
   }
 }
 
+/**
+ * Cache a single image file and return the updated ImageFileData with the local asset URL.
+ * 
+ * @param categoryID - The ID of the image category (e.g., "cards", "relics", etc.)
+ * @param ifd - The ImageFileData object containing the image's filename and URL
+ * @returns A Promise that resolves to the updated ImageFileData with the local asset URL
+ */
 export async function cacheImage(categoryID: string, ifd: ImageFileData) {
   console.log(`-Electron-: Caching ${ifd.filename} in category ${categoryID}`)
   await ensureCache(path.join(assetCacheDir(), categoryID));
@@ -111,6 +131,12 @@ export async function cacheImage(categoryID: string, ifd: ImageFileData) {
   }
 }
 
+/**
+ * Cache multiple image files in a category and return the updated category with local asset URLs.
+ *
+ * @param category - The ImageFileCategory object containing the images to cache
+ * @returns A Promise that resolves to the updated ImageFileCategory with local asset URLs
+ */
 export async function cacheImagesBulk(
   category: ImageFileCategory
 ) {
