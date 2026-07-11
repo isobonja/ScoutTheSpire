@@ -1,17 +1,24 @@
-import EpochTimelineBox from "./EpochTimelineBox";
-import { ScrollArea, ScrollBar } from "./ui/scroll-area";
-import type { EpochsData, EpochUnlockType, PlayerEpochDataFull } from '../../shared/types/epochs';
 import { useState, useEffect, useMemo } from "react";
-import type { PlayerEpochData } from "../../shared/types/profileData";
+
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import EpochTimelineBox from "./EpochTimelineBox";
+
+import type { EpochsData, EpochUnlockType, PlayerEpochDataFull } from 'shared/types/epochs';
+import type { PlayerEpochData } from "shared/types/profileData";
 
 type EpochsInfoBoxProps= {
+  /** Player's epoch statistics */
   epochsStats: PlayerEpochData[] | null
 }
 
+/**
+ * Renders a box displaying the player's epochs information in a timeline format.
+ */
 function EpochsInfoBox({ epochsStats }: EpochsInfoBoxProps) {
 
   const [epochsData, setEpochsData] = useState<EpochsData[]>([]);
 
+  // Memoized map of full epoch data based on fetched statistics for efficient access and rendering.
   const epochDataFullMap: Record<string, PlayerEpochDataFull> = useMemo(() => {
     if (!epochsStats || !epochsData) return {};
 
@@ -35,7 +42,6 @@ function EpochsInfoBox({ epochsStats }: EpochsInfoBoxProps) {
         unlocks = epoch.unlocks_potions
       } 
 
-
       map[epoch.id] = {
         obtain_date: epochPlayerStat?.obtain_date || 0,
         state: epochPlayerStat?.state || 'hidden',
@@ -53,7 +59,8 @@ function EpochsInfoBox({ epochsStats }: EpochsInfoBoxProps) {
     return map;
   }, [epochsData, epochsStats])
 
-  // not sure if memo is necessary here
+  // Memoized mapping of eras to their corresponding epochs for efficient rendering in the timeline.
+  // not sure if memo is necessary here 
   const epochEras: Record<string, string[]> = useMemo(() => {
     const eraToEpochsMap: Record<string, string[]> = {}
 
@@ -72,6 +79,7 @@ function EpochsInfoBox({ epochsStats }: EpochsInfoBoxProps) {
     return eraToEpochsMap;
   }, [epochsData])
 
+  // Fetches the epochs data from the backend when the component mounts and updates the state accordingly.
   useEffect(() => {
     async function fetchData() {
       try {
@@ -139,18 +147,3 @@ function EpochsInfoBox({ epochsStats }: EpochsInfoBoxProps) {
 }
 
 export default EpochsInfoBox;
-
-/*
-<div className='w-full h-auto info-panel-colorless border-2 border-slate-500 rounded-md p-4'>
-        <h2 className='text-xl font-bold mb-4'>Epochs</h2>
-        <p className='text-sm text-gray-300'>
-          Epochs information will be displayed here. The plan is to have a timeline graphic 
-          similar to the one in-game displaying all of the epochs. The user should be 
-          able to scroll horizontally by default. Each epoch should be able to be clicked 
-          on to show a popup within this EpochsInfoBox with all info about the epoch, 
-          including the description, unlock condition, and rewards. Maybe, in the future, 
-          filtering options could be added to display only locked/unlocked epochs, 
-          epochs that give card rewards, etc.
-        </p>
-      </div>
-      */

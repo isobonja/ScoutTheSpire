@@ -1,4 +1,6 @@
-//import PlayerInfoPanel from "@/panels/PlayerInfoPanel";
+/*******************************
+ * CURRENTLY UNUSED
+ *******************************/
 import { PanelType } from "@/types/general";
 
 type ContentPanelProps = {

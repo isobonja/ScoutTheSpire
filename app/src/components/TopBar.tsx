@@ -1,8 +1,8 @@
 
-
+/**
+ * Renders the top navigation bar for the application.
+ */
 function TopBar() {
-
-
   return (
     <div className='h-16 bg-blue-500 px-2'>
       <h1>My App</h1>

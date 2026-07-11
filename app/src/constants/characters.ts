@@ -1,5 +1,12 @@
 import { CharacterID, CharacterName } from "@/types/general";
 
+/*
+  Currently, these character assets are stored as frontend assets, but they should 
+  be moved to the backend and served via API in the future. 
+  
+  This will allow for easier updates and management of character assets, in case of 
+  new character additions to the game, for example.
+*/
 import ironcladIcon from "@/assets/characters/icons/character_icon_ironclad.png"
 import silentIcon from "@/assets/characters/icons/character_icon_silent.png"
 import regentIcon from "@/assets/characters/icons/character_icon_regent.png"
@@ -13,6 +20,9 @@ import necrobinderRest from "@/assets/characters/rest/rest_necrobinder.png"
 import ostyRest from "@/assets/characters/rest/rest_osty.png"
 import defectRest from "@/assets/characters/rest/rest_defect.png"
 
+/**
+ * A list of characters with their corresponding names and IDs.
+ */
 export const CHARACTERS: { name: CharacterName; id: CharacterID }[] = [
   { name: "ironclad", id: "CHARACTER.IRONCLAD" },
   { name: "silent", id: "CHARACTER.SILENT" },
@@ -21,8 +31,10 @@ export const CHARACTERS: { name: CharacterName; id: CharacterID }[] = [
   { name: "defect", id: "CHARACTER.DEFECT" }
 ]
 
-
-// rewrite to be generated algorithmically
+/**
+ * A mapping of character IDs to their corresponding color schemes for light and dark themes.
+ */
+// maybe rewrite to be generated algorithmically?
 export const CHARACTER_COLORS = {
   "CHARACTER.IRONCLAD": {
     light: {
@@ -110,10 +122,6 @@ export const CHARACTER_COLORS = {
     }
   }
 }
-
-//type CharacterColor = typeof CHARACTERS[number]
-
-
 
 export const CHARACTER_ICONS = {
   "CHARACTER.IRONCLAD": ironcladIcon,

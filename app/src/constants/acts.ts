@@ -1,3 +1,6 @@
+/**
+ * A mapping of act names to their corresponding numbers.
+ */
 export const ACT_MAPPINGS: Record<string, number> = {
   "Act 1 - Overgrowth": 1,
   "Act 1 - Underdocks": 1,

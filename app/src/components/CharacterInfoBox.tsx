@@ -1,27 +1,41 @@
-import { CHARACTER_RESTS } from "@/constants/characters";
-import type { CharacterID, CharacterName } from "@/types/general";
-import { capitalize, formatSecondsToHMS } from "@/utils/general";
-import FlameIcon from "@/assets/flame.svg?react";
-import type { CharacterStats } from "shared/types/profileData";
-import AccolateBadge from "./AccolateBadge";
-import { ScrollArea, ScrollBar } from "./ui/scroll-area";
-import type { CharacterBadgeInfoFull } from "shared/types/badges";
-import { ImageFileCategory } from "shared/types/images";
 import { useMemo } from "react";
+import FlameIcon from "@/assets/flame.svg?react";
+
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import AccoladeBadge from "./AccoladeBadge";
+
+import { CHARACTER_RESTS } from "@/constants/characters";
+import { capitalize, formatSecondsToHMS } from "@/utils/general";
+
+import type { CharacterID, CharacterName } from "@/types/general";
+import type { CharacterBadgeInfoFull } from "shared/types/badges";
+import type { CharacterStats } from "shared/types/profileData";
+import type { ImageFileCategory } from "shared/types/images";
 
 
 type CharacterInfoBoxProps = {
+  /** Character ID and name */
   character: {
     id: CharacterID;
     name: CharacterName;
   };
+
+  /** Character statistics */
   info: CharacterStats | null;
+
+  /** Badge stats associated with the character */
   badgesInfo: CharacterBadgeInfoFull[];
+
+  /** Corresponding badge images */
   badgeImages: ImageFileCategory | null;
 };
 
+/**
+ * Renders a character information box displaying statistics and badges.
+ */
 function CharacterInfoBox({ character, info, badgesInfo, badgeImages }: CharacterInfoBoxProps) {
 
+  // Create a mapping of badge IDs to their corresponding image URLs for efficient lookup
   const badgeToImageURLMap: Record<string, string> = useMemo(() => {
     if (!badgeImages) return {};
 
@@ -93,7 +107,7 @@ function CharacterInfoBox({ character, info, badgesInfo, badgeImages }: Characte
             <h2 className='text-lg font-bold text-blue-300 ps-2 pb-2 underline'>Badges</h2>
             <div className='flex flex-wrap gap-2 overflow-y-visible h-full'>
               {badgesInfo && badgesInfo.map((badge) => (
-                <AccolateBadge 
+                <AccoladeBadge 
                   key={`${character.id}_${badge.id}_${badge.rarity}`} 
                   badge={badge} 
                   badgeImageURL={badgeToImageURLMap[badge.id]}
@@ -104,7 +118,6 @@ function CharacterInfoBox({ character, info, badgesInfo, badgeImages }: Characte
           </ScrollArea>
         </div>
       </div>
-      
     </div>
   )
 }

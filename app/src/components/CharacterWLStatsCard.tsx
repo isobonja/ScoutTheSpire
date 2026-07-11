@@ -1,16 +1,27 @@
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
-import { Separator } from './ui/separator'
+import { Separator } from '@/components/ui/separator'
 
 type CharacterWLStatsCardProps = {
+  /** Character name */
   title: string;
+
+  /** URL of the character's image */
   image: string;
+
+  /** Number of wins */
   wins: number;
+
+  /** Number of losses */
   losses: number;
+
+  /** Background color class */
   bg: string;
 }
 
+/**
+ * Renders a card displaying a character's win/loss statistics.
+ */
 function CharacterWLStatsCard({ title, image, wins, losses, bg }: CharacterWLStatsCardProps) {
-
 
   return (
     <Card className={`${bg} flex flex-col h-full pt-2 pb-2 border border-white gap-1 inset-shadow-sm inset-shadow-amber-400`}>
@@ -32,12 +43,8 @@ function CharacterWLStatsCard({ title, image, wins, losses, bg }: CharacterWLSta
           </div>
           
           <p className='text-md'>{`${wins + losses} total encounters`}</p>
-          
         </div>
       </CardContent>
-      
-      
-      
     </Card>
   )
 }

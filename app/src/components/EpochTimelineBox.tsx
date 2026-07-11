@@ -1,20 +1,40 @@
-import { EPOCH_TIMELINE_BOX_HEIGHT, EPOCH_TIMELINE_BOX_WIDTH } from "@/constants/epochs";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
-import { EpochUnlockType } from "../../shared/types/epochs";
-import { Separator } from "./ui/separator";
-import { resolveSTSTextColorFormatTag } from '../utils/general';
+import { Separator } from "@/components/ui/separator";
+
+import { EPOCH_TIMELINE_BOX_HEIGHT, EPOCH_TIMELINE_BOX_WIDTH } from "@/constants/epochs";
+import { resolveSTSTextColorFormatTag } from '@/utils/general';
+
+import type { EpochUnlockType } from "shared/types/epochs";
 
 type EpochTimelineBoxProps = {
+  /** Epoch ID */
   id: string
+
+  /** Epoch title */
   title: string
+
+  /** Epoch description */
   description: string
+
+  /** Unlock requirements */
   unlock_info: string
+
+  /** Unlock text description */
   unlock_text: string | null
+
+  /** What type of rewards are unlocked by this epoch */
   unlock_type: EpochUnlockType
+
+  /** List of rewards unlocked by this epoch */
   unlocks: string[]
+
+  /** List of other epochs revealed by this epoch */
   revealed_epochs: string[]
 }
 
+/**
+ * Renders a box representing an epoch in the timeline, displaying its title and providing detailed information on hover.
+ */
 function EpochTimelineBox({ 
   id, 
   title, 
@@ -50,7 +70,7 @@ function EpochTimelineBox({
             {/*<p>{description}</p>*/}
           </div>
         </HoverCardTrigger>
-        <HoverCardContent side="left" className="flex w-64 flex-col gap-0.5 w-100">
+        <HoverCardContent side="left" className="flex flex-col gap-0.5 w-100">
           <div className='text-justify'>{resolveSTSTextColorFormatTag(description)}</div>
           <Separator className='bg-white my-2' />
           <div>{resolveSTSTextColorFormatTag(unlock_info)}</div>
@@ -80,11 +100,6 @@ function EpochTimelineBox({
 
         </HoverCardContent>
       </HoverCard>
-    {/*<div className="w-full border border-slate-300 p-2 flex" style={{ width: EPOCH_TIMELINE_BOX_WIDTH, height: EPOCH_TIMELINE_BOX_HEIGHT }}>
-      {/* Timeline graphic will go here *
-      <h1>{title}</h1>
-      <p>{description}</p>
-    </div>*/}
     </div>
   )
 }

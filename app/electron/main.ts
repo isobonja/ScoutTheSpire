@@ -17,6 +17,10 @@ import type { EnemiesData } from 'shared/types/enemies';
 import type { EncountersData } from 'shared/types/encounters';
 import type { EpochsData } from '../shared/types/epochs';
 
+import { setDebug } from "shared/logger";
+
+setDebug(!app.isPackaged);
+
 app.setName("ScoutTheSpire");
 
 app.setPath(

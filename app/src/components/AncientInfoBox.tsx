@@ -6,10 +6,9 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel"
 
-import type { AncientStats, AncientStatsOverallData } from "shared/types/profileData"
 import { useMemo } from "react"
 import { ImageFileCategory } from "shared/types/images"
-//import { ANCIENT_BG_LAYOUT_VALUES } from "@/constants/ancients"
+import type { AncientStats, AncientStatsOverallData } from "shared/types/profileData"
 import AncientCard from "./AncientCard"
 
 type AncientInfoBoxProps = {

@@ -7,20 +7,36 @@ import { useLayoutEffect, useRef, useState } from 'react';
 import { ANCIENT_BG_FOCAL_POINTS } from '@/constants/ancients';
 
 type AncientCardProps = {
+  /** Stats relating to the ancient */
   as: AncientStats;
-  bgURL: string;
-  steamAvatarURL: string;
-  totalWinsLosses: { wins: number, losses: number };
 
+  /** URL to the ancient's background image */
+  bgURL: string;
+
+  /** URL to the user's Steam avatar */
+  steamAvatarURL: string;
+
+  /** Total wins and losses after encountering ancient */
+  totalWinsLosses: { wins: number, losses: number };
 }
 
+/**
+ * Renders a card displaying information about an ancient.
+ * 
+ * The focus of background images between ancients varies, so 
+ * the background position is dynamically calculated based on the position of the nameplate.
+ */
 function AncientCard({ as, bgURL, steamAvatarURL, totalWinsLosses }: AncientCardProps) {
-
+  // Used to get the bounding rect of the card.
   const cardRef = useRef<HTMLDivElement | null>(null);
+
+  // Used to get the bounding rect of the nameplate.
   const nameplateRef = useRef<HTMLDivElement | null>(null);
 
   const [bgPosition, setBgPosition] = useState<string>("0px 0px");
 
+  // Dynamically calculates background position based on manually-defined focal point 
+  // of the ancient's background image and the position of the nameplate.
   useLayoutEffect(() => {
     function updateBGPosition() {
       if (
@@ -53,14 +69,6 @@ function AncientCard({ as, bgURL, steamAvatarURL, totalWinsLosses }: AncientCard
 
       const newPos =
         `${bgPosX}px ${bgPosY}px`;
-
-      console.log({
-        localX,
-        localY,
-        bgPosX,
-        bgPosY,
-        newPos
-      });
 
       setBgPosition((prev) =>
         prev === newPos
@@ -97,7 +105,7 @@ function AncientCard({ as, bgURL, steamAvatarURL, totalWinsLosses }: AncientCard
       );
     };
 
-  }, [])
+  }, [as.ancient_id]);
 
   return (
     <div ref={cardRef} className='relative overflow-hidden h-120 grow-0 min-w-0'>
@@ -172,12 +180,11 @@ function AncientCard({ as, bgURL, steamAvatarURL, totalWinsLosses }: AncientCard
               z-10
               drop-shadow-sm drop-shadow-red-700/40
             '/>
-            
           </div>
           
           <Card className='flex-7 h-full opacity-80 p-4 min-w-0 rounded-4xl!'>
             <div className='grid grid-cols-2 grid-rows-3 h-full gap-4'>
-              {/* Each ancient gets 6 cards made here... maybe it would be better to somehow 
+              {/* NOTE: Each ancient gets 6 cards made here... maybe it would be better to somehow 
               reuse the same 6 cards for every ancient? */}
               <AncientStatsCard 
                 title={'Overall'}

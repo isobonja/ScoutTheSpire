@@ -1,3 +1,4 @@
+// Directly from Spire Codex changelog widget documentation
 import { useEffect } from "react";
 
 export default function SpireCodexChangelog({ className }: { className?: string }) {

@@ -3,6 +3,9 @@ import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
 import { ThemeProvider } from './components/ThemeProvider.tsx'
+import { setDebug } from "shared/logger";
+
+setDebug(import.meta.env.DEV ||import.meta.env.VITE_DEBUG === 'true');
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

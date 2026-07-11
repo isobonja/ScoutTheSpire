@@ -1,28 +1,42 @@
+import { useEffect, useMemo, useState } from "react";
+
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { capitalize, formatSecondsToHMS } from "@/utils/general";
-import { CHARACTER_COLORS, CHARACTER_ICONS, CHARACTER_RESTS, CHARACTERS } from "@/constants/characters";
-import { useEffect, useMemo, useState } from "react";
-import { ProfileSaveData } from "shared/types/profileData";
-import CharacterInfoBox from "@/components/CharacterInfoBox";
-import { BadgeData, CharacterBadgeInfoFull } from "shared/types/badges";
-import AncientInfoBox from "@/components/AncientInfoBox";
-import { AssetCategory, ImageFileCategory } from "shared/types/images";
 import { Separator } from "@/components/ui/separator";
+
+import CharacterInfoBox from "@/components/CharacterInfoBox";
+import AncientInfoBox from "@/components/AncientInfoBox";
 import EnemyEncounterInfoBox from "@/components/EnemyEncounterInfoBox";
-import { EthernetPortIcon } from "lucide-react";
 import EpochsInfoBox from "@/components/EpochsInfoBox";
 
+import { capitalize, formatSecondsToHMS } from "@/utils/general";
+import { CHARACTER_COLORS, CHARACTER_ICONS, CHARACTER_RESTS, CHARACTERS } from "@/constants/characters";
+
+import type { ProfileSaveData } from "shared/types/profileData";
+import type { BadgeData, CharacterBadgeInfoFull } from "shared/types/badges";
+import type { AssetCategory, ImageFileCategory } from "shared/types/images";
+
+// Categories of assets used in the PlayerInfoPanel. 
+// These categories are used to fetch and display relevant assets for the player profile.
 const PANEL_ASSET_CATEGORIES: AssetCategory[] = [
   "badges",
   "backgrounds"
 ]
 
 type PlayerInfoPanelProps = {
+  /** Whether the panel is currently active (visible) or not.*/
   active: boolean;
+
+  /** User's profile data */
   profileData?: ProfileSaveData | null;
 }
 
+/**
+ * The PlayerInfoPanel component displays detailed information about the player's profile, 
+ * including overall stats, character stats, ancient stats, enemy encounter stats, and epochs. 
+ * 
+ * It fetches and displays relevant assets such as badges and backgrounds based on the player's profile data.
+ */
 function PlayerInfoPanel(
   { active, profileData }: PlayerInfoPanelProps
 ) {
@@ -38,6 +52,7 @@ function PlayerInfoPanel(
       >
     >({});
 
+  /** Calculate total wins and losses across all characters for display in the overall stats section. */
   const totalWinLoss = useMemo(() => {
     const res = { wins: 0, losses: 0 };
     if (!profileData) return res;
@@ -50,6 +65,7 @@ function PlayerInfoPanel(
     return res;
   }, [profileData]);
 
+  /** Fetches badge data, Steam avatar URL, and asset data when the component mounts. */
   useEffect(() => {
     Object.values(CHARACTER_RESTS).forEach((src) => {
       const img = new Image()
@@ -69,9 +85,6 @@ function PlayerInfoPanel(
       try {
         const url = await window.api.getSteamAvatarURL();
         if (url) {
-          //console.log("PFP URL:", url)
-          //const img = new Image();
-          //img.src = url;
           setSteamAvatarURL(url);
         }
       } catch (error) {
@@ -101,6 +114,7 @@ function PlayerInfoPanel(
     fetchAssetData();
   }, [])
 
+  /** Calculate the list of badges for each character based on their stats and the available badge data. */
   const characterBadges: Record<string, CharacterBadgeInfoFull[]> = useMemo(() => {
     if (!profileData) return {};
 
@@ -162,7 +176,7 @@ function PlayerInfoPanel(
     });
 
     return charBadgeMap;
-  
+
   }, [profileData, badgeData]);
 
   return (
@@ -276,7 +290,6 @@ function PlayerInfoPanel(
           <EpochsInfoBox 
             epochsStats={profileData?.epochs || null}
           />
-
 
         </div>
         <ScrollBar orientation="vertical" className='w-16 bg-scrollbar-bg' />

@@ -1,23 +1,35 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { capitalize, extractNameFromSTSID } from "@/utils/general";
-import type { EncounterProfileStats, EnemyProfileStats } from "shared/types/profileData";
-import { ColumnDef } from "@tanstack/react-table";
-import { DataTable } from "./DataTable";
-import { Button } from "./ui/button";
-import { ArrowUpDown } from "lucide-react";
-import type { EnemiesData, EnemyTableRowData } from "shared/types/enemies";
 import { useState, useEffect, useMemo } from "react";
+import { ColumnDef } from "@tanstack/react-table";
+import { ArrowUpDown } from "lucide-react";
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+
+import { DataTable } from "./DataTable";
+import CharacterWLStatsCard from "./CharacterWLStatsCard";
+
+import { capitalize, extractNameFromSTSID } from "@/utils/general";
 import { ACT_MAPPINGS } from "@/constants/acts";
 import { ENEMY_ACT_EXCEPTIONS, ENEMY_ID_MAPPINGS } from "@/constants/enemies";
-import CharacterWLStatsCard from "./CharacterWLStatsCard";
 import { CHARACTER_COLORS, CHARACTER_ICONS } from "@/constants/characters";
+
+import type { EncounterProfileStats, EnemyProfileStats } from "shared/types/profileData";
+import type { EnemiesData, EnemyTableRowData } from "shared/types/enemies";
 import type { EncountersData, EncounterTableRowData } from "shared/types/encounters";
 
+import { logger } from "shared/logger";
+
 type EnemyEncounterInfoBoxProps = {
+  /** Enemy statistics */
   enemiesStats: EnemyProfileStats[] | null;
+
+  /** Encounter statistics */
   encountersStats: EncounterProfileStats[] | null;
 }
 
+/**
+ * Renders a tabbed interface for displaying enemy and encounter statistics, including character win/loss stats for each.
+ */
 function EnemyEncounterInfoBox({ enemiesStats, encountersStats }: EnemyEncounterInfoBoxProps) {
 
   const TABS = ["Encounters", "Enemies"]
@@ -30,13 +42,6 @@ function EnemyEncounterInfoBox({ enemiesStats, encountersStats }: EnemyEncounter
 
   useEffect(() => {
     async function fetchData() {
-      /*try {
-        const enemies = await window.api.fetchEnemyData();
-        setEnemiesData(enemies);
-      } catch (error) {
-        console.error("Error fetching enemy data:", error);
-      }*/
-
       try {
         const [enemies, encounters] = await Promise.all([
           window.api.fetchEnemyData(),
@@ -52,6 +57,7 @@ function EnemyEncounterInfoBox({ enemiesStats, encountersStats }: EnemyEncounter
     fetchData();
   }, [])
 
+  // Memoized computation of enemy table rows based on fetched data and statistics
   const enemyTableRows = useMemo<EnemyTableRowData[]>(() => {
     if (!enemiesData) return [];
 
@@ -59,7 +65,7 @@ function EnemyEncounterInfoBox({ enemiesStats, encountersStats }: EnemyEncounter
       const acts = new Set<number>();
 
       if (Object.keys(ENEMY_ACT_EXCEPTIONS).includes(enemy.id)) {
-        console.log(`Enemy ${enemy.id} is an exception, adding acts ${ENEMY_ACT_EXCEPTIONS[enemy.id].join(", ")}`);
+        logger.log(`Enemy ${enemy.id} is an exception, adding acts ${ENEMY_ACT_EXCEPTIONS[enemy.id].join(", ")}`);
         ENEMY_ACT_EXCEPTIONS[enemy.id].forEach((actNum) => acts.add(actNum));
       } else {
         enemy.encounters?.forEach((encounter) => {
@@ -70,8 +76,6 @@ function EnemyEncounterInfoBox({ enemiesStats, encountersStats }: EnemyEncounter
         });
       }
       
-      
-
       const enemyStats = enemiesStats?.find((es) =>(
         es.enemy_id.split(".")[1] === enemy.id || 
         ENEMY_ID_MAPPINGS[es.enemy_id] === enemy.id
@@ -89,8 +93,6 @@ function EnemyEncounterInfoBox({ enemiesStats, encountersStats }: EnemyEncounter
         (sum, cs) => sum + cs.losses, 0
       ) ?? null;
 
-      //console.log("Fight stats for enemy " + enemy.name + ": " + JSON.stringify(enemyStats?.fight_stats));
-
       return {
         id: enemy.id,
         name: enemy.name,
@@ -105,6 +107,7 @@ function EnemyEncounterInfoBox({ enemiesStats, encountersStats }: EnemyEncounter
     })
   }, [enemiesStats, enemiesData])
 
+  // Memoized computation of encounter table rows based on fetched data and statistics
   const encounterTableRows = useMemo<EncounterTableRowData[]>(() => {
     if (!encountersData) return [];
 
@@ -138,6 +141,11 @@ function EnemyEncounterInfoBox({ enemiesStats, encountersStats }: EnemyEncounter
     })
   }, [encountersStats, encountersData])
 
+  /**
+   * Handles the click event for an enemy row in the table.
+   * 
+   * @param rowId - The index of the clicked row in the enemy table.
+   */
   const handleEnemyRowClick = (rowId: number) => {
     console.log("Clicked enemy with row id:", rowId);
     if (selectedEnemyId === enemyTableRows[rowId]?.id) {
@@ -147,6 +155,11 @@ function EnemyEncounterInfoBox({ enemiesStats, encountersStats }: EnemyEncounter
     }
   }
 
+  /**
+   * Handles the click event for an encounter row in the table.
+   * 
+   * @param rowId - The index of the clicked row in the encounter table.
+   */
   const handleEncounterRowClick = (rowId: number) => {
     console.log("Clicked encounter with row id:", rowId);
     if (selectedEncounterId === encounterTableRows[rowId]?.id) {
@@ -156,6 +169,10 @@ function EnemyEncounterInfoBox({ enemiesStats, encountersStats }: EnemyEncounter
     }
   }
 
+  /**
+   * Defines the columns for the enemy data table, including sorting functionality and custom cell rendering.
+   * Each column is defined with an accessor key, header, and cell rendering logic.
+   */
   const enemyColumns: ColumnDef<EnemyTableRowData>[] = [
     {
       accessorKey: "name",
@@ -249,6 +266,10 @@ function EnemyEncounterInfoBox({ enemiesStats, encountersStats }: EnemyEncounter
     }
   ]
 
+  /**
+   * Defines the columns for the encounter data table, including sorting functionality and custom cell rendering.
+   * Each column is defined with an accessor key, header, and cell rendering logic.
+   */
   const encounterColumns: ColumnDef<EncounterTableRowData>[] = [
     {
       accessorKey: "name",
@@ -361,9 +382,9 @@ function EnemyEncounterInfoBox({ enemiesStats, encountersStats }: EnemyEncounter
     }
   ]
 
-
   return (
     <Tabs defaultValue={TABS[0]} className="w-full h-150 pb-2 mb-10">
+      {/* Tabs */}
       <TabsList className='bg-transparent p-0 h-auto gap-2 mb-0 ps-4'>
         {TABS.map((tab) => (
           <TabsTrigger 
@@ -392,6 +413,7 @@ function EnemyEncounterInfoBox({ enemiesStats, encountersStats }: EnemyEncounter
         ))}
       </TabsList>
 
+      {/* Encounter Tab Content */}
       <TabsContent 
         key="Encounters" 
         value="Encounters" 
@@ -409,11 +431,13 @@ function EnemyEncounterInfoBox({ enemiesStats, encountersStats }: EnemyEncounter
       >
         <h1 className='text-4xl ms-4 mt-2 text-orange-300 font-extrabold font-heading tracking-wide'>{capitalize(TABS[0])}</h1>
         <div className="flex gap-2">
+          {/* Encounter Data Table */}
           <DataTable columns={encounterColumns} data={encounterTableRows} handleRowClick={handleEncounterRowClick} />
           <div className="p-4 border border-slate-600 rounded-md mb-4 w-full">
             {selectedEncounterId ? (
               <div>
                 <h2 className="text-2xl font-bold mb-4 w-full text-center">{encounterTableRows.find((e) => e.id === selectedEncounterId)?.name} Character Stats</h2>
+                {/* Display character stats for the selected encounter */}
                 <div className="grid grid-cols-2 gap-4">
                   {encounterTableRows
                     .find((e) => e.id === selectedEncounterId)
@@ -447,6 +471,7 @@ function EnemyEncounterInfoBox({ enemiesStats, encountersStats }: EnemyEncounter
         </div>
       </TabsContent>
 
+      {/* Enemy Tab Content */}
       <TabsContent 
         key="Enemies" 
         value="Enemies" 
@@ -464,11 +489,13 @@ function EnemyEncounterInfoBox({ enemiesStats, encountersStats }: EnemyEncounter
       >
         <h1 className='text-4xl ms-4 mt-2 text-orange-300 font-extrabold font-heading tracking-wide'>{capitalize(TABS[1])}</h1>
         <div className="flex gap-2">
+          {/* Enemy Data Table */}
           <DataTable columns={enemyColumns} data={enemyTableRows} handleRowClick={handleEnemyRowClick} />
           <div className="p-4 border border-slate-600 rounded-md mb-4 w-full">
             {selectedEnemyId ? (
               <div>
                 <h2 className="text-2xl font-bold mb-4 w-full text-center">{enemyTableRows.find((e) => e.id === selectedEnemyId)?.name} Character Stats</h2>
+                {/* Display character stats for the selected enemy */}
                 <div className="grid grid-cols-2 gap-4">
                   {enemyTableRows
                     .find((e) => e.id === selectedEnemyId)
@@ -500,10 +527,7 @@ function EnemyEncounterInfoBox({ enemiesStats, encountersStats }: EnemyEncounter
             )}
           </div>
         </div>
-        
       </TabsContent>
-
-      
     </Tabs>
   )
 }

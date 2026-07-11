@@ -1,22 +1,30 @@
-import type { CharacterBadgeInfoFull } from "shared/types/badges";
 import BadgeBronze from "@/assets/badges/badge_bronze.svg?react";
-import BadgeSilver from "@/assets/badges/badge_silver.svg?react";
 import BadgeGold from "@/assets/badges/badge_gold.svg?react";
+import BadgeSilver from "@/assets/badges/badge_silver.svg?react";
+import type { CharacterBadgeInfoFull } from "shared/types/badges";
 
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
-} from "@/components/ui/hover-card"
+} from "@/components/ui/hover-card";
 import { capitalize, resolveSTSTextColorFormatTag } from "@/utils/general";
 
 
-type AccolateBadgeProps = {
+type AccoladeBadgeProps = {
+  /** Badge information */
   badge: CharacterBadgeInfoFull;
+
+  /** URL of the badge image */
   badgeImageURL: string | null;
 };
 
-function AccolateBadge({ badge, badgeImageURL }: AccolateBadgeProps) {
+/**
+ * Renders a badge with hover information for a character.
+ * 
+ * Badges have different SVG borders based on their rarity.
+ */
+function AccoladeBadge({ badge, badgeImageURL }: AccoladeBadgeProps) {
 
   return (
     <HoverCard openDelay={100} closeDelay={20}> 
@@ -53,8 +61,7 @@ function AccolateBadge({ badge, badgeImageURL }: AccolateBadgeProps) {
         </div>
       </HoverCardContent>
     </HoverCard>
-    
   );
 }
 
-export default AccolateBadge;
+export default AccoladeBadge;

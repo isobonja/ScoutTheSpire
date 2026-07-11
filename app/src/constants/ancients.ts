@@ -9,27 +9,11 @@ export type AncientBackgroundPosition = {
 }
 
 /*
-  THIS IS NOT A GOOD SOLUTION!!!!
-
-  This does not work well at all with different window sizes. Since the height of the 
-  Ancients Carousel will likely stay consistent, I will need to determine how to position 
-  the backgrounds based on the height and x of the nameplate. I'll need to mark down the 
-  coordinates of where the subject of each background image is (probably normalized to 
-  be between 0 and 1), and then do calculations to determine what the correct position is
-  for the background image.
-
-  The size is a bit tricky because there are ultrawide monitors, and the ancient bg images 
-  are only so big. It might be best to decide on a constant size for every ancient (except 
-  Tez because her image is broken), and then just make the image fade out on the right side, 
-  so that its at least a smooth transition and not a harsh cutoff. 
-
-  -----
-
-  Change described above implemented
-
-
   THIS IS UNUSED FOR NOW!!!!
 
+  I implemented a change to dynamically set the background size and position instead of using
+  hard-coded values. This allows the focus point of the background to be centered on the ancient's face, 
+  regardless of the screen size or aspect ratio. 
 */
 export const ANCIENT_BG_LAYOUT_VALUES: Record<string, BackgroundConfig> = {
   "EVENT.NEOW": {
@@ -66,6 +50,9 @@ export const ANCIENT_BG_LAYOUT_VALUES: Record<string, BackgroundConfig> = {
   },
 }
 
+/**
+ * A mapping of ancient IDs to their corresponding background focal points.
+ */
 export const ANCIENT_BG_FOCAL_POINTS: Record<string, AncientBackgroundPosition> = {
   "EVENT.NEOW": {
     focalX: 1355,

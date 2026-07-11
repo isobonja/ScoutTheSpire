@@ -1,12 +1,21 @@
 type SideNavItemProps = {
+  /** Whether the item is selected */
   selected: boolean;
+
+  /** Icon to display for the item */
   icon: React.ReactNode;
+
+  /** Label for the item */
   label: string;
+
+  /** Function to handle click events */
   onClick: () => void;
 };
 
+/**
+ * Renders a side navigation item with an icon and label. The item can be selected or unselected.
+ */
 function SideNavItem({ selected, icon, label, onClick }: SideNavItemProps) {
-
 
   return (
     <div 
